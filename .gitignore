@@ -16,6 +16,11 @@ user_guide_src/cilexer/dist/*
 user_guide_src/cilexer/pycilexer.egg-info/*
 /vendor/
 
+
+# Ignore upload files directory
+#-------------------------
+files
+
 # IDE Files
 #-------------------------
 /nbproject/
