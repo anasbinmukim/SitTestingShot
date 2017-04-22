@@ -17,32 +17,52 @@
                           <div class="tab-content">
                               <!-- PERSONAL INFO TAB -->
                               <div class="tab-pane active" id="tab_1_1">
-                                  <form role="form" action="#">
+                                  <form method="post" role="form" action="">
+                                    <?php
+                                      $user_profile = $this->common->get( 'users', array( 'ID' => $this->session->userdata('user_id') ) );
+
+                                    ?>
+
+                                      <div class="form-group">
+                                          <label class="control-label">User/Login Name</label>
+                                          <input type="text" readonly="" value="<?php echo $user_profile->user_name; ?>" placeholder="John" class="form-control" /> </div>
+
                                       <div class="form-group">
                                           <label class="control-label">First Name</label>
-                                          <input type="text" placeholder="John" class="form-control" /> </div>
+                                          <input type="text" name="first_name" value="<?php echo html_escape($user_profile->first_name); ?>" placeholder="John" class="form-control" /> </div>
                                       <div class="form-group">
                                           <label class="control-label">Last Name</label>
-                                          <input type="text" placeholder="Doe" class="form-control" /> </div>
+                                          <input type="text" name="last_name" value="<?php echo html_escape($user_profile->last_name); ?>" placeholder="Doe" class="form-control" /> </div>
+                                      <div class="form-group">
+                                          <label class="control-label">Display Name</label>
+                                          <input type="text" name="display_name" value="<?php echo html_escape($user_profile->display_name); ?>" placeholder="John Doe" class="form-control" /> </div>
+                                      <div class="form-group">
+                                          <label class="control-label">Email</label>
+                                          <input type="text" name="email" value="<?php echo html_escape($user_profile->email); ?>" placeholder="info@company.com" class="form-control" /> </div>
                                       <div class="form-group">
                                           <label class="control-label">Mobile Number</label>
-                                          <input type="text" placeholder="+1 646 580 DEMO (6284)" class="form-control" /> </div>
+                                          <input type="text" name="mobile" value="<?php echo html_escape($user_profile->mobile); ?>" placeholder="01719999999" class="form-control" /> </div>
                                       <div class="form-group">
-                                          <label class="control-label">Interests</label>
-                                          <input type="text" placeholder="Design, Web etc." class="form-control" /> </div>
+                                          <label class="control-label">Alternate Mobile Number</label>
+                                          <input type="text" name="mobile_2" value="<?php echo html_escape($user_profile->mobile_2); ?>" placeholder="01719999999" class="form-control" /> </div>
+                                      <div class="form-group">
+                                          <label class="control-label">Phone home</label>
+                                          <input type="text" name="phone_home" value="<?php echo html_escape($user_profile->phone_home); ?>" placeholder="02783749" class="form-control" /> </div>
+                                      <div class="form-group">
+                                          <label class="control-label">Phone office</label>
+                                          <input type="text" name="phone_office" value="<?php echo html_escape($user_profile->phone_office); ?>" placeholder="02783749" class="form-control" /> </div>
                                       <div class="form-group">
                                           <label class="control-label">Occupation</label>
-                                          <input type="text" placeholder="Web Developer" class="form-control" /> </div>
+                                          <input type="text" name="occupation" value="<?php echo html_escape($user_profile->occupation); ?>" placeholder="Manager" class="form-control" /> </div>
                                       <div class="form-group">
-                                          <label class="control-label">About</label>
-                                          <textarea class="form-control" rows="3" placeholder="We are KeenThemes!!!"></textarea>
+                                          <label class="control-label">Bio</label>
+                                          <textarea name="bio_info" class="form-control" rows="3" placeholder="I'm John and team lead of RM Corporation.."><?php echo html_escape($this->common->get_user_meta($this->session->userdata('user_id'), 'bio_info')); ?></textarea>
                                       </div>
                                       <div class="form-group">
-                                          <label class="control-label">Website Url</label>
-                                          <input type="text" placeholder="http://www.mywebsite.com" class="form-control" /> </div>
+                                          <label class="control-label">Website URL</label>
+                                          <input type="text" name="web_url" value="<?php echo html_escape($user_profile->web_url); ?>" placeholder="http://www.mywebsite.com" class="form-control" /> </div>
                                       <div class="margiv-top-10">
-                                          <a href="javascript:;" class="btn green"> Save Changes </a>
-                                          <a href="javascript:;" class="btn default"> Cancel </a>
+                                          <input type="submit" class="btn green" name="save_personal_info" value="Save Changes">
                                       </div>
                                   </form>
                               </div>

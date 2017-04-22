@@ -8,8 +8,8 @@
         <!-- END SIDEBAR USERPIC -->
         <!-- SIDEBAR USER TITLE -->
         <div class="profile-usertitle">
-            <div class="profile-usertitle-name"> Marcus Doe </div>
-            <div class="profile-usertitle-job"> Developer </div>
+            <div class="profile-usertitle-name"> <?php echo $first_name.' '.$last_name; ?> </div>
+            <div class="profile-usertitle-job"> <?php echo $occupation; ?> </div>
         </div>
         <!-- END SIDEBAR USER TITLE -->
         <!-- SIDEBAR BUTTONS -->

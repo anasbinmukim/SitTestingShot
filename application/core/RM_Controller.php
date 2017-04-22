@@ -23,6 +23,10 @@ class RM_Controller extends CI_Controller
 					if( $profile_photo && file_exists( getcwd().'/files/media/'.$profile_photo ) ){
 							$this->data['profile_photo'] = base_url( 'files/media/'.$profile_photo );
 					}
+					$this->data['display_name'] = $user_profile->display_name;
+					$this->data['first_name'] = $user_profile->first_name;
+					$this->data['last_name'] = $user_profile->last_name;
+					$this->data['occupation'] = $user_profile->occupation;
 			}
 		}
 	}

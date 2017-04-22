@@ -19,7 +19,8 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 
 # Ignore upload files directory
 #-------------------------
-files
+files/
+files/media/
 
 # IDE Files
 #-------------------------
@@ -32,3 +33,5 @@ files
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
+
+files/media/

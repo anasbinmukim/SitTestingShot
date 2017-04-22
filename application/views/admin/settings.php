@@ -30,7 +30,7 @@
                     <?php if($this->session->flashdata('success_msg_general')): ?>
                       <div class="note note-success">
                           <h4 class="block">Success</h4>
-                          <p> <?php $this->session->flashdata('success_msg_general'); ?> </p>
+                          <p> <?php echo $this->session->flashdata('success_msg_general'); ?> </p>
                       </div>
                     <? endif ?>
                     <div class="portlet-body">
@@ -104,7 +104,7 @@
                     <?php if($this->session->flashdata('success_msg_logo')): ?>
                       <div class="note note-success">
                           <h4 class="block">Success</h4>
-                          <p> <?php $this->session->flashdata('success_msg_logo'); ?> </p>
+                          <p> <?php echo $this->session->flashdata('success_msg_logo'); ?> </p>
                       </div>
                     <? endif ?>
 
