@@ -49,7 +49,13 @@ class Profile extends RM_Controller {
 						//End: Process profile photo
 
 
+						//Start: Process update password
+						$this->update_profile_password();
+						//End: Process update password
 
+						//Start: Process update privacy settings
+						$this->update_profile_privacy_settings();
+						//End: Process update privacy settings
 
 						$this->load->view('templates/header',$this->data);
 						$this->load->view('templates/sidebar', $this->data);
@@ -57,7 +63,48 @@ class Profile extends RM_Controller {
 						$this->load->view('templates/footer',$this->data);
 		}
 
+		/*
+		 * @Process update privacy settings
+		 * @Return void
+		 */
+		private function update_profile_privacy_settings(){
+			if(isset($_POST['privacy_settings'])){
+					$promotional_email = $this->input->post('promotional_email');
+					$this->common->update_user_meta($this->session->userdata('user_id'), 'promotional_email', trim($promotional_email));
+					$this->session->set_flashdata('success_msg','Updated done!');
+					redirect('/profile/?psection=profile-settings');
+			}
 
+		}
+
+		/*
+		 * @Process update password
+		 * @Return void
+		 */
+		private function update_profile_password(){
+			if(isset($_POST['update_password'])){
+
+
+				$this->form_validation->set_rules('password', 'Password', 'trim|required|htmlspecialchars|min_length[4]');
+				$this->form_validation->set_rules('conf_password', 'Re-Password', 'trim|required|htmlspecialchars|matches[password]');
+				$this->form_validation->set_rules('current_pass', 'Current Password', 'trim|required|callback_password_check');
+
+				$user_entered_password = md5( $this->config->item('encryption_key').trim($this->input->post('password')) );
+				$user_arr = array(
+					'password'=> $user_entered_password,
+				);
+				if( !$this->form_validation->run() ) {
+					$error_message_array = $this->form_validation->error_array();
+					$this->session->set_flashdata('error_msg_arr', $error_message_array);
+					redirect('/profile/?psection=update-password');
+				}else{
+					$this->common->update('users', $user_arr, array( 'ID' => $this->session->userdata('user_id') ));
+					$this->session->set_flashdata('success_msg','Your password updated done!');
+					$this->session->sess_destroy();
+					redirect('/profile/?psection=update-password');
+				}
+			}
+		}
 
 		/*
 		 * @Process personal info data
@@ -120,6 +167,20 @@ class Profile extends RM_Controller {
 			else
 				return TRUE;
 		}
+
+		public function password_check()
+		{
+			$user_entered_password = md5( $this->config->item('encryption_key').$this->input->post('current_pass') );
+			$user = $this->common->get( 'users', array( 'ID' => $this->session->userdata('user_id') ) );
+			if(!empty($user) && ($user->password != $user_entered_password)){
+					$this->form_validation->set_message('password_check', 'Current password does not match!');
+					return FALSE;
+			}
+			else
+				return TRUE;
+		}
+
+
 
 		/*
 		 * @Process uploaded profile photo

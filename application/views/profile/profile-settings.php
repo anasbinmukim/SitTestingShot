@@ -17,63 +17,21 @@
                           <div class="tab-content">
                               <!-- PRIVACY SETTINGS TAB -->
                               <div class="tab-pane active" id="tab_1_4">
-                                  <form action="#">
+                                  <form action="" method="post">
                                       <table class="table table-light table-hover">
                                           <tr>
-                                              <td> Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus.. </td>
+                                              <td> Receive Promotional Email? </td>
+                                              <?php
+                                                $promotional_email = $this->common->get_user_meta($this->session->userdata('user_id'), 'promotional_email');
+                                              ?>
                                               <td>
                                                   <div class="mt-radio-inline">
                                                       <label class="mt-radio">
-                                                          <input type="radio" name="optionsRadios1" value="option1" /> Yes
+                                                          <input type="radio" name="promotional_email" <?php if($promotional_email == 'yes'){ ?> checked <?php } ?> value="yes" /> Yes
                                                           <span></span>
                                                       </label>
                                                       <label class="mt-radio">
-                                                          <input type="radio" name="optionsRadios1" value="option2" checked/> No
-                                                          <span></span>
-                                                      </label>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td> Enim eiusmod high life accusamus terry richardson ad squid wolf moon </td>
-                                              <td>
-                                                  <div class="mt-radio-inline">
-                                                      <label class="mt-radio">
-                                                          <input type="radio" name="optionsRadios11" value="option1" /> Yes
-                                                          <span></span>
-                                                      </label>
-                                                      <label class="mt-radio">
-                                                          <input type="radio" name="optionsRadios11" value="option2" checked/> No
-                                                          <span></span>
-                                                      </label>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td> Enim eiusmod high life accusamus terry richardson ad squid wolf moon </td>
-                                              <td>
-                                                  <div class="mt-radio-inline">
-                                                      <label class="mt-radio">
-                                                          <input type="radio" name="optionsRadios21" value="option1" /> Yes
-                                                          <span></span>
-                                                      </label>
-                                                      <label class="mt-radio">
-                                                          <input type="radio" name="optionsRadios21" value="option2" checked/> No
-                                                          <span></span>
-                                                      </label>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td> Enim eiusmod high life accusamus terry richardson ad squid wolf moon </td>
-                                              <td>
-                                                  <div class="mt-radio-inline">
-                                                      <label class="mt-radio">
-                                                          <input type="radio" name="optionsRadios31" value="option1" /> Yes
-                                                          <span></span>
-                                                      </label>
-                                                      <label class="mt-radio">
-                                                          <input type="radio" name="optionsRadios31" value="option2" checked/> No
+                                                          <input type="radio" name="promotional_email" <?php if($promotional_email == 'no'){ ?> checked <?php } ?> value="no"/> No
                                                           <span></span>
                                                       </label>
                                                   </div>
@@ -82,8 +40,7 @@
                                       </table>
                                       <!--end profile-settings-->
                                       <div class="margin-top-10">
-                                          <a href="javascript:;" class="btn red"> Save Changes </a>
-                                          <a href="javascript:;" class="btn default"> Cancel </a>
+                                          <input type="submit" class="btn red" name="privacy_settings" value="Save Changes">
                                       </div>
                                   </form>
                               </div>

@@ -32,7 +32,7 @@ class Auth extends RM_Controller {
 		$this->form_validation->set_rules('email', 'Email', 'trim|valid_email|callback_email_check',  array('is_unique' => 'This email is already being used by someone.'));
 		$this->form_validation->set_rules('username', 'User Name', 'trim|required|min_length[4]|callback_username_check|htmlspecialchars',  array('is_unique' => 'This user name or phone number is already being used by someone.'));
 		$this->form_validation->set_rules('conf_username', 'Re-type User Name', 'trim|required|htmlspecialchars|matches[username]');
-		$this->form_validation->set_rules('password', 'Password', 'trim|required|htmlspecialchars|min_length[8]');
+		$this->form_validation->set_rules('password', 'Password', 'trim|required|htmlspecialchars|min_length[4]');
 		$this->form_validation->set_rules('conf_password', 'Re-Password', 'trim|required|htmlspecialchars|matches[password]');
 		$this->form_validation->set_rules('tnc', 'Terms and Conditions', 'trim|required');
 		$this->form_validation->set_error_delimiters('<span class="help-block">', '</span>');

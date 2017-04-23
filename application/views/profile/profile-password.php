@@ -17,19 +17,18 @@
                           <div class="tab-content">
                               <!-- CHANGE PASSWORD TAB -->
                               <div class="tab-pane active" id="tab_1_3">
-                                  <form action="#">
+                                  <form action="" method="post">
                                       <div class="form-group">
                                           <label class="control-label">Current Password</label>
-                                          <input type="password" class="form-control" /> </div>
+                                          <input type="password" name="current_pass" class="form-control" /> </div>
                                       <div class="form-group">
                                           <label class="control-label">New Password</label>
-                                          <input type="password" class="form-control" /> </div>
+                                          <input type="password" name="password" class="form-control" /> </div>
                                       <div class="form-group">
                                           <label class="control-label">Re-type New Password</label>
-                                          <input type="password" class="form-control" /> </div>
+                                          <input type="password" name="conf_password" class="form-control" /> </div>
                                       <div class="margin-top-10">
-                                          <a href="javascript:;" class="btn green"> Change Password </a>
-                                          <a href="javascript:;" class="btn default"> Cancel </a>
+                                          <input type="submit" class="btn green" name="update_password" value="Change Password">
                                       </div>
                                   </form>
                               </div>
