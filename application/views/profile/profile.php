@@ -2,25 +2,8 @@
 <h1 class="page-title">My Profile</h1>
 <!-- END PAGE HEADER-->
 
-<?php if($this->session->flashdata('success_msg')): ?>
-  <div class="note note-success">
-      <p> <?php echo $this->session->flashdata('success_msg'); ?> </p>
-  </div>
-<? endif ?>
-
-<?php if($this->session->flashdata('error_msg')): ?>
-  <div class="alert alert-danger"><strong>Error!</strong> <?php echo $this->session->flashdata('error_msg'); ?> </div>
-<? endif ?>
-
 <?php
-$error_message = $this->session->flashdata('error_msg_arr');
-if(!empty($error_message)){
-  foreach ($error_message as $key => $value) {
-    ?>
-    <div class="alert alert-danger"><strong>Error!</strong> <?php echo $value; ?> </div>
-    <?php
-  }
-}
+require_once(FCPATH.'/application/views/success-error-message.php');
 ?>
 
 <?php

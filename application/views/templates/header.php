@@ -7,7 +7,7 @@
     <!-- BEGIN HEAD -->
     <head>
         <meta charset="utf-8" />
-        <title><?php echo $site_title; ?> | <?php echo $page_title; ?></title>
+        <title><?php echo $site_title; ?> | <?php echo $title; ?></title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="" name="description" />

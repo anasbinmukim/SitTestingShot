@@ -14,8 +14,8 @@
         <!-- END SIDEBAR USER TITLE -->
         <!-- SIDEBAR BUTTONS -->
         <div class="profile-userbuttons">
-            <button type="button" class="btn btn-circle green btn-sm">Accounts</button>
-            <button type="button" class="btn btn-circle grey btn-sm">My Booked</button>
+            <button type="button" class="btn btn-circle green btn-sm">My Accounts</button>
+            <button type="button" class="btn btn-circle red btn-sm">My Booked</button>
         </div>
         <!-- END SIDEBAR BUTTONS -->
         <!-- SIDEBAR MENU -->

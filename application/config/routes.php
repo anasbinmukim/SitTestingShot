@@ -21,6 +21,12 @@ $route['set-password/(:any)'] = 'auth/set_password/$1';
 $route['profile']  = 'profile';
 //$route['admin/settings']  = 'admin/settings';
 
+$route['launch']   = 'launch';
+$route['launch/(:any)'] = 'launch/$1';
+
+$route['places']   = 'places';
+$route['places/(:any)'] = 'places/$1';
+
 // $route['news/create'] = 'news/create';
 // $route['news/(:any)'] = 'news/view/$1';
 // $route['news'] = 'news';

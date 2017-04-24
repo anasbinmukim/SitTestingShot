@@ -13,7 +13,7 @@ class RM_Controller extends CI_Controller
 		if( $this->common->get_app_option('site_logo') && file_exists( getcwd().'/files/media/'.$this->common->get_app_option('site_logo') ) ){
 			$this->data['site_logo'] = base_url( 'files/media/'.$this->common->get_app_option('site_logo') );
 		}
-		$this->data['page_title'] = 'Online Reservation in Bangladesh';
+		$this->data['title'] = 'Online Reservation in Bangladesh';
 		$this->user = $this->session->userdata('user_id') ? $this->common->get( 'users', array( 'ID' => $this->session->userdata('user_id'), 'is_active' => 1 ) ) : FALSE;
 		if ( $this->session->userdata('logged_in') ) {
 			$this->data['profile_photo'] = base_url('seatassets/images/placeholder-profile-photo.jpg');

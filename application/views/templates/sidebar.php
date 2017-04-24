@@ -25,19 +25,50 @@
                             <span class="title">Dashboard 1</span>
                         </a>
                     </li>
-                    <li class="nav-item start ">
-                        <a href="dashboard_2.html" class="nav-link ">
-                            <i class="icon-bulb"></i>
-                            <span class="title">Dashboard 2</span>
-                            <span class="badge badge-success">1</span>
+                </ul>
+            </li>
+            <li class="nav-item  ">
+                <a href="<?php echo site_url('launch'); ?>" class="nav-link nav-toggle">
+                    <i class="icon-diamond"></i>
+                    <span class="title">Launch</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item  ">
+                        <a href="<?php echo site_url('launch/add_new'); ?>" class="nav-link ">
+                            <span class="title">Add New</span>
                         </a>
                     </li>
-                    <li class="nav-item start ">
-                        <a href="dashboard_3.html" class="nav-link ">
-                            <i class="icon-graph"></i>
-                            <span class="title">Dashboard 3</span>
-                            <span class="badge badge-danger">5</span>
+                </ul>
+            </li>
+            <li class="nav-item  ">
+                <a href="<?php echo site_url('places'); ?>" class="nav-link nav-toggle">
+                    <i class="icon-diamond"></i>
+                    <span class="title">Places</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item  ">
+                        <a href="<?php echo site_url('places/add_new'); ?>" class="nav-link ">
+                            <span class="title">Add New</span>
                         </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item ">
+                                <a href="<?php echo site_url('places/add_new/?psection=area'); ?>" class="nav-link ">Area</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a href="<?php echo site_url('places/add_new/?psection=thana'); ?>" class="nav-link ">Thana</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a href="<?php echo site_url('places/add_new/?psection=district'); ?>" class="nav-link ">District</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a href="<?php echo site_url('places/add_new/?psection=division'); ?>" class="nav-link ">Division</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a href="<?php echo site_url('places/add_new/?psection=zone'); ?>" class="nav-link ">Zone</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </li>
