@@ -17,31 +17,155 @@ class Places extends RM_Controller {
 
         $this->load->view('templates/header',$this->data);
         $this->load->view('templates/sidebar', $this->data);
-        $this->load->view('places/home', $this->data);
+        $this->load->view('places/places', $this->data);
         $this->load->view('templates/footer', $this->data);
     }
 
-    public function add_new()
+    public function view($page = 'area')
     {
 
-      if(isset($_GET['psection']) && ($_GET['psection'] == 'area')){
-        $this->data['add_section'] = 'area';
-      }elseif(isset($_GET['psection']) && ($_GET['psection'] == 'thana')){
-        $this->data['add_section'] = 'thana';
-      }elseif(isset($_GET['psection']) && ($_GET['psection'] == 'district')){
-        $this->data['add_section'] = 'district';
-      }elseif(isset($_GET['psection']) && ($_GET['psection'] == 'division')){
-        $this->data['add_section'] = 'division';
-      }elseif(isset($_GET['psection']) && ($_GET['psection'] == 'zone')){
-        $this->data['add_section'] = 'zone';
-      }else{
-        $this->data['add_section'] = 'area';
+            if ( ! file_exists(APPPATH.'views/places/view-'.$page.'.php'))
+            {
+                    // Whoops, we don't have a page for that!
+                    show_404();
+            }
+
+            $this->data['css_files'] = array(
+						  base_url('assets/global/plugins/datatables/datatables.min.css'),
+						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
+						);
+
+            //load division info
+            if($page == 'division'){
+                $result = $this->common->get_all( 'place_division' );
+                $this->data['division_rows'] = $result;
+
+                $this->data['js_files'] = array(
+    						  base_url('assets/global/scripts/datatable.js'),
+    						  base_url('assets/global/plugins/datatables/datatables.min.js'),
+    						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+                  base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
+                  base_url('seatassets/js/table-division-editable.js'),
+    						);
+            }elseif($page == 'district'){
+                $result = $this->common->get_all( 'place_district' );
+                $this->data['district_rows'] = $result;
+                $this->data['js_files'] = array(
+    						  base_url('assets/global/scripts/datatable.js'),
+    						  base_url('assets/global/plugins/datatables/datatables.min.js'),
+    						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+                  base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
+                  base_url('seatassets/js/table-district-editable.js'),
+    						);
+            }else{
+              $this->data['js_files'] = array(
+                base_url('assets/global/scripts/datatable.js'),
+                base_url('assets/global/plugins/datatables/datatables.min.js'),
+                base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+                base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
+                base_url('seatassets/js/table-division-editable.js'),
+              );
+
+            }
+
+            $this->data['title'] = ucfirst($page); // Capitalize the first letter
+
+            $this->load->view('templates/header', $this->data);
+            $this->load->view('templates/sidebar', $this->data);
+            $this->load->view('places/view-'.$page, $this->data);
+            $this->load->view('templates/footer', $this->data);
+    }
+
+    public function add_new($page = 'area')
+    {
+
+      //Start: Process division
+      $this->process_division_info();
+      //End: Process division
+
+      if ( ! file_exists(APPPATH.'views/places/add-'.$page.'.php'))
+      {
+              // Whoops, we don't have a page for that!
+              show_404();
       }
 
-      $this->load->view('templates/header',$this->data);
+      $this->data['title'] = ucfirst($page); // Capitalize the first letter
+
+      $this->load->view('templates/header', $this->data);
       $this->load->view('templates/sidebar', $this->data);
-      $this->load->view('places/add-new', $this->data);
+      $this->load->view('places/add-'.$page, $this->data);
       $this->load->view('templates/footer', $this->data);
+
+    }
+
+
+    private function process_division_info(){
+      //Add new division
+      if(isset($_POST['add_division'])){
+          $this->form_validation->set_rules('division_name', 'Division name', 'trim|required|htmlspecialchars|min_length[2]');
+
+          $data_arr = array(
+            'division_name'=> trim($this->input->post('division_name')),
+          );
+
+          if( !$this->form_validation->run() ) {
+  					$error_message_array = $this->form_validation->error_array();
+  					$this->session->set_flashdata('error_msg_arr', $error_message_array);
+  					redirect('/places/add_new/division');
+  				}else{
+  					$this->common->insert( 'place_division', $data_arr );
+  					$this->session->set_flashdata('success_msg','Added done!');
+  					redirect('/places/add_new/division');
+  				}
+      }
+
+    }//EOF process division info
+
+    //SOF process division ajax info
+    public function process_division_ajax_info(){
+      $result = array();
+
+      $result['success_message'] = 'Update done!';
+      //print_r($records);
+			header('Content-type: application/json');
+		  echo json_encode($result);
+    }//EOF process division ajax info
+
+
+    //Delete Dividion
+    public function delete_division( $division_solt_id = 0 ) {
+      if( $division_solt_id == '0' ) {
+      }else {
+        $division_id = decrypt($division_solt_id)*1;
+        if( !is_int($division_id) || !$division_id ) {
+        }else{
+          $this->common->delete( 'place_division', array( 'ID' =>  $division_id ) );
+          //redirect('/places/view/division');
+        }
+      }
+    }
+
+    //Process Place Data
+    public function process_places() {
+      $row_id = $_POST['row_id'];
+      $db_table = trim($_POST['db_table']);
+      $action_type = $_POST['action_type'];
+
+      if( ($row_id != '0') && ($db_table != '') && ($action_type == 'delete') ){
+          $this->common->delete( $db_table, array( 'ID' =>  $row_id ) );
+          echo json_encode(array("msg" => "Deleted!"));
+      		exit;
+      }elseif( (isset($_POST['division_name']) && $_POST['division_name'] != '') && ($row_id != '0') && ($db_table == 'place_division') && ($action_type == 'update') ){
+          $division_name = $_POST['division_name'];
+          $this->common->update( $db_table, array('division_name' => $division_name), array( 'ID' =>  $row_id ) );
+          echo json_encode(array("msg" => "Updated done!"));
+      		exit;
+      }else{
+        echo json_encode(array("msg" => "Error occured!"));
+        exit;
+      }
+
+
     }
 
 }

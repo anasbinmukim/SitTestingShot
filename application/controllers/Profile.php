@@ -7,15 +7,27 @@ class Profile extends RM_Controller {
 						parent::__construct();
 						$this->load->helper('file');
 		}
-		public function index()
+		public function index($page = 'personal-info')
+		{
+				redirect('/profile/manage/');
+		}
+
+
+		public function manage($page = 'personal-info')
 		{
 						if ( ! $this->session->userdata('logged_in') ) {
 							redirect('/login/');
 						}
 
-						// $this->data['page_title'] = 'Edit My Profle';
-						// $this->data['menu'] = 'admin';
-						// $this->data['submenu'] = 'profile';
+						if ( ! file_exists(APPPATH.'views/profile/'.$page.'.php'))
+						{
+										// Whoops, we don't have a page for that!
+										show_404();
+						}
+
+						$this->data['profile_section'] = $page; // Capitalize the first letter
+
+						$this->data['title'] = ucfirst($page); // Capitalize the first letter
 
 						$this->data['css_files'] = array(
 						  base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
@@ -27,18 +39,6 @@ class Profile extends RM_Controller {
 						  base_url('assets/global/plugins/jquery.sparkline.min.js'),
 						  base_url('assets/pages/scripts/profile.min.js'),
 						);
-
-						if(isset($_GET['psection']) && ($_GET['psection'] == 'personal-info')){
-							$this->data['profile_section'] = 'personal-info';
-						}elseif(isset($_GET['psection']) && ($_GET['psection'] == 'profile-photo')){
-							$this->data['profile_section'] = 'profile-photo';
-						}elseif(isset($_GET['psection']) && ($_GET['psection'] == 'profile-settings')){
-							$this->data['profile_section'] = 'profile-settings';
-						}elseif(isset($_GET['psection']) && ($_GET['psection'] == 'update-password')){
-							$this->data['profile_section'] = 'update-password';
-						}else{
-							$this->data['profile_section'] = 'personal-info';
-						}
 
 						//Start: Process profile personal info
 						$this->update_personal_info();
@@ -59,9 +59,10 @@ class Profile extends RM_Controller {
 
 						$this->load->view('templates/header',$this->data);
 						$this->load->view('templates/sidebar', $this->data);
-						$this->load->view('profile/profile',$this->data);
+						$this->load->view('profile/'.$page, $this->data);
 						$this->load->view('templates/footer',$this->data);
 		}
+
 
 		/*
 		 * @Process update privacy settings
@@ -72,7 +73,7 @@ class Profile extends RM_Controller {
 					$promotional_email = $this->input->post('promotional_email');
 					$this->common->update_user_meta($this->session->userdata('user_id'), 'promotional_email', trim($promotional_email));
 					$this->session->set_flashdata('success_msg','Updated done!');
-					redirect('/profile/?psection=profile-settings');
+					redirect('/profile/manage/settings');
 			}
 
 		}
@@ -96,12 +97,12 @@ class Profile extends RM_Controller {
 				if( !$this->form_validation->run() ) {
 					$error_message_array = $this->form_validation->error_array();
 					$this->session->set_flashdata('error_msg_arr', $error_message_array);
-					redirect('/profile/?psection=update-password');
+					redirect('/profile/manage/password');
 				}else{
 					$this->common->update('users', $user_arr, array( 'ID' => $this->session->userdata('user_id') ));
 					$this->session->set_flashdata('success_msg','Your password updated done!');
 					$this->session->sess_destroy();
-					redirect('/profile/?psection=update-password');
+					redirect('/profile/manage/password');
 				}
 			}
 		}
@@ -147,12 +148,12 @@ class Profile extends RM_Controller {
 					$error_message_array = $this->form_validation->error_array();
 					$this->session->set_flashdata('error_msg_arr', $error_message_array);
 					$this->session->set_flashdata('error_msg', 'Updated Failed!');
-					redirect('/profile/?psection=personal-info');
+					redirect('/profile/manage/personal-info');
 				}else{
 					$this->common->update('users', $user_arr, array( 'ID' => $this->session->userdata('user_id') ));
 					$this->common->update_user_meta($this->session->userdata('user_id'), 'bio_info', trim($this->input->post('bio_info')));
 					$this->session->set_flashdata('success_msg','Updated done!');
-					redirect('/profile/?psection=personal-info');
+					redirect('/profile/manage/personal-info');
 				}
 			}
 		}
@@ -215,7 +216,7 @@ class Profile extends RM_Controller {
 					$profile_photo_name = $_POST['profile_photo'];
 					$this->common->update('users', array('profile_photo' => $profile_photo_name), array( 'ID' => $this->session->userdata('user_id') ));
 					$this->session->set_flashdata('success_msg','Updated done!');
-					redirect('/profile/?psection=profile-photo');
+					redirect('/profile/manage/photo');
 				}else{
 					$this->session->set_flashdata('error_msg','Updated failed!');
 				}

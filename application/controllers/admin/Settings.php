@@ -37,7 +37,7 @@ class Settings extends RM_Controller {
 										$this->common->update_app_option('site_tagline', $this->input->post('tagline'));
 									}
 
-									$this->session->set_flashdata('success_msg_general','Settings updated successfully!');
+									$this->session->set_flashdata('success_msg','Settings updated successfully!');
 									redirect('/admin/settings/');
 
 								}
@@ -65,7 +65,7 @@ class Settings extends RM_Controller {
 								$this->common->update_app_option('site_logo', $site_logo_name);
 							}
 
-							$this->session->set_flashdata('success_msg_logo','Logo updated successfully!');
+							$this->session->set_flashdata('success_msg','Logo updated successfully!');
 							redirect('/admin/settings/');
 
 						}
