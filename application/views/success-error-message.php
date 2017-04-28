@@ -2,11 +2,11 @@
   <div class="note note-success">
       <p> <?php echo $this->session->flashdata('success_msg'); ?> </p>
   </div>
-<? endif ?>
+<?php endif; ?>
 
 <?php if($this->session->flashdata('error_msg')): ?>
   <div class="alert alert-danger"><strong>Error!</strong> <?php echo $this->session->flashdata('error_msg'); ?> </div>
-<? endif ?>
+<?php endif; ?>
 
 <?php
 $error_message = $this->session->flashdata('error_msg_arr');
