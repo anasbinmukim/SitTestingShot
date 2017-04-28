@@ -128,6 +128,42 @@ class Places extends RM_Controller {
     }
 
 
+    public function edit($page = 'area')
+    {
+
+      if ( ! file_exists(APPPATH.'views/places/edit-'.$page.'.php'))
+      {
+              // Whoops, we don't have a page for that!
+              show_404();
+      }
+
+      $this->data['title'] = ucfirst($page); // Capitalize the first letter
+
+      $this->load->view('templates/header', $this->data);
+      $this->load->view('templates/sidebar', $this->data);
+      $this->load->view('places/edit-'.$page, $this->data);
+      $this->load->view('templates/footer', $this->data);
+
+    }
+
+    public function delete($page = 'area')
+    {
+
+      if ( ! file_exists(APPPATH.'views/places/delete-'.$page.'.php'))
+      {
+              // Whoops, we don't have a page for that!
+              show_404();
+      }
+
+      $this->data['title'] = ucfirst($page); // Capitalize the first letter
+
+      $this->load->view('templates/header', $this->data);
+      $this->load->view('templates/sidebar', $this->data);
+      $this->load->view('places/delete-'.$page, $this->data);
+      $this->load->view('templates/footer', $this->data);
+
+    }
+
     private function process_division_info(){
       //Add new division
       if(isset($_POST['add_division'])){
