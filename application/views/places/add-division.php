@@ -1,18 +1,28 @@
+<!-- BEGIN PAGE HEADER-->
+<h1 class="page-title">Division of Bangladesh</h1>
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="<?php echo site_url(); ?>">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="<?php echo site_url('places'); ?>">Places</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>District</span>
+        </li>
+    </ul>
+</div>
+<!-- END PAGE HEADER-->
 <?php
 require_once(FCPATH.'/application/views/success-error-message.php');
 ?>
-<?php
-
-// foreach ($districts as $key => $value) {
-//   $datar_arr = array(
-//     'district_name'=> trim($value),
-//   );
-//   $user_id = $this->common->insert( 'place_district', $datar_arr );
-// }
-?>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
       <!-- BEGIN PROFILE CONTENT -->
       <div class="profile-content">
           <div class="row">

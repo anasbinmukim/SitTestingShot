@@ -1,5 +1,5 @@
 <!-- BEGIN PAGE HEADER-->
-<h1 class="page-title">District of Bangladesh</h1>
+<h1 class="page-title">Districts of Bangladesh</h1>
 <div class="page-bar">
     <ul class="page-breadcrumb">
         <li>
