@@ -37,7 +37,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                           <th> District Name </th>
                           <th> Division </th>
                           <th style="display:none;"> Edit </th>
-                          <th style="display:none;"> Delete </th>
+                          <th width="50"> Action </th>
                       </tr>
                   </thead>
                   <tbody>
@@ -52,7 +52,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                             <td><?php echo $district->district_name; ?></td>
                             <td><?php echo $division_name; ?></td>
                             <td style="display:none;"></td>
-                            <td style="display:none;"></td>
+                            <td><?php echo '<div class="center-block"><a href="'.site_url('places/edit/district/'.encrypt($district->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a href="'.site_url('places/delete/district/'.encrypt($district->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
                         </tr>
                       <?php } ?>
                   </tbody>
