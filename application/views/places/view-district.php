@@ -43,13 +43,6 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                   <tbody>
                   <?php
                     $division_arr = get_divisions_arr();
-
-
-                    $district_arr = get_district_arr();
-                    echo "<pre>";
-                    print_r($district_arr);
-                    echo "</pre>";
-
                   ?>
                     <?php foreach ($district_rows as $district) { ?>
                         <?php

@@ -47,6 +47,17 @@ class Places extends RM_Controller {
                   base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
                   base_url('seatassets/js/table-division-editable.js'),
     						);
+            }elseif($page == 'zone'){
+                $result = $this->common->get_all( 'place_zone' );
+                $this->data['zone_rows'] = $result;
+
+                $this->data['js_files'] = array(
+    						  base_url('assets/global/scripts/datatable.js'),
+    						  base_url('assets/global/plugins/datatables/datatables.min.js'),
+    						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+                  base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
+                  base_url('seatassets/js/table-zone-editable.js'),
+    						);
             }elseif($page == 'district'){
                 $result = $this->common->get_all( 'place_district' );
                 $this->data['district_rows'] = $result;
@@ -57,13 +68,31 @@ class Places extends RM_Controller {
                   base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
                   base_url('seatassets/js/table-district-editable.js'),
     						);
+            }elseif($page == 'thana'){
+                $result = $this->common->get_all( 'place_thana' );
+                $this->data['thana_rows'] = $result;
+                $this->data['js_files'] = array(
+    						  base_url('assets/global/scripts/datatable.js'),
+    						  base_url('assets/global/plugins/datatables/datatables.min.js'),
+    						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+                  base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
+                  base_url('seatassets/js/table-datatables-buttons.js'),
+    						);
+            }elseif($page == 'area'){
+                $result = $this->common->get_all( 'place_thana' );
+                $this->data['thana_rows'] = $result;
+                $this->data['js_files'] = array(
+    						  base_url('assets/global/scripts/datatable.js'),
+    						  base_url('assets/global/plugins/datatables/datatables.min.js'),
+    						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+                  base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
+    						);
             }else{
               $this->data['js_files'] = array(
                 base_url('assets/global/scripts/datatable.js'),
                 base_url('assets/global/plugins/datatables/datatables.min.js'),
                 base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
                 base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
-                base_url('seatassets/js/table-division-editable.js'),
               );
 
             }
