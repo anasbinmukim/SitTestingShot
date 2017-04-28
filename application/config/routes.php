@@ -19,7 +19,7 @@ $route['reset-password/(:any)'] = 'auth/reset_password/$1';
 $route['set-password/(:any)'] = 'auth/set_password/$1';
 
 $route['profile']  = 'profile';
-//$route['admin/settings']  = 'admin/settings';
+$route['profile/(:any)']  = 'profile/$1';
 
 $route['launch']   = 'launch';
 $route['launch/(:any)'] = 'launch/$1';

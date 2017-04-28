@@ -1,14 +1,14 @@
 <ul class="nav nav-tabs">
     <li <?php if($profile_section == 'personal-info'){ ?>class="active" <?php } ?>>
-        <a href="<?php echo site_url('/profile/?psection=personal-info'); ?>">Personal Info</a>
+        <a href="<?php echo site_url('/profile/manage/personal-info'); ?>">Personal Info</a>
     </li>
-    <li <?php if($profile_section == 'profile-photo'){ ?>class="active" <?php } ?>>
-        <a href="<?php echo site_url('/profile/?psection=profile-photo'); ?>">Profile Photo</a>
+    <li <?php if($profile_section == 'photo'){ ?>class="active" <?php } ?>>
+        <a href="<?php echo site_url('/profile/manage/photo'); ?>">Profile Photo</a>
     </li>
-    <li <?php if($profile_section == 'update-password'){ ?>class="active" <?php } ?>>
-        <a href="<?php echo site_url('/profile/?psection=update-password'); ?>">Update Password</a>
+    <li <?php if($profile_section == 'password'){ ?>class="active" <?php } ?>>
+        <a href="<?php echo site_url('/profile/manage/password'); ?>">Update Password</a>
     </li>
-    <li <?php if($profile_section == 'profile-settings'){ ?>class="active" <?php } ?>>
-        <a href="<?php echo site_url('/profile/?psection=profile-settings'); ?>">Privacy Settings</a>
+    <li <?php if($profile_section == 'settings'){ ?>class="active" <?php } ?>>
+        <a href="<?php echo site_url('/profile/manage/settings'); ?>">Privacy Settings</a>
     </li>
 </ul>

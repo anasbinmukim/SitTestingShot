@@ -4,18 +4,18 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 if( !function_exists('create_slug') ) {
-	
+
 	function create_slug( $title = '' ) {
 		$clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $title);
 		$clean = strtolower(trim($clean, '-'));
 		$clean = preg_replace("/[\/_|+ -]+/", '_', $clean);
-		
+
 		if ( slug_exists($clean, $id) ) {
-			$clean = make_slug_unique($clean);  
+			$clean = make_slug_unique($clean);
 		}
 		return $clean;
 	}
-	
+
 }
 if( !function_exists('slug_exists') ) {
 	function slug_exists( $slug ) {
@@ -39,19 +39,19 @@ if( !function_exists('make_slug_unique') ) {
 
 if( !function_exists('random_string') ) {
 	function random_string($stirng = 15){  //password_hash("rasmuslerdorf", PASSWORD_DEFAULT)
-		
+
 		$rnd_id = password_hash(uniqid(rand(),1), PASSWORD_DEFAULT);
-		$rnd_id = strip_tags(stripslashes($rnd_id)); 
-		$rnd_id = str_replace(".","",$rnd_id); 
-		$rnd_id = strrev(str_replace("/","",$rnd_id)); 
-		$rnd_id = substr($rnd_id,0,$stirng); 
+		$rnd_id = strip_tags(stripslashes($rnd_id));
+		$rnd_id = str_replace(".","",$rnd_id);
+		$rnd_id = strrev(str_replace("/","",$rnd_id));
+		$rnd_id = substr($rnd_id,0,$stirng);
 		return $rnd_id;
 	}
 }
 
 if ( !function_exists('username') ) {
 	function username( $id = 0 ) {
-		
+
 		if( $id > 0 ) {
 			$ci = &get_instance();
 			$ci->db->select('username');
@@ -68,6 +68,38 @@ if ( !function_exists('username') ) {
 	}
 }
 
+if ( !function_exists('get_district_arr') ) {
+	function get_district_arr() {
+    $CI =& get_instance();
+    $CI->load->database();
+    $query = $CI->db->get('place_district');
+    $districts = $query->result_array();
+
+    $result_district = array();
+    foreach ($districts as $district) {
+      $district_id = $district['ID'];
+      $result_district[$district_id] = $district['district_name'];
+    }
+		return $result_district;
+	}
+}
+
+if ( !function_exists('get_divisions_arr') ) {
+	function get_divisions_arr() {
+    $CI =& get_instance();
+    $CI->load->database();
+    $query = $CI->db->get('place_division');
+    $divisions = $query->result_array();
+
+    $result_division = array();
+    foreach ($divisions as $division) {
+      $division_id = $division['ID'];
+      $result_division[$division_id] = $division['division_name'];
+    }
+		return $result_division;
+	}
+}
+
 if ( !function_exists('user_details') ) {
 	function user_details( $id = 0 ) {
 		$ci = &get_instance();
@@ -79,9 +111,9 @@ if ( !function_exists('user_details') ) {
 
 
 if( !function_exists('get_settings_item') ) {
-	
+
 	function get_settings_item($key = '') {
-		
+
 		$ci = &get_instance();
 		$ci->db->where('field', $key);
 		$row = $ci->db->get('settings')->row();
@@ -91,12 +123,12 @@ if( !function_exists('get_settings_item') ) {
 			return '';
 		}
 	}
-	
+
 }
 if( !function_exists('get_role_name') ) {
-	
+
 	function get_role_name( $id = '' ) {
-		
+
 		$ci = &get_instance();
 		$ci->db->where('id', $id);
 		$row = $ci->db->get('groups')->row();
@@ -106,7 +138,7 @@ if( !function_exists('get_role_name') ) {
 			return '';
 		}
 	}
-	
+
 }
 
 if( !function_exists('is_user_active') ) {
@@ -114,67 +146,23 @@ if( !function_exists('is_user_active') ) {
 		$ci = &get_instance();
 		$ci->db->where( 'id' , $id );
 		$row = $ci->db->get('users')->row();
-		
+
 		if( count($row) > 0 ) {
-			
+
 			if( $row->expire_date < time() ) {
 				return false;
 			} else {
 				return true;
 			}
-			
+
 		} else {
 			return false;
 		}
 	}
 }
 
-if ( !function_exists('get_bid_type') ) {
-	function get_bid_type( $key  = 0) {
-		$st_arr = array(
-			1 => 'Single',
-			2 => 'Range',
-		);
-		if ( $key  == 0 ) {
-			return $st_arr;
-		} else {
-			return $st_arr[$key];
-		}
-	}
-}
-if ( !function_exists('get_file_status') ) {
-	function get_file_status( $key  = 0) {
-		$st_arr = array(
-			1 => 'PULLED FROM POSTING',
-			2 => 'PULLED FROM SALE',
-			3 => 'ACTIVE',
-			4 => 'COMPLETE',
-		);
-		if ( $key  == 0 ) {
-			return $st_arr;
-		} else {
-			return $st_arr[$key];
-		}
-	}
-}
 
-if ( !function_exists('get_array_result') ) {
-	function get_array_result( $key  = 0) {
-		$st_arr = array(
-			1 => 'Back to Lender',
-			2 => '3rd Party',
-			3 => 'Back to Lender With Bidding',
-			4 => 'Reinstatement',
-			5 => 'TRO (Temporary Restraining Order)',
-			6 => 'BKY (Bankruptcy)',
-		);
-		if ( $key  == 0 ) {
-			return $st_arr;
-		} else {
-			return $st_arr[$key];
-		}
-	}
-}
+
 
 if ( !function_exists('get_user_status') ) {
 	function get_user_status( $key  = 0) {
@@ -188,7 +176,7 @@ if ( !function_exists('get_user_status') ) {
 }
 
 if ( !function_exists('get_user_status_class') ) {
-	function get_user_status_class( $key  = 0) {  
+	function get_user_status_class( $key  = 0) {
 		$st_arr = array(
 			1 => 'success',
 			2 => 'warning',
@@ -199,20 +187,20 @@ if ( !function_exists('get_user_status_class') ) {
 }
 
 if ( !function_exists('get_user_role') ) {
-	function get_user_role( $key  = 0) {
+	function get_user_role( $key  = 'all') {
 		$st_arr = array(
-			1 => 'Administrator',
-			2 => 'Employee',
-			3 => 'Client',
-			4 => 'Trustee',
-			5 => 'SubTrustee',  
+			'administrator' => 'Administrator',
+			'agent' => 'Agent',
+			'company_holder' => 'Company Holder',
+			'company_manager' => 'Company Manager',
+			'subscriber' => 'Subscriber',
 		);
-		if ( $key  == 0 ) {
+		if ( $key  == 'all' ) {
 			return $st_arr;
 		} else {
 			return $st_arr[$key];
 		}
-		
+
 	}
 }
 
@@ -237,7 +225,7 @@ if ( !function_exists('get_months') ) {
 	function get_months( $month_key = 0 ) {
 
 		$arr_month = array(
-			
+
 			"01" => "Jan",
 			"02" => "Feb",
 			"03" => "Mar",
@@ -281,12 +269,12 @@ if ( !function_exists('get_sale_window') ) {
 
 if ( !function_exists('send_mail') ) {
 	function send_mail( $name, $user_id = 0, $params = array() ){
-		
+
 
 		$ci = &get_instance();
 
 		$settings = $ci->db->get('core')->row();
-		
+
 		$to_name = $to_email = '';
 		if (false !== ($pos = strpos($user_id, '@'))) {
 			$to_email = $user_id;
@@ -294,27 +282,27 @@ if ( !function_exists('send_mail') ) {
 				return;
 			}
 		} else {
-			
+
 			$ci->db->where( 'id' , $user_id );
 			$user = $ci->db->get('users')->row();
-			
+
 			if( count($user) == 0 ){
 				return;
 			}
 			$to_name = $user->first_name.' '.$user->last_name;
 			$to_email = $user->email;
 		}
-		
+
 		$ci->db->where( 'slug' , $name );
 		$model = $ci->db->get('emails')->row();
-		
+
 		if( count($model) == 0 ){
 			return;
 		}
-		
+
 		$template = $model->body;
 		$subject = $model->subject;
-		
+
 		$template = str_replace(array_map(function($key) {
 			return '[*' . $key . '*]';
 		}, array_keys($params)), array_values($params), $template);
@@ -322,20 +310,20 @@ if ( !function_exists('send_mail') ) {
 		$subject = str_replace(array_map(function($key) {
 			return '[*' . $key . '*]';
 		}, array_keys($params)), array_values($params), $subject);
-		
+
 		$ci->load->library('phpmailer');
-		
+
 		$ci->phpmailer->IsHTML(true);
-		
+
 		$is_smtp = $settings->is_smtp;
-		
+
 		if( $is_smtp == 1 ) {
-			$ci->phpmailer->IsSMTP(); 
+			$ci->phpmailer->IsSMTP();
 			$ci->phpmailer->SMTPSecure = $settings->connection_prefix;
-			$ci->phpmailer->SMTPAuth   = true;                  
+			$ci->phpmailer->SMTPAuth   = true;
 			$ci->phpmailer->Host       = $settings->smtp_host;
-			$ci->phpmailer->Port       = $settings->smtp_port;        
-			$ci->phpmailer->Username   = $settings->smtp_username; 
+			$ci->phpmailer->Port       = $settings->smtp_port;
+			$ci->phpmailer->Username   = $settings->smtp_username;
 			$ci->phpmailer->Password   = $settings->smtp_password;
 		}
 
@@ -347,6 +335,3 @@ if ( !function_exists('send_mail') ) {
 		$ci->phpmailer->ClearAddresses();
 	}
 }
-
-
-

@@ -1,3 +1,25 @@
+<!-- BEGIN PAGE HEADER-->
+<h1 class="page-title">My Profile</h1>
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="<?php echo site_url(); ?>">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="<?php echo site_url('profile'); ?>">Profile</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>Password Reset</span>
+        </li>
+    </ul>
+</div>
+<!-- END PAGE HEADER-->
+<?php
+require_once(FCPATH.'/application/views/success-error-message.php');
+?>
 <div class="row">
     <div class="col-md-12">
       <?php require_once(dirname(__FILE__) . "/profile-view-widget.php"); ?>
