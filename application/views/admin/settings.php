@@ -1,20 +1,21 @@
-
-        <!-- BEGIN PAGE HEADER-->
-        <h1 class="page-title"> Settings</h1>
-        <div class="page-bar">
-            <ul class="page-breadcrumb">
-                <li>
-                    <i class="icon-home"></i>
-                    <a href="<?php echo site_url();?>">Home</a>
-                    <i class="fa fa-angle-right"></i>
-                </li>
-                <li>
-                    <span>General Settings</span>
-                </li>
-            </ul>
-        </div>
-        <!-- END PAGE HEADER-->
-
+<!-- BEGIN PAGE HEADER-->
+<h1 class="page-title"> Settings</h1>
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="<?php echo site_url();?>">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>General Settings</span>
+        </li>
+    </ul>
+</div>
+<!-- END PAGE HEADER-->
+<?php
+require_once(FCPATH.'/application/views/success-error-message.php');
+?>
 
         <!-- BEGIN : SETTINGS -->
         <div class="row">
@@ -27,12 +28,6 @@
                             <span class="caption-subject font-green bold uppercase">Site Settings</span>
                         </div>
                     </div>
-                    <?php if($this->session->flashdata('success_msg_general')): ?>
-                      <div class="note note-success">
-                          <h4 class="block">Success</h4>
-                          <p> <?php echo $this->session->flashdata('success_msg_general'); ?> </p>
-                      </div>
-                    <? endif ?>
                     <div class="portlet-body">
 
                         <?php
@@ -100,14 +95,6 @@
                             <span class="caption-subject font-green bold uppercase">Logo</span>
                         </div>
                     </div>
-
-                    <?php if($this->session->flashdata('success_msg_logo')): ?>
-                      <div class="note note-success">
-                          <h4 class="block">Success</h4>
-                          <p> <?php echo $this->session->flashdata('success_msg_logo'); ?> </p>
-                      </div>
-                    <? endif ?>
-
                     <div class="portlet-body">
                         <form role="form" method="post" action="" enctype="multipart/form-data">
                             <div class="form-body">

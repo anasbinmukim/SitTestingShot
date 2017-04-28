@@ -8,7 +8,7 @@ class Auth extends RM_Controller {
 	public function register(){
 
 		if ( $this->session->userdata('logged_in') ) {
-			redirect('/');
+			redirect();
 		}
 
 		$this->data['js_files'] = array(
@@ -56,6 +56,7 @@ class Auth extends RM_Controller {
 					'first_name'=> trim($this->input->post('first_name')),
 					'last_name' => trim($this->input->post('last_name')),
 					'is_active' => 1,
+					'user_role' => 'subscriber',
 					'password' => $password,
 					'created_at' => date('Y-m-d H:i:s'),
 				);
@@ -115,7 +116,7 @@ class Auth extends RM_Controller {
 
 	public function login() {
 		if ( $this->session->userdata('logged_in') ) {
-			redirect('/');
+			redirect();
 		}
 
 		$this->data['error'] = '';
@@ -244,7 +245,7 @@ class Auth extends RM_Controller {
 	public function reset_password( $key = "" ){
 
 		if ($this->session->userdata('logged_in'))
-			redirect('/');
+			redirect();
 
 		$this->data['page_title'] = 'Reset Password';
 		$query = $this->db->query("select * from users WHERE password_reset_key ='".$key."' AND ( password_reset_key_expiration > (NOW() - INTERVAL 1 DAY))");
@@ -300,7 +301,7 @@ class Auth extends RM_Controller {
 	public function set_password( $key = "" ){
 
 		if ($this->session->userdata('logged_in'))
-			redirect('/');
+			redirect();
 
 		$this->data['page_title'] = 'Set Password';
 
@@ -361,7 +362,7 @@ class Auth extends RM_Controller {
 			$user_loginlog_id = $this->common->insert( 'user_login_log', $user_loginlog_arr );
 
 			$this->session->sess_destroy();
-	    redirect('/');
+	    redirect();
 	}
 
 
