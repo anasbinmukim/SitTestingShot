@@ -41,3 +41,5 @@ files/media/
 *.sublime-project
 
 files/media/
+application/config/config.php
+application/config/database.php
