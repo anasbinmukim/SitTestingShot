@@ -85,54 +85,59 @@ class Companies extends RM_Controller {
     }
 
 
-    public function edit($page = 'area', $row_salt_id = 0)
+    public function edit($row_salt_id = 0)
     {
+
+      $this->data['css_files'] = array(
+        base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
+      );
+
+      $this->data['js_files'] = array(
+        base_url('assets/global/plugins/ckeditor/ckeditor.js'),
+        base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
+        base_url('seatassets/js/seat-editor.js'),
+      );
 
       //Get row ID of this Entry
       $row_id = decrypt($row_salt_id)*1;
 			if( !is_int($row_id) || !$row_id ) {
-				redirect('/places');
+        $this->session->set_flashdata('delete_msg','Can not be edited');
+				redirect('/companies');
 			}else{
-        $this->data['row_id'] = $row_id;
+        $company_details = $this->companies_model->get_company_details($row_id);
+        $this->data['company_data'] = $company_details;
+        if (empty($this->data['company_data']))
+        {
+                show_404();
+        }
+        $this->data['title'] = $company_details['company_name'];
+
       }
 
-      if ( ! file_exists(APPPATH.'views/places/edit-'.$page.'.php'))
-      {
-              // Whoops, we don't have a page for that!
-              show_404();
-      }
 
-
-      //Start: Process district info
-      $this->process_district_info();
-      //End: Process district info
-
-
-      $this->data['title'] = ucfirst($page); // Capitalize the first letter
+      // Start: Process register company
+      $this->process_register_new_company();
+      // End: Process register company
 
       $this->load->view('templates/header', $this->data);
       $this->load->view('templates/sidebar', $this->data);
-      $this->load->view('places/edit-'.$page, $this->data);
+      $this->load->view('companies/edit-company', $this->data);
       $this->load->view('templates/footer', $this->data);
 
     }
 
-    public function delete($page = 'area', $row_salt_id = 0)
+    public function delete($row_salt_id = 0)
     {
 
       //Get row ID of this Entry
       $row_id = decrypt($row_salt_id)*1;
       if( !is_int($row_id) || !$row_id ) {
-        redirect('/places');
+        redirect('/companies');
       }else{
         $this->data['row_id'] = $row_id;
-      }
-
-      //Delete district Entry
-      if($page == 'district'){
-          $this->common->delete( 'place_district', array( 'ID' =>  $row_id ) );
-          $this->session->set_flashdata('success_msg','Deleted!');
-          redirect('/places/view/district');
+        $this->common->delete( 'company', array( 'ID' =>  $row_id ) );
+        $this->session->set_flashdata('delete_msg','Company have been successfully deleted!');
+        redirect('/companies');
       }
 
 
@@ -142,7 +147,7 @@ class Companies extends RM_Controller {
     //Process Regsiter New Company
     private function process_register_new_company(){
       //Add New Company
-      if(isset($_POST['register_new_company'])){
+      if((isset($_POST['register_new_company'])) || (isset($_POST['update_company']))){
           $this->form_validation->set_rules('company_name', 'Company name', 'trim|required|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('company_address', 'Company Address', 'trim|required|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('company_phone', 'Company Phone', 'trim|required|htmlspecialchars|min_length[2]');
@@ -189,14 +194,21 @@ class Companies extends RM_Controller {
               'company_type'=> trim($this->input->post('company_type')),
             );
 
-            $company_id = $this->common->insert( 'company', $data_arr );
+            if((isset($_POST['update_company_id'])) || (isset($_POST['update_company']))){
+                $company_id = $this->input->post('update_company_id');
+                $this->common->update( 'company', $data_arr, array( 'ID' =>  $company_id ) );
+      					$this->session->set_flashdata('success_msg','Updated done!');
+            }else{
+              $company_id = $this->common->insert( 'company', $data_arr );
+              $generate_company_slug = $this->input->post('company_name').'-'.$company_id;
+              $company_slug = url_title($generate_company_slug, 'dash', TRUE);
+              $this->common->update( 'company', array('company_slug' => $company_slug), array( 'ID' =>  $company_id ) );
+              $this->session->set_flashdata('success_msg','Added done!');
+              redirect('/companies');
+            }
 
-            $generate_company_slug = $this->input->post('company_name').'-'.$company_id;
-            $company_slug = url_title($generate_company_slug, 'dash', TRUE);
-            $this->common->update( 'company', array('company_slug' => $company_slug), array( 'ID' =>  $company_id ) );
 
-  					$this->session->set_flashdata('success_msg','Added done!');
-  					redirect('/companies');
+
   				}
       }
 

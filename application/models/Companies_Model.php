@@ -19,4 +19,12 @@ class Companies_Model extends CI_Model {
 				        $query = $this->db->get_where('company', array('company_slug' => $slug));
 				        return $query->row_array();
 				}
+
+        public function get_company_details($company_id)
+				{
+
+				        $query = $this->db->get_where('company', array('ID' => $company_id));
+				        return $query->row_array();
+				}
+        
 }
