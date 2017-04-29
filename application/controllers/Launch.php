@@ -16,16 +16,16 @@ class Launch extends RM_Controller {
 
         $this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
-        $this->load->view('launch/home', $this->data);
+        $this->load->view('launch/launch', $this->data);
         $this->load->view('templates/footer', $this->data);
 		}
 
-		public function add_new_launch(){
-			$this->data['title'] = 'Add New Launch'; // Capitalize the first letter
+		public function register(){
+			$this->data['title'] = 'Register New Launch'; // Capitalize the first letter
 
 			$this->load->view('templates/header', $this->data);
 			$this->load->view('templates/sidebar', $this->data);
-			$this->load->view('launch/add_new_launch', $this->data);
+			$this->load->view('launch/register_new_launch', $this->data);
 			$this->load->view('templates/footer', $this->data);
 
 		}
