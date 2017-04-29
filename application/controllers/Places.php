@@ -118,6 +118,11 @@ class Places extends RM_Controller {
               show_404();
       }
 
+      //Start: Process district info
+      $this->process_district_info();
+      //End: Process district info
+
+
       $this->data['title'] = ucfirst($page); // Capitalize the first letter
 
       $this->load->view('templates/header', $this->data);
@@ -128,14 +133,28 @@ class Places extends RM_Controller {
     }
 
 
-    public function edit($page = 'area')
+    public function edit($page = 'area', $row_salt_id = 0)
     {
+
+      //Get row ID of this Entry
+      $row_id = decrypt($row_salt_id)*1;
+			if( !is_int($row_id) || !$row_id ) {
+				redirect('/places');
+			}else{
+        $this->data['row_id'] = $row_id;
+      }
 
       if ( ! file_exists(APPPATH.'views/places/edit-'.$page.'.php'))
       {
               // Whoops, we don't have a page for that!
               show_404();
       }
+
+
+      //Start: Process district info
+      $this->process_district_info();
+      //End: Process district info
+
 
       $this->data['title'] = ucfirst($page); // Capitalize the first letter
 
@@ -146,23 +165,72 @@ class Places extends RM_Controller {
 
     }
 
-    public function delete($page = 'area')
+    public function delete($page = 'area', $row_salt_id = 0)
     {
 
-      if ( ! file_exists(APPPATH.'views/places/delete-'.$page.'.php'))
-      {
-              // Whoops, we don't have a page for that!
-              show_404();
+      //Get row ID of this Entry
+      $row_id = decrypt($row_salt_id)*1;
+      if( !is_int($row_id) || !$row_id ) {
+        redirect('/places');
+      }else{
+        $this->data['row_id'] = $row_id;
       }
 
-      $this->data['title'] = ucfirst($page); // Capitalize the first letter
+      //Delete district Entry
+      if($page == 'district'){
+          $this->common->delete( 'place_district', array( 'ID' =>  $row_id ) );
+          $this->session->set_flashdata('success_msg','Deleted!');
+          redirect('/places/view/district');
+      }
 
-      $this->load->view('templates/header', $this->data);
-      $this->load->view('templates/sidebar', $this->data);
-      $this->load->view('places/delete-'.$page, $this->data);
-      $this->load->view('templates/footer', $this->data);
 
     }
+
+
+    //Process District Info
+    private function process_district_info(){
+      //Add New District
+      if(isset($_POST['add_district'])){
+          $this->form_validation->set_rules('district_name', 'District name', 'trim|required|htmlspecialchars|min_length[2]');
+
+          $data_arr = array(
+            'district_name'=> trim($this->input->post('district_name')),
+            'division_id'=> trim($this->input->post('division_id')),
+          );
+
+          if( !$this->form_validation->run() ) {
+  					$error_message_array = $this->form_validation->error_array();
+  					$this->session->set_flashdata('error_msg_arr', $error_message_array);
+  				}else{
+            $this->common->insert( 'place_district', $data_arr );
+  					$this->session->set_flashdata('success_msg','Added done!');
+  					redirect('/places/view/district');
+  				}
+      }
+
+      //Update District
+      if(isset($_POST['update_district'])){
+          $this->form_validation->set_rules('district_name', 'District name', 'trim|required|htmlspecialchars|min_length[2]');
+
+          $data_arr = array(
+            'district_name'=> trim($this->input->post('district_name')),
+            'division_id'=> trim($this->input->post('division_id')),
+          );
+
+          $district_id = $this->input->post('district_id');
+
+          if( !$this->form_validation->run() ) {
+  					$error_message_array = $this->form_validation->error_array();
+  					$this->session->set_flashdata('error_msg_arr', $error_message_array);
+  				}else{
+  					$this->common->update( 'place_district', $data_arr, array( 'ID' =>  $district_id ) );
+  					$this->session->set_flashdata('success_msg','Updated done!');
+  					redirect('/places/view/district');
+  				}
+      }
+
+    }//EOF process District info
+
 
     private function process_division_info(){
       //Add new division

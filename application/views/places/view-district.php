@@ -29,6 +29,11 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                   <i class="icon-settings font-red"></i>
                   <span class="caption-subject font-red sbold uppercase">District</span>
               </div>
+              <div class="actions">
+                  <div class="btn-group btn-group-devided">
+                      <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/places/add_new/district'); ?>">Add New</a>
+                  </div>
+              </div>
           </div>
           <div class="portlet-body">
               <table class="table table-striped table-hover table-bordered" id="district_editable_view" data-url="<?php echo site_url('/places/process_places'); ?>">
@@ -52,7 +57,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                             <td><?php echo $district->district_name; ?></td>
                             <td><?php echo $division_name; ?></td>
                             <td style="display:none;"></td>
-                            <td><?php echo '<div class="center-block"><a href="'.site_url('places/edit/district/'.encrypt($district->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a href="'.site_url('places/delete/district/'.encrypt($district->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
+                            <td><?php echo '<div class="center-block"><a href="'.site_url('places/edit/district/'.encrypt($district->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this district?\');" href="'.site_url('places/delete/district/'.encrypt($district->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
                         </tr>
                       <?php } ?>
                   </tbody>

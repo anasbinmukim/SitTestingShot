@@ -20,8 +20,6 @@
 <?php
 require_once(FCPATH.'/application/views/success-error-message.php');
 ?>
-
-
 <div class="row">
     <div class="col-md-6">
       <!-- BEGIN PROFILE CONTENT -->
@@ -36,31 +34,25 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                           </div>
                       </div>
                       <div class="portlet-body">
-                              <!-- CHANGE PASSWORD TAB -->
-                                  <form action="" method="post">
-                                      <div class="form-group">
-                                          <label class="control-label">District name</label>
-                                          <input type="text" name="division_name" class="form-control" /> </div>
-										  
-										<div class="form-group">
-										<label class="control-label">Select Division</label>
-										<select name="" id="" class="form-control">  
-										<?php 
-											$division_arr = get_divisions_arr();
-											print_r($division_arr);
-											foreach($division_arr as $dkey => $dvalue){
-												echo '<option value="'.$dkey.'">'.$dvalue.'</option>';
-											}
-										?>  
-										</select>
-										</div>
-										
-										  
-                                      <div class="margin-top-10">
-                                          <input type="submit" class="btn green" name="add_division" value="Add">
-                                      </div>
-                                  </form>
-                              <!-- END CHANGE PASSWORD TAB -->
+                          <form action="" method="post">
+                              <div class="form-group">
+                                  <label class="control-label">District name</label>
+                                  <input type="text" name="district_name" class="form-control" /> </div>
+                										<div class="form-group">
+                    										<label class="control-label">Select Division</label>
+                    										<select name="division_id" id="division_id" class="form-control">
+                    										<?php
+                    											$division_arr = get_divisions_arr();
+                    											foreach($division_arr as $dkey => $dvalue){
+                    												echo '<option value="'.$dkey.'">'.$dvalue.'</option>';
+                    											}
+                    										?>
+                    										</select>
+                										</div>
+                              <div class="margin-top-10">
+                                  <input type="submit" class="btn green" name="add_district" value="Add">
+                              </div>
+                          </form>
                       </div>
                   </div>
               </div>
