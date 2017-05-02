@@ -31,6 +31,7 @@
           <label class="control-label visible-ie8 visible-ie9">Password</label>
           <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" /> </div>
       <div class="form-actions">
+          <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
           <button type="submit" class="btn green uppercase">Login</button>
           <label class="rememberme check mt-checkbox mt-checkbox-outline">
               <input type="checkbox" name="remember" value="1" <?php if (get_cookie('seat_username')) { ?>checked="checked"<?php } ?> />Remember

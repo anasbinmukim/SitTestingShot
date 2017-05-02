@@ -73,25 +73,33 @@
                         </a>
                         <ul class="sub-menu">
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add_new/area'); ?>" class="nav-link ">Area</a>
+                                <a href="<?php echo site_url('places/add/area'); ?>" class="nav-link ">Area</a>
                             </li>
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add_new/thana'); ?>" class="nav-link ">Thana</a>
+                                <a href="<?php echo site_url('places/add/via_place'); ?>" class="nav-link ">Via Place</a>
                             </li>
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add_new/district'); ?>" class="nav-link ">District</a>
+                                <a href="<?php echo site_url('places/add/thana'); ?>" class="nav-link ">Thana</a>
                             </li>
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add_new/division'); ?>" class="nav-link ">Division</a>
+                                <a href="<?php echo site_url('places/add/district'); ?>" class="nav-link ">District</a>
                             </li>
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add_new/zone'); ?>" class="nav-link ">Zone</a>
+                                <a href="<?php echo site_url('places/add/division'); ?>" class="nav-link ">Division</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a href="<?php echo site_url('places/add/zone'); ?>" class="nav-link ">Zone</a>
                             </li>
                         </ul>
                     </li>
                     <li class="nav-item  ">
                         <a href="<?php echo site_url('places/view/area'); ?>" class="nav-link ">
                             <span class="title">Area</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
+                        <a href="<?php echo site_url('places/view/via_place'); ?>" class="nav-link ">
+                            <span class="title">Via Places</span>
                         </a>
                     </li>
                     <li class="nav-item  ">

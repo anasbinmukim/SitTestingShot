@@ -42,6 +42,9 @@
         <link rel="shortcut icon" href="favicon.ico" />
         <script>var base_url = '<?php echo base_url();?>';</script>
         <script>var site_url = '<?php echo site_url();?>';</script>
+        <script type="text/javascript">
+            var csrf_value = '<?php echo $this->security->get_csrf_hash(); ?>';
+        </script>
    </head>
     <!-- END HEAD -->
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
@@ -262,7 +265,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-default">
                                     <li>
-                                        <a href="<?php echo site_url('/profile/'); ?>">
+                                        <a href="<?php echo site_url('/profile'); ?>">
                                             <i class="icon-user"></i> My Profile </a>
                                     </li>
                                     <li>
@@ -271,7 +274,7 @@
                                     </li>
                                     <li class="divider"> </li>
                                     <li>
-                                        <a href="<?php echo site_url('/logout/');?>">
+                                        <a href="<?php echo site_url('/logout');?>">
                                             <i class="icon-key"></i> Log Out </a>
                                     </li>
                                 </ul>

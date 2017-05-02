@@ -147,7 +147,7 @@ class Companies extends RM_Controller {
     //Process Regsiter New Company
     private function process_register_new_company(){
       //Add New Company
-      if((isset($_POST['register_new_company'])) || (isset($_POST['update_company']))){
+      if(($this->input->post('register_new_company') !== NULL) || ($this->input->post('update_company') !== NULL)){
           $this->form_validation->set_rules('company_name', 'Company name', 'trim|required|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('company_address', 'Company Address', 'trim|required|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('company_phone', 'Company Phone', 'trim|required|htmlspecialchars|min_length[2]');
@@ -172,8 +172,9 @@ class Companies extends RM_Controller {
           $company_logo_name = '';
           if ( $this->upload->do_upload('company_logo') ) {
             $data = array('upload_data' => $this->upload->data());
-            $_POST['company_logo'] = $data['upload_data']['file_name'];
-            $company_logo_name = $_POST['company_logo'];
+            $company_logo_name = $data['upload_data']['file_name'];
+          }else{
+            $company_logo_name = $this->input->post('company_logo_name');
           }
 
           if( !$this->form_validation->run() ) {
@@ -194,7 +195,7 @@ class Companies extends RM_Controller {
               'company_type'=> trim($this->input->post('company_type')),
             );
 
-            if((isset($_POST['update_company_id'])) || (isset($_POST['update_company']))){
+            if(($this->input->post('update_company_id') !== NULL) || ($this->input->post('update_company') !== NULL)){
                 $company_id = $this->input->post('update_company_id');
                 $this->common->update( 'company', $data_arr, array( 'ID' =>  $company_id ) );
       					$this->session->set_flashdata('success_msg','Updated done!');
@@ -214,74 +215,5 @@ class Companies extends RM_Controller {
 
     }//EOF process company register info
 
-
-    private function process_division_info(){
-      //Add new division
-      if(isset($_POST['add_division'])){
-          $this->form_validation->set_rules('division_name', 'Division name', 'trim|required|htmlspecialchars|min_length[2]');
-
-          $data_arr = array(
-            'division_name'=> trim($this->input->post('division_name')),
-          );
-
-          if( !$this->form_validation->run() ) {
-  					$error_message_array = $this->form_validation->error_array();
-  					$this->session->set_flashdata('error_msg_arr', $error_message_array);
-  					redirect('/places/add_new/division');
-  				}else{
-  					$this->common->insert( 'place_division', $data_arr );
-  					$this->session->set_flashdata('success_msg','Added done!');
-  					redirect('/places/add_new/division');
-  				}
-      }
-
-    }//EOF process division info
-
-    //SOF process division ajax info
-    public function process_division_ajax_info(){
-      $result = array();
-
-      $result['success_message'] = 'Update done!';
-      //print_r($records);
-			header('Content-type: application/json');
-		  echo json_encode($result);
-    }//EOF process division ajax info
-
-
-    //Delete Dividion
-    public function delete_division( $division_solt_id = 0 ) {
-      if( $division_solt_id == '0' ) {
-      }else {
-        $division_id = decrypt($division_solt_id)*1;
-        if( !is_int($division_id) || !$division_id ) {
-        }else{
-          $this->common->delete( 'place_division', array( 'ID' =>  $division_id ) );
-          //redirect('/places/view/division');
-        }
-      }
-    }
-
-    //Process Place Data
-    public function process_places() {
-      $row_id = $_POST['row_id'];
-      $db_table = trim($_POST['db_table']);
-      $action_type = $_POST['action_type'];
-
-      if( ($row_id != '0') && ($db_table != '') && ($action_type == 'delete') ){
-          $this->common->delete( $db_table, array( 'ID' =>  $row_id ) );
-          echo json_encode(array("msg" => "Deleted!"));
-      		exit;
-      }elseif( (isset($_POST['division_name']) && $_POST['division_name'] != '') && ($row_id != '0') && ($db_table == 'place_division') && ($action_type == 'update') ){
-          $division_name = $_POST['division_name'];
-          $this->common->update( $db_table, array('division_name' => $division_name), array( 'ID' =>  $row_id ) );
-          echo json_encode(array("msg" => "Updated done!"));
-      		exit;
-      }else{
-        echo json_encode(array("msg" => "Error occured!"));
-        exit;
-      }
-
-
-    }
 
 }

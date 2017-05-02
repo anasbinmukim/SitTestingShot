@@ -88,6 +88,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                           <div class="clearfix margin-top-10">
                                              <span>Max size : 600X600, File Type: JPG, PNG, GIF</span>
                                           </div>
+                                          <input type="hidden" name="company_logo_name" value="<?php echo $company_data['company_logo']; ?>" >
                                       </div>
                                   </div>
                                   <div class="form-group">
@@ -110,6 +111,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       <label class="control-label">About Company</label>
                                       <textarea class="form-control ckeditor" name="company_description"><?php echo html_escape($company_data['company_description']); ?></textarea></div>
                                   <div class="margin-top-10">
+                                      <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                       <input type="hidden" name="update_company_id" value="<?php echo $company_data['ID']; ?>">
                                       <input type="submit" class="btn green" name="update_company" value="Update Now">
                                   </div>

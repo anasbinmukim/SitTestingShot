@@ -1,5 +1,5 @@
 <!-- BEGIN PAGE HEADER-->
-<h1 class="page-title">District of Bangladesh</h1>
+<h1 class="page-title">Area/Village/Union/Word</h1>
 <div class="page-bar">
     <ul class="page-breadcrumb">
         <li>
@@ -12,7 +12,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>District</span>
+            <span>Area</span>
         </li>
     </ul>
 </div>
@@ -32,39 +32,39 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                       <div class="portlet-title tabbable-line">
                           <div class="caption caption-md">
                               <i class="icon-globe theme-font hide"></i>
-                              <span class="caption-subject font-blue-madison bold uppercase">Edit District</span>
+                              <span class="caption-subject font-blue-madison bold uppercase">Edit Area</span>
                           </div>
                       </div>
                       <div class="portlet-body">
                       <!-- CHANGE PASSWORD TAB -->
                           <form action="" method="post">
                               <?php
-                              $result_district = $this->common->get( 'place_district', array( 'ID' => $row_id ) );
+                              $result_area = $this->common->get( 'place_area', array( 'ID' => $row_id ) );
                               ?>
                               <div class="form-group">
-                                  <label class="control-label">District name</label>
-                                  <input type="text" name="district_name" class="form-control" value="<?php echo html_escape($result_district->district_name); ?>" /> </div>
+                                  <label class="control-label">Area name</label>
+                                  <input type="text" name="area_name" class="form-control" value="<?php echo html_escape($result_area->area_name); ?>" /> </div>
 
               									<div class="form-group">
-                										<label class="control-label">Select Division</label>
-                										<select name="division_id" id="division_id" class="form-control">
+                										<label class="control-label">Select Thana</label>
+                										<select name="thana_id" id="thana_id" class="form-control select2me">
                 										<?php
-                											$division_arr = get_divisions_arr();
-                											foreach($division_arr as $dkey => $dvalue){
+                											$thana_arr = get_thana_arr();
+                											foreach($thana_arr as $tkey => $tvalue){
                                         $selected = 0;
-                                        if($dkey == $result_district->division_id)
+                                        if($tkey == $result_area->thana_id)
                                           $selected = 'selected = "selected" ';
 
-                												echo '<option '.$selected.' value="'.$dkey.'">'.$dvalue.'</option>';
+                												echo '<option '.$selected.' value="'.$tkey.'">'.$tvalue.'</option>';
                 											}
                 										?>
                 										</select>
               										</div>
-                                  <input type="hidden" name="district_id" value="<?php echo $row_id; ?>">
+                                  <input type="hidden" name="area_id" value="<?php echo $row_id; ?>">
 
                               <div class="margin-top-10">
                                   <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
-                                  <input type="submit" class="btn green" name="update_district" value="Update">
+                                  <input type="submit" class="btn green" name="update_area" value="Update">
                               </div>
                           </form>
                       <!-- END CHANGE PASSWORD TAB -->

@@ -102,6 +102,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       <label class="control-label">About Company</label>
                                       <textarea class="form-control ckeditor" name="company_description"><?php echo set_value('company_description'); ?></textarea></div>
                                   <div class="margin-top-10">
+                                      <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                       <input type="submit" class="btn green" name="register_new_company" value="Register Now">
                                   </div>
                               </div>

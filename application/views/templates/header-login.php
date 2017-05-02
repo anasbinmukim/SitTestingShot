@@ -37,6 +37,9 @@
         <link rel="shortcut icon" href="favicon.ico" />
         <script>var base_url = '<?php echo base_url();?>';</script>
         <script>var site_url = '<?php echo site_url();?>';</script>
+        <script type="text/javascript">
+            var csrf_value = '<?php echo $this->security->get_csrf_hash(); ?>';
+        </script>
    </head>
     <!-- END HEAD -->
 

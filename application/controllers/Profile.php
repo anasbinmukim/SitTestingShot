@@ -190,22 +190,22 @@ class Profile extends RM_Controller {
 
 		private function update_profile_photo(){
 			if(isset($_POST['save_profile_photo'])){
-				$config['upload_path'] = './files/media/';
+				$config['upload_path'] = './files/profile/';
 				//$config['encrypt_name'] = TRUE;
 				$config['max_size'] = 100;
 				$config['allowed_types'] = 'gif|jpg|png';
 				$config['max_width']  = '600';
 				$config['max_height']  = '600';
-				$config['file_name'] = 'profile-photo-'.$this->session->userdata('user_id').'-'.time().'.jpg';
+				$config['file_name'] = 'photo-'.$this->session->userdata('user_id').'-'.time().'.jpg';
 				$this->load->library('upload', $config);
 
 				//Get exiting photo if have and delete
 				$user_profile = $this->common->get( 'users', array( 'ID' => $this->session->userdata('user_id') ) );
 				if(!empty($user_profile)){
 						$profile_photo = $user_profile->profile_photo;
-						$profile_photopath = getcwd().'/files/media/'.$profile_photo;
+						$profile_photopath = getcwd().'/files/profile/'.$profile_photo;
 						if( file_exists( $profile_photopath ) ){
-								unlink($profile_photopath);
+								//unlink($profile_photopath);
 						}
 				}
 

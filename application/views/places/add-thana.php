@@ -12,7 +12,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>District</span>
+            <span>Thana</span>
         </li>
     </ul>
 </div>
@@ -36,31 +36,27 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                           </div>
                       </div>
                       <div class="portlet-body">
-                              <!-- CHANGE PASSWORD TAB -->
-                                  <form action="" method="post">
-                                      <div class="form-group">
-                                          <label class="control-label">Thana/Upzilla name</label>
-                                          <input type="text" name="division_name" class="form-control" /> </div>
-										  
-										<div class="form-group">
-										<label class="control-label">Select District</label>
-										<select name="" id="" class="form-control">  
-										<?php 
-											$district_arr = get_district_arr();
-											print_r($district_arr);
-											foreach($district_arr as $dkey => $dvalue){
-												echo '<option value="'.$dkey.'">'.$dvalue.'</option>';
-											}
-										?>  
-										</select>
-										</div>
-										
-										  
-                                      <div class="margin-top-10">
-                                          <input type="submit" class="btn green" name="add_division" value="Add">
-                                      </div>
-                                  </form>
-                              <!-- END CHANGE PASSWORD TAB -->
+                          <form action="" method="post">
+                              <div class="form-group">
+                                  <label class="control-label">Thana/Upzilla name</label>
+                                  <input type="text" name="thana_name" class="form-control" /> </div>
+
+          										<div class="form-group">
+          										  <label class="control-label">Select District</label>
+            										<select name="district_id" id="district_id" class="form-control">
+            										<?php
+            											$district_arr = get_district_arr();
+            											foreach($district_arr as $dkey => $dvalue){
+            												echo '<option value="'.$dkey.'">'.$dvalue.'</option>';
+            											}
+            										?>
+            										</select>
+            										</div>
+                              <div class="margin-top-10">
+                                  <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
+                                  <input type="submit" class="btn green" name="add_thana" value="Add">
+                              </div>
+                          </form>
                       </div>
                   </div>
               </div>

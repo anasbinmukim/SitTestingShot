@@ -77,10 +77,31 @@ if ( !function_exists('username') ) {
 	}
 }
 
+if ( !function_exists('get_thana_arr') ) {
+	function get_thana_arr() {
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->order_by('thana_name');
+    $query = $CI->db->get('place_thana');
+    $thanas = $query->result_array();
+
+    $result_thanas = array();
+    foreach ($thanas as $thana) {
+      if(($thana['thana_name'] != '') && ($thana['ID'] > 0)){
+          $thana_id = $thana['ID'];
+          $result_thanas[$thana_id] = $thana['thana_name'];
+      }
+    }
+		return $result_thanas;
+	}
+}
+
+
 if ( !function_exists('get_district_arr') ) {
 	function get_district_arr() {
     $CI =& get_instance();
     $CI->load->database();
+    $CI->db->order_by('district_name');
     $query = $CI->db->get('place_district');
     $districts = $query->result_array();
 
@@ -99,6 +120,7 @@ if ( !function_exists('get_divisions_arr') ) {
 	function get_divisions_arr() {
     $CI =& get_instance();
     $CI->load->database();
+    $CI->db->order_by('division_name');
     $query = $CI->db->get('place_division');
     $divisions = $query->result_array();
 

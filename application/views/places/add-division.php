@@ -41,6 +41,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                           <label class="control-label">Division name</label>
                                           <input type="text" name="division_name" class="form-control" /> </div>
                                       <div class="margin-top-10">
+                                          <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                           <input type="submit" class="btn green" name="add_division" value="Add">
                                       </div>
                                   </form>
