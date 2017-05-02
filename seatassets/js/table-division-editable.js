@@ -112,7 +112,8 @@ var TableDivisionEditable = function () {
              var dataToPost = {
                  row_id: $this.data('division_id'),
                  db_table: $this.data('db_table'),
-                 action_type: $this.data('action_type')
+                 action_type: $this.data('action_type'),
+                 csrf_bruite_check: csrf_value
              };
              $.ajax({
                  type: "POST",
@@ -164,7 +165,8 @@ var TableDivisionEditable = function () {
                     row_id: $(this).parents('tr').find('.division_id').val(),
                     db_table: $(this).parents('tr').find('.db_table').val(),
                     division_name: $(this).parents('tr').find('.division_name').val(),
-                    action_type: $this.data('action_type')
+                    action_type: $this.data('action_type'),
+                    csrf_bruite_check: csrf_value
                 };
                 $.ajax({
                     type: "POST",

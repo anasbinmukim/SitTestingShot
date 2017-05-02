@@ -8,7 +8,7 @@ class Auth extends RM_Controller {
 	public function register(){
 
 		if ( $this->session->userdata('logged_in') ) {
-			redirect();
+			redirect('/home');
 		}
 
 		$this->data['js_files'] = array(
@@ -83,7 +83,7 @@ class Auth extends RM_Controller {
 
 				//send_mail('invite-user', $user_id, $params);
 
-				redirect('/');
+				redirect();
 			}
 		}
 
@@ -116,7 +116,7 @@ class Auth extends RM_Controller {
 
 	public function login() {
 		if ( $this->session->userdata('logged_in') ) {
-			redirect();
+			redirect('/home');
 		}
 
 		$this->data['error'] = '';
@@ -172,7 +172,7 @@ class Auth extends RM_Controller {
 						);
 						$user_loginlog_id = $this->common->insert( 'user_login_log', $user_loginlog_arr );
 
-						redirect('/');
+						redirect('/home');
 					} else {
 						$this->data['error'] = 'Your account is not active. Please contact admin.';
 					}
@@ -193,7 +193,7 @@ class Auth extends RM_Controller {
 	public function forgot_password(){
 
 		if ($this->session->userdata('logged_in'))
-			redirect('/');
+			redirect('/home');
 
 		$defaults =  array('email' => '');
 		$this->data['error'] = '';
@@ -245,7 +245,7 @@ class Auth extends RM_Controller {
 	public function reset_password( $key = "" ){
 
 		if ($this->session->userdata('logged_in'))
-			redirect();
+			redirect('/home');
 
 		$this->data['page_title'] = 'Reset Password';
 		$query = $this->db->query("select * from users WHERE password_reset_key ='".$key."' AND ( password_reset_key_expiration > (NOW() - INTERVAL 1 DAY))");
@@ -301,14 +301,14 @@ class Auth extends RM_Controller {
 	public function set_password( $key = "" ){
 
 		if ($this->session->userdata('logged_in'))
-			redirect();
+			redirect('/home');
 
 		$this->data['page_title'] = 'Set Password';
 
 		$user = $this->common->get( 'users', array( 'invite_key' => $key ) );
 
 		if( empty($user) ){
-			redirect('login');
+			redirect('/login');
 		}
 
 		$this->data["row"] = array(
@@ -362,7 +362,7 @@ class Auth extends RM_Controller {
 			$user_loginlog_id = $this->common->insert( 'user_login_log', $user_loginlog_arr );
 
 			$this->session->sess_destroy();
-	    redirect();
+	    redirect('/home');
 	}
 
 

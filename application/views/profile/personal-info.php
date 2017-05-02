@@ -85,6 +85,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                           <label class="control-label">Website URL</label>
                                           <input type="text" name="web_url" value="<?php echo html_escape($user_profile->web_url); ?>" placeholder="http://www.mywebsite.com" class="form-control" /> </div>
                                       <div class="margiv-top-10">
+                                          <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                           <input type="submit" class="btn green" name="save_personal_info" value="Save Changes">
                                       </div>
                                   </form>

@@ -31,6 +31,11 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 <i class="icon-settings font-green"></i>
                 <span class="caption-subject font-green sbold uppercase">Thana or Upazilla</span>
             </div>
+            <div class="actions">
+                <div class="btn-group btn-group-devided">
+                    <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/places/add/thana'); ?>">Add New</a>
+                </div>
+            </div>
         </div>
         <div class="portlet-body">
             <div class="table-container">
@@ -39,6 +44,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                         <tr>
                             <th> Thana or Upazilla </th>
                             <th> District </th>
+                            <th> Action </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,6 +59,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                             <tr>
                                 <td><?php echo $thana->thana_name; ?></td>
                                 <td><?php echo $district_name; ?></td>
+                                <td><?php echo '<div class="center-block"><a href="'.site_url('places/edit/thana/'.encrypt($thana->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this district?\');" href="'.site_url('places/delete/thana/'.encrypt($thana->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
                             </tr>
                           <?php } ?>
                     </tbody>

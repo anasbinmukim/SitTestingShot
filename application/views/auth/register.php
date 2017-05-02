@@ -7,27 +7,27 @@
 			<p class="hint"> Enter your personal details below: </p>
 			<div class="form-group <?php echo form_error('first_name')?'has-error':''; ?>">
 					<label class="control-label visible-ie8 visible-ie9">First Name</label>
-					<input class="form-control placeholder-no-fix" type="text" placeholder="First Name" name="first_name" />
+					<input class="form-control placeholder-no-fix" type="text" value="<?php echo set_value('first_name'); ?>" placeholder="First Name" name="first_name" />
 					<?php echo form_error('first_name'); ?>
 			</div>
 			<div class="form-group">
 					<label class="control-label visible-ie8 visible-ie9">Last Name</label>
-					<input class="form-control placeholder-no-fix" type="text" placeholder="Last Name" name="last_name" /> </div>
+					<input class="form-control placeholder-no-fix" type="text" value="<?php echo set_value('last_name'); ?>" placeholder="Last Name" name="last_name" /> </div>
 			<div class="form-group <?php echo form_error('email')?'has-error':''; ?>">
 					<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
 					<label class="control-label visible-ie8 visible-ie9">Email</label>
-					<input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email" />
+					<input class="form-control placeholder-no-fix" type="text" value="<?php echo set_value('email'); ?>" placeholder="Email" name="email" />
 					<?php echo form_error('email'); ?>
 			</div>
 			<p class="hint"> Enter your user name or mobile number below: </p>
 			<div class="form-group <?php echo form_error('username')?'has-error':''; ?>">
 					<label class="control-label visible-ie8 visible-ie9">Enter Number</label>
-					<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Enter Username or Number" name="username" />
+					<input class="form-control placeholder-no-fix" type="text" autocomplete="off" value="<?php echo set_value('username'); ?>" placeholder="Enter Username or Number" name="username" />
 					<?php echo form_error('username'); ?>
 			</div>
 			<div class="form-group <?php echo form_error('conf_username')?'has-error':''; ?>">
 					<label class="control-label visible-ie8 visible-ie9">User Name / Mobile Number Confirm</label>
-					<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Re-type Uesrname or Number" name="conf_username" />
+					<input class="form-control placeholder-no-fix" type="text" autocomplete="off" value="<?php echo set_value('conf_username'); ?>" placeholder="Re-type Uesrname or Number" name="conf_username" />
 					<?php echo form_error('conf_username'); ?>
 			</div>
 			<p class="hint"> Enter your account password below: </p>
@@ -52,6 +52,7 @@
 			<?php echo form_error('tnc'); ?>
 			</div>
 			<div class="form-actions">
+					<input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
 					<a href="<?php echo site_url('login');?>" class="btn green btn-outline">Sign In</a>
 					<button type="submit" id="register-submit-btn" class="btn btn-success uppercase pull-right">Submit</button>
 			</div>

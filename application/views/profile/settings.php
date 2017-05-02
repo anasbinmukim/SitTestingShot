@@ -62,6 +62,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       </table>
                                       <!--end profile-settings-->
                                       <div class="margin-top-10">
+                                          <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                           <input type="submit" class="btn red" name="privacy_settings" value="Save Changes">
                                       </div>
                                   </form>

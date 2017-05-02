@@ -1,5 +1,5 @@
 <!-- BEGIN PAGE HEADER-->
-<h1 class="page-title">District of Bangladesh</h1>
+<h1 class="page-title">Register New Launch</h1>
 <div class="page-bar">
     <ul class="page-breadcrumb">
         <li>
@@ -8,11 +8,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a href="<?php echo site_url('places'); ?>">Places</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>District</span>
+            <span>Add New</span>
         </li>
     </ul>
 </div>
@@ -30,14 +26,17 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                       <div class="portlet-title tabbable-line">
                           <div class="caption caption-md">
                               <i class="icon-globe theme-font hide"></i>
-                              <span class="caption-subject font-blue-madison bold uppercase">Add New District</span>
+                              <span class="caption-subject font-blue-madison bold uppercase">Add New Launch</span>
                           </div>
                       </div>
                       <div class="portlet-body">
                           <form action="" method="post">
                               <div class="form-group">
-                                  <label class="control-label">District name</label>
-                                  <input type="text" name="district_name" class="form-control" /> </div>
+                                  <label class="control-label">Lanuch name</label>
+                                  <input type="text" name="launch_name" class="form-control" /> </div>
+
+
+
                 										<div class="form-group">
                     										<label class="control-label">Select Division</label>
                     										<select name="division_id" id="division_id" class="form-control">
@@ -49,9 +48,10 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     										?>
                     										</select>
                 										</div>
+
+
                               <div class="margin-top-10">
-                                  <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
-                                  <input type="submit" class="btn green" name="add_district" value="Add">
+                                  <input type="submit" class="btn green" name="register_new_launch" value="Register Now">
                               </div>
                           </form>
                       </div>

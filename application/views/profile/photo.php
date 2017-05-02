@@ -58,6 +58,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                           </div>
                                       </div>
                                       <div class="margin-top-10">
+                                          <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                           <input type="submit" class="btn green" name="save_profile_photo" value="Save">
                                       </div>
                                   </form>

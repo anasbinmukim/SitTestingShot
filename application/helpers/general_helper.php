@@ -3,6 +3,15 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+if( !function_exists('debug') ) {
+    function debug($msg, $die=false) {
+    	echo "<pre>";
+    	print_r($msg);
+    	echo "</pre>";
+    	if($die) die();
+    }
+}
+
 if( !function_exists('create_slug') ) {
 
 	function create_slug( $title = '' ) {
@@ -68,17 +77,40 @@ if ( !function_exists('username') ) {
 	}
 }
 
+if ( !function_exists('get_thana_arr') ) {
+	function get_thana_arr() {
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->order_by('thana_name');
+    $query = $CI->db->get('place_thana');
+    $thanas = $query->result_array();
+
+    $result_thanas = array();
+    foreach ($thanas as $thana) {
+      if(($thana['thana_name'] != '') && ($thana['ID'] > 0)){
+          $thana_id = $thana['ID'];
+          $result_thanas[$thana_id] = $thana['thana_name'];
+      }
+    }
+		return $result_thanas;
+	}
+}
+
+
 if ( !function_exists('get_district_arr') ) {
 	function get_district_arr() {
     $CI =& get_instance();
     $CI->load->database();
+    $CI->db->order_by('district_name');
     $query = $CI->db->get('place_district');
     $districts = $query->result_array();
 
     $result_district = array();
     foreach ($districts as $district) {
-      $district_id = $district['ID'];
-      $result_district[$district_id] = $district['district_name'];
+      if(($district['district_name'] != '') && ($district['ID'] > 0)){
+          $district_id = $district['ID'];
+          $result_district[$district_id] = $district['district_name'];
+      }
     }
 		return $result_district;
 	}
@@ -88,13 +120,16 @@ if ( !function_exists('get_divisions_arr') ) {
 	function get_divisions_arr() {
     $CI =& get_instance();
     $CI->load->database();
+    $CI->db->order_by('division_name');
     $query = $CI->db->get('place_division');
     $divisions = $query->result_array();
 
     $result_division = array();
     foreach ($divisions as $division) {
-      $division_id = $division['ID'];
-      $result_division[$division_id] = $division['division_name'];
+      if(($division['division_name'] != '') && ($division['ID'] > 0)){
+        $division_id = $division['ID'];
+        $result_division[$division_id] = $division['division_name'];
+      }
     }
 		return $result_division;
 	}
