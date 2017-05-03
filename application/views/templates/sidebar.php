@@ -35,8 +35,8 @@
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item  ">
-                        <a href="<?php echo site_url('launch/add_new'); ?>" class="nav-link ">
-                            <span class="title">Add New</span>
+                        <a href="<?php echo site_url('launch/route'); ?>" class="nav-link ">
+                            <span class="title">Route</span>
                         </a>
                     </li>
                     <li class="nav-item  ">
@@ -55,6 +55,20 @@
                 <ul class="sub-menu">
                     <li class="nav-item  ">
                         <a href="<?php echo site_url('companies/register'); ?>" class="nav-link ">
+                            <span class="title">Register New</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item  ">
+                <a href="<?php echo site_url('counters'); ?>" class="nav-link nav-toggle">
+                    <i class="icon-diamond"></i>
+                    <span class="title">Counters</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item  ">
+                        <a href="<?php echo site_url('counters/register'); ?>" class="nav-link ">
                             <span class="title">Register New</span>
                         </a>
                     </li>

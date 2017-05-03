@@ -97,6 +97,30 @@ if ( !function_exists('get_thana_arr') ) {
 }
 
 
+if ( !function_exists('get_thana_under_dist_arr') ) {
+	function get_thana_under_dist_arr() {
+
+    $district_arr = get_district_arr();
+
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->order_by('thana_name');
+    $query = $CI->db->get('place_thana');
+    $thanas = $query->result_array();
+
+    $result_thanas = array();
+    foreach ($thanas as $thana) {
+      if(($thana['thana_name'] != '') && ($thana['ID'] > 0)){
+          $thana_id = $thana['ID'];
+          $thana_name = $thana['thana_name'].'->'.$district_arr[$thana['district_id']];
+          $result_thanas[$thana_id] = $thana_name;
+      }
+    }
+		return $result_thanas;
+	}
+}
+
+
 if ( !function_exists('get_district_arr') ) {
 	function get_district_arr() {
     $CI =& get_instance();
@@ -132,6 +156,25 @@ if ( !function_exists('get_divisions_arr') ) {
       }
     }
 		return $result_division;
+	}
+}
+
+if ( !function_exists('get_companies_arr') ) {
+	function get_companies_arr() {
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->order_by('company_name');
+    $query = $CI->db->get('company');
+    $companies = $query->result_array();
+
+    $result_companies = array();
+    foreach ($companies as $company) {
+      if(($company['company_name'] != '') && ($company['ID'] > 0)){
+        $company_id = $company['ID'];
+        $result_companies[$company_id] = $company['company_name'];
+      }
+    }
+		return $result_companies;
 	}
 }
 
