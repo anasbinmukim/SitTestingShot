@@ -269,7 +269,8 @@ if ( !function_exists('get_user_role') ) {
 		$st_arr = array(
 			'administrator' => 'Administrator',
 			'agent' => 'Agent',
-			'company_holder' => 'Company Holder',
+      'supervisor' => 'Supervisor',
+			'company_owner' => 'Company Owner',
 			'company_manager' => 'Company Manager',
 			'subscriber' => 'Subscriber',
 		);

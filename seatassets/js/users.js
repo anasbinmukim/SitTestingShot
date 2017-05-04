@@ -1,127 +1,99 @@
-var TableDataUsersAjax = function () {
+$(document).ready(function(){
+	var grid = new Datatable();
+	var userDataToPost = {
+			csrf_bruite_check: csrf_value
+	};
 
-    var initPickers = function () {
-        //init date pickers
-        $('.date-picker').datepicker({
-            rtl: App.isRTL(),
-            autoclose: true
-        });
-    }
-
-    var handleManageUser = function () {
-
-        var grid = new Datatable();
-
-        grid.init({
-            src: $("#datatable_manage_users"),
-            onSuccess: function (grid, response) {
-                // grid:        grid object
-                // response:    json object of server side ajax response
-                // execute some code after table records loaded
+	grid.init({
+		src: $("#users-tbl"),
+		onSuccess: function (grid, response) {
+			// grid:        grid object
+			// response:    json object of server side ajax response
+			// execute some code after table records loaded
+		},
+		onError: function (grid) {
+			// execute some code on network or other general error
+		},
+		onDataLoad: function(grid) {
+			// execute some code on ajax data load
+		},
+		loadingMessage: 'Loading...',
+		dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options
+			"processing": true,
+			"serverSide": true,
+			select: true,
+			"ajax": {
+				"url": $("#users-tbl").data('url'),
+				"data":userDataToPost
+			},
+			"order": [
+				[1, "asc"]
+			],
+			"colReorder": {
+                reorderCallback: function () {
+                    console.log( 'callback' );
+                }
             },
-            onError: function (grid) {
-                // execute some code on network or other general error
-            },
-            onDataLoad: function(grid) {
-                // execute some code on ajax data load
-            },
-            loadingMessage: 'Loading...',
-            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options
+			buttons: [],
+			"dom": "<'row cw-listactions'<'col-xs-12'f><'col-xs-12'B>><'table-scrollable'rt><'row cw-listnav'<'col-xs-6'il><'col-xs-6'p>>",
+			"pagingType": "bootstrap_number",
+			"language": { // language settings
+				"info": "Found total _TOTAL_ records",
+				"search": "Search Users: ",
+			},
+			"columnDefs": [
+				{"className": "text-center", "targets": [6]},
+				{"className": "text-left", "targets": "_all"},
+				{ orderable: false, targets: 0 },
+			],
+			"lengthMenu": [
+                [5, 10, 15, 20, -1],
+                [5, 10, 15, 20, "All"] // change per page values here
+            ],
+			"pageLength": 20,
+		}
+	});
 
-                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js).
-                // So when dropdowns used the scrollable div should be removed.
-                //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+	grid.setAjaxParam("customActionType", "group_action");
+	grid.getDataTable().ajax.reload();
+	grid.clearAjaxParams();
 
-                // save datatable state(pagination, sort, etc) in cookie.
-                "bStateSave": true,
+	$('.date-picker_created').datepicker({
+		dateFormat: "yy-mm-dd"
+	});
 
-                 // save custom filters to the state
-                "fnStateSaveParams":    function ( oSettings, sValue ) {
-                    $("#datatable_manage_users tr.filter .form-control").each(function() {
-                        sValue[$(this).attr('name')] = $(this).val();
-                    });
+	$(document).on('click', '.user-delete', function() {
+		var $this = $(this);
+		var choice = confirm('Do you really want to delete this user?');
+		if(choice === true) {
+		   $.blockUI({ message: '<h1><img src="'+base_url+'/assets/global/img/loading-spinner-blue.gif" /> Just a moment...</h1>' });
+		   $.ajax({
+					type: 'POST',
+					url: $this.data('url'),
+					data:userDataToPost,
+					success: function(data){
+						grid.getDataTable().ajax.reload();
+						$.unblockUI();
+					}
+				});
 
-                    return sValue;
-                },
+		}
+		return false;
+	});
 
-                // read the custom filters from saved state and populate the filter inputs
-                "fnStateLoadParams" : function ( oSettings, oData ) {
-                    //Load custom filters
-                    $("#datatable_manage_users tr.filter .form-control").each(function() {
-                        var element = $(this);
-                        if (oData[element.attr('name')]) {
-                            element.val( oData[element.attr('name')] );
-                        }
-                    });
+});
 
-                    return true;
-                },
+$(document).on('change', '#group_id', function() {
 
-                "lengthMenu": [
-                    [10, 20, 50, 100, 150, -1],
-                    [10, 20, 50, 100, 150, "All"] // change per page values here
-                ],
-                "pageLength": 10, // default record count per page
-                "ajax": {
-                    "url": $("#datatable_manage_users").data('url'),
-                },
-                "columnDefs": [ {
-                "targets": [0,1,7],
-                "orderable": false
-                } ],
-                "order": [
-                    [2, "asc"]
-                ]// set first column as a default sort by asc
-            }
-        });
+ 	var $group_id = $('#group_id').val();
 
-        // handle group actionsubmit button click
-        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
-            e.preventDefault();
-            var action = $(".table-group-action-input", grid.getTableWrapper());
-            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                grid.setAjaxParam("customActionType", "group_action");
-                grid.setAjaxParam("customActionName", action.val());
-                grid.setAjaxParam("id", grid.getSelectedRows());
-                grid.getDataTable().ajax.reload();
-                grid.clearAjaxParams();
-            } else if (action.val() == "") {
-                App.alert({
-                    type: 'danger',
-                    icon: 'warning',
-                    message: 'Please select an action',
-                    container: grid.getTableWrapper(),
-                    place: 'prepend'
-                });
-            } else if (grid.getSelectedRowsCount() === 0) {
-                App.alert({
-                    type: 'danger',
-                    icon: 'warning',
-                    message: 'No record selected',
-                    container: grid.getTableWrapper(),
-                    place: 'prepend'
-                });
-            }
-        });
+ 	if ( $group_id == 3 ) {
+ 		$( ".opt" ).removeClass( "hidden" );
+ 	} else if ( $group_id == 2 ) {
+ 		$( ".opt" ).addClass( "hidden" );
+ 		$( ".first" ).removeClass( "hidden" );
+ 	} else {
+ 		$( ".opt" ).addClass( "hidden" );
+ 	}
 
-        //grid.setAjaxParam("customActionType", "group_action");
-        //grid.getDataTable().ajax.reload();
-        //grid.clearAjaxParams();
-    }
-
-    return {
-
-        //main function to initiate the module
-        init: function () {
-            initPickers();
-            handleManageUser();
-        }
-
-    };
-
-}();
-
-jQuery(document).ready(function() {
-    TableDataUsersAjax.init();
 });
