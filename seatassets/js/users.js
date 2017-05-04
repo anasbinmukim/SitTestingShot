@@ -54,6 +54,7 @@ $(document).ready(function(){
 		}
 	});
 
+	grid.setAjaxParam("csrf_bruite_check", csrf_value);
 	grid.setAjaxParam("customActionType", "group_action");
 	grid.getDataTable().ajax.reload();
 	grid.clearAjaxParams();
@@ -80,20 +81,5 @@ $(document).ready(function(){
 		}
 		return false;
 	});
-
-});
-
-$(document).on('change', '#group_id', function() {
-
- 	var $group_id = $('#group_id').val();
-
- 	if ( $group_id == 3 ) {
- 		$( ".opt" ).removeClass( "hidden" );
- 	} else if ( $group_id == 2 ) {
- 		$( ".opt" ).addClass( "hidden" );
- 		$( ".first" ).removeClass( "hidden" );
- 	} else {
- 		$( ".opt" ).addClass( "hidden" );
- 	}
 
 });

@@ -453,7 +453,7 @@ $config['csrf_token_name'] = 'csrf_bruite_check';
 $config['csrf_cookie_name'] = 'csrf_bruite_cookie';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = FALSE;
-$config['csrf_exclude_uris'] = array();
+$config['csrf_exclude_uris'] = array('/admin/users/', '/admin/users/get_all/');
 
 /*
 |--------------------------------------------------------------------------

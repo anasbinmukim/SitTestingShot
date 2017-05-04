@@ -12,6 +12,28 @@ class Launch extends RM_Controller {
 		}
 		public function index()
 		{
+
+				$this->data['css_files'] = array(
+					base_url('assets/global/plugins/datatables/datatables.min.css'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
+					base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
+					base_url('assets/global/plugins/select2/css/select2.min.css'),
+					base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
+				);
+
+				$this->data['js_files'] = array(
+					base_url('assets/global/scripts/datatable.js'),
+					base_url('assets/global/plugins/datatables/datatables.min.js'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+					base_url('seatassets/js/table-datatables-responsive.js'),
+					base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
+					base_url('assets/global/plugins/select2/js/select2.full.min.js'),
+					base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
+				);
+
+				$result = $this->common->get_all( 'launch' );
+				$this->data['launch_rows'] = $result;
+
         $this->data['title'] = 'Launch Booking'; // Capitalize the first letter
 
         $this->load->view('templates/header', $this->data);
@@ -125,13 +147,169 @@ class Launch extends RM_Controller {
 
 
 		public function register(){
+
+			$this->data['css_files'] = array(
+				base_url('assets/global/plugins/select2/css/select2.min.css'),
+				base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
+				base_url('assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css'),
+			);
+			$this->data['js_files'] = array(
+				base_url('assets/global/plugins/select2/js/select2.full.min.js'),
+				base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
+				base_url('assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'),
+				base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
+			);
+
+
+			//Start: Process area info
+      $this->process_launch_register_info();
+      //End: Process area info
+
+
+			$this->data['launch_route_arr'] = $this->get_launch_route_arr();
+
 			$this->data['title'] = 'Register New Launch'; // Capitalize the first letter
 
 			$this->load->view('templates/header', $this->data);
 			$this->load->view('templates/sidebar', $this->data);
-			$this->load->view('launch/register_new_launch', $this->data);
+			$this->load->view('launch/register', $this->data);
 			$this->load->view('templates/footer', $this->data);
 
+		}
+
+		public function edit($launch_salt_id = 0){
+			//Get launch ID
+			$launch_id = decrypt($launch_salt_id)*1;
+			if( !is_int($launch_id) || !$launch_id ) {
+					redirect('/launch');
+			}
+
+			$this->data['launch_id'] = $launch_id;
+
+			$this->data['css_files'] = array(
+				base_url('assets/global/plugins/select2/css/select2.min.css'),
+				base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
+				base_url('assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css'),
+			);
+			$this->data['js_files'] = array(
+				base_url('assets/global/plugins/select2/js/select2.full.min.js'),
+				base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
+				base_url('assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'),
+				base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
+			);
+
+
+			//Start: Process area info
+      $this->process_launch_register_info();
+      //End: Process area info
+
+
+			$this->data['launch_route_arr'] = $this->get_launch_route_arr();
+
+			$this->data['title'] = 'Edit Launch'; // Capitalize the first letter
+
+			$this->load->view('templates/header', $this->data);
+			$this->load->view('templates/sidebar', $this->data);
+			$this->load->view('launch/edit', $this->data);
+			$this->load->view('templates/footer', $this->data);
+
+		}
+
+
+		public function delete($launch_salt_id = 0)
+		{
+
+				//Get launch ID
+				$launch_id = decrypt($launch_salt_id)*1;
+				if( !is_int($launch_id) || !$launch_id ) {
+						redirect('/launch');
+				}else{
+						$this->common->delete( 'launch', array( 'ID' =>  $launch_id ) );
+						$this->session->set_flashdata('delete_msg','Launch has been deleted!');
+						redirect('/launch');
+				}
+
+		}
+
+		//Process Launch Register
+		private function process_launch_register_info(){
+			//Add New Area
+			if((isset($_POST['register_new_launch'])) || (isset($_POST['update_launch']))){
+					$this->form_validation->set_rules('launch_name', 'Launch name', 'trim|required|htmlspecialchars|min_length[2]');
+					$this->form_validation->set_rules('time_start_place_1', 'Place one leaving time', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('time_end_place_1', 'Place one arrival time', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('time_start_place_2', 'Place two leaving time', 'trim|required|htmlspecialchars|min_length[2]');
+					$this->form_validation->set_rules('time_end_place_2', 'Place two arrival time', 'trim|required|htmlspecialchars|min_length[2]');
+					$this->form_validation->set_rules('company_id', 'Company Name', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('route_id', 'Route', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('total_cabin', 'Total Cabin', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('total_capacity', 'Total Capacity', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('register_info', 'Register Info', 'trim|htmlspecialchars');
+
+					$route_id = $this->input->post('route_id');
+					$launch_route_array = $this->get_launch_route_arr();
+					$route_name = '';
+					$route_path = '';
+					$place_1 = '';
+					$place_2 = '';
+					if(isset($launch_route_array[$route_id]['route'])){
+						$route_name = $launch_route_array[$route_id]['route'];
+						$route_path = $launch_route_array[$route_id]['route_path'];
+						$place_1 = $launch_route_array[$route_id]['place_1'];
+						$place_2 = $launch_route_array[$route_id]['place_2'];
+					}
+
+					$data_arr = array(
+						'launch_name'=> trim($this->input->post('launch_name')),
+						'place_1'=> $place_1,
+						'time_start_place_1'=> trim($this->input->post('time_start_place_1')),
+						'time_end_place_1'=> trim($this->input->post('time_end_place_1')),
+						'place_2'=> $place_2,
+						'time_start_place_2'=> trim($this->input->post('time_start_place_2')),
+						'time_end_place_2'=> trim($this->input->post('time_end_place_2')),
+						'company_id'=> trim($this->input->post('company_id')),
+						'route_id'=> trim($this->input->post('route_id')),
+						'total_cabin'=> trim($this->input->post('total_cabin')),
+						'total_capacity'=> trim($this->input->post('total_capacity')),
+						'register_info'=> trim($this->input->post('register_info')),
+						'via_places'=> $route_path,
+						'route_name'=> $route_name,
+					);
+
+					if( !$this->form_validation->run() ) {
+						$error_message_array = $this->form_validation->error_array();
+						$this->session->set_flashdata('error_msg_arr', $error_message_array);
+					}elseif((isset($_POST['update_launch_id'])) && (isset($_POST['update_launch']))){
+						$launch_id = $this->input->post('update_launch_id');
+						$this->common->update( 'launch', $data_arr, array( 'ID' =>  $launch_id ) );
+						$this->session->set_flashdata('success_msg','Update done!');
+						redirect('/launch');
+					}else{
+						$this->common->insert( 'launch', $data_arr );
+						$this->session->set_flashdata('success_msg','Added done!');
+						redirect('/launch');
+					}
+			}
+
+		}//EOF process launch regisetr
+
+
+		private function get_launch_route_arr() {
+			$routes = $this->common->get_all( 'launch_route');
+
+			$result_routes = array();
+			foreach ($routes as $route) {
+				if(($route->route_id != '') && ($route->route_id > 0)){
+						$route_id = $route->route_id;
+						$result_routes[$route_id] = array(
+								'route' => $route->route,
+								'route_path' => $route->route_path,
+								'place_1' => $route->place_1,
+								'place_2' => $route->place_2
+						);
+				}
+			}
+			return $result_routes;
 		}
 
 
