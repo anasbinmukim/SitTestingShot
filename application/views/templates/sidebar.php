@@ -35,6 +35,11 @@
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item  ">
+                        <a href="<?php echo site_url('launch/cabin'); ?>" class="nav-link ">
+                            <span class="title">Cabin</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
                         <a href="<?php echo site_url('launch/route'); ?>" class="nav-link ">
                             <span class="title">Route</span>
                         </a>

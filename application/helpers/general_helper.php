@@ -264,6 +264,46 @@ if ( !function_exists('get_user_status_class') ) {
 	}
 }
 
+if ( !function_exists('get_launch_cabin_floor') ) {
+	function get_launch_cabin_floor() {
+		$st_arr = array(
+			'1st' => 'First Floor',
+			'2nd' => 'Second Floor',
+			'3rd' => 'Third Floor',
+      '4th' => 'Fourth Floor',
+      '5th' => 'Fifth Floor',
+		);
+		return $st_arr;
+	}
+}
+
+if ( !function_exists('seat_taka_format') ) {
+	function seat_taka_format($amount) {
+      $amount = 'TK '.number_format($amount, 2, '.', '').' /=';
+		return $amount;
+	}
+}
+
+
+
+if ( !function_exists('get_launch_cabin_type') ) {
+	function get_launch_cabin_type( $key  = '') {
+		$st_arr = array(
+			'Single' => 'Single',
+			'Double' => 'Double',
+			'VIP' => 'VIP',
+      'Green Place' => 'Green Place',
+      'White Place' => 'White Place',
+      'Duplex' => 'Duplex',
+		);
+    if($key != ''){
+		    return $st_arr[$key];
+    }else{
+      return $st_arr;
+    }
+	}
+}
+
 if ( !function_exists('get_user_role') ) {
 	function get_user_role( $key  = 'all') {
 		$st_arr = array(

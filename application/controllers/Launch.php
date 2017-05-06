@@ -42,6 +42,123 @@ class Launch extends RM_Controller {
         $this->load->view('templates/footer', $this->data);
 		}
 
+		public function cabin($display = 'cabin', $cabin_solt_id = 0)
+		{
+
+				$this->data['css_files'] = array(
+					base_url('assets/global/plugins/datatables/datatables.min.css'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
+					base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
+					base_url('assets/global/plugins/select2/css/select2.min.css'),
+					base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
+				);
+
+				$this->data['js_files'] = array(
+					base_url('assets/global/scripts/datatable.js'),
+					base_url('assets/global/plugins/datatables/datatables.min.js'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+					base_url('seatassets/js/table-datatables-responsive.js'),
+					base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
+					base_url('assets/global/plugins/select2/js/select2.full.min.js'),
+					base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
+				);
+
+				$this->data['launch_arr'] = $this->get_launch_arr();
+
+				if($display == 'cabin'){
+						$this->data['title'] = 'Launch Cabin';
+						$result = $this->common->get_all( 'launch_cabin' );
+						$this->data['launch_cabin_rows'] = $result;
+				}
+
+				if($display == 'register'){
+						$this->data['title'] = 'Add New Cabin';
+				}
+
+				if($display == 'edit'){
+					//Get route ID of this Entry
+					$cabin_id = decrypt($cabin_solt_id)*1;
+					if( !is_int($cabin_id) || !$cabin_id ) {
+						$this->session->set_flashdata('delete_msg','Can not be edited');
+						redirect('/launch/cabin');
+					}else{
+							$cabin_details = $this->common->get( 'launch_cabin', array( 'ID' => $cabin_id ), 'array' );
+							$this->data['cabin_data'] = $cabin_details;
+							$this->data['title'] = 'Edit Cabin';
+						}
+				}
+
+				if($display == 'delete'){
+					//Get route ID of this Entry
+					$cabin_id = decrypt($cabin_solt_id)*1;
+					if( !is_int($cabin_id) || !$cabin_id ) {
+						$this->session->set_flashdata('delete_msg','Can not be deleted!');
+						redirect('/launch/cabin');
+					}else{
+						$this->common->delete( 'launch_cabin', array( 'ID' =>  $cabin_id ) );
+						$this->session->set_flashdata('delete_msg','Cabin has been deleted!');
+						redirect('/launch/cabin');
+						}
+				}
+
+				// Start: Process launch cabin
+				$this->process_launch_cabin();
+				// End: Process launch cabin
+
+				$this->load->view('templates/header', $this->data);
+				$this->load->view('templates/sidebar', $this->data);
+				$this->load->view('launch/cabin/'.$display, $this->data);
+				$this->load->view('templates/footer', $this->data);
+		}
+
+		//Process Cabin Info
+    private function process_launch_cabin(){
+      //Add New Company
+      if(($this->input->post('register_new_cabin') !== NULL) || ($this->input->post('update_cabin') !== NULL)){
+          $this->form_validation->set_rules('launch_id', 'Select Launch', 'trim|required');
+          $this->form_validation->set_rules('cabin_number', 'Cabin Number', 'trim|required|htmlspecialchars|min_length[2]');
+					$this->form_validation->set_rules('cabin_fare', 'Cabin Fare', 'trim|required|numeric');
+					$this->form_validation->set_rules('floor', 'Floor', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('cabin_class', 'Cabin class', 'trim|required|htmlspecialchars');
+          $this->form_validation->set_rules('cabin_info', 'Cabin Info', 'trim|htmlspecialchars');
+					$this->form_validation->set_rules('cabin_type', 'Cabin Type', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('allow_person', 'Number of tickets', 'trim|required|integer');
+					$this->form_validation->set_rules('is_allow', 'Available for booked', 'trim|required|htmlspecialchars');
+
+          if( !$this->form_validation->run() ) {
+  					$error_message_array = $this->form_validation->error_array();
+  					$this->session->set_flashdata('error_msg_arr', $error_message_array);
+  				}else{
+            $data_arr = array(
+              'launch_id'=> trim($this->input->post('launch_id')),
+              'cabin_number'=> trim($this->input->post('cabin_number')),
+              'cabin_fare'=> trim($this->input->post('cabin_fare')),
+              'floor'=> trim($this->input->post('floor')),
+              'cabin_class'=> trim($this->input->post('cabin_class')),
+							'cabin_info'=> trim($this->input->post('cabin_info')),
+							'cabin_type'=> trim($this->input->post('cabin_type')),
+							'allow_person'=> trim($this->input->post('allow_person')),
+							'is_allow'=> trim($this->input->post('is_allow')),
+            );
+
+            if(($this->input->post('update_cabin_id') !== NULL) && ($this->input->post('update_cabin') !== NULL)){
+                $cabin_id = $this->input->post('update_cabin_id');
+                $this->common->update( 'launch_cabin', $data_arr, array( 'ID' =>  $cabin_id ) );
+      					$this->session->set_flashdata('success_msg','Updated done!');
+                redirect('/launch/cabin');
+            }else{
+              $cabin_id = $this->common->insert( 'launch_cabin', $data_arr );
+              $this->session->set_flashdata('success_msg','Added done!');
+              redirect('/launch/cabin');
+            }
+
+
+
+  				}
+      }
+
+    }//EOF process cabin info
+
 		public function route($display = 'route', $route_solt_id = 0)
 		{
 
@@ -294,7 +411,7 @@ class Launch extends RM_Controller {
 		}//EOF process launch regisetr
 
 
-		private function get_launch_route_arr() {
+		public function get_launch_route_arr() {
 			$routes = $this->common->get_all( 'launch_route');
 
 			$result_routes = array();
@@ -312,6 +429,21 @@ class Launch extends RM_Controller {
 			return $result_routes;
 		}
 
+		public function get_launch_arr() {
+			$launchs = $this->common->get_all( 'launch');
+			$result_launch = array();
+			foreach ($launchs as $launch) {
+				if(($launch->ID != '') && ($launch->ID > 0)){
+						$launch_id = $launch->ID;
+						$result_launch[$launch_id] = array(
+								'ID' => $launch->ID,
+								'launch_name' => $launch->launch_name,
+								'company_id' => $launch->company_id
+						);
+				}
+			}
+			return $result_launch;
+		}
 
 		public function manage_booking(){
 			$this->data['title'] = 'Manage Booking'; // Capitalize the first letter
