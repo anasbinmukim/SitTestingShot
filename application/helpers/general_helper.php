@@ -96,6 +96,58 @@ if ( !function_exists('get_thana_arr') ) {
 	}
 }
 
+if ( !function_exists('get_via_places_arr') ) {
+	function get_via_places_arr($type = 'launch') {
+
+    $district_arr = get_district_arr();
+    $thana_arr = get_thana_arr();
+    $condition = array('type'=> $type);
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->where($condition);
+    $CI->db->order_by('place_name');
+    $query = $CI->db->get('via_place');
+    $via_places = $query->result_array();
+
+    $result_via_places = array();
+    foreach ($via_places as $via_place) {
+      if(($via_place['place_name'] != '') && ($via_place['ID'] > 0)){
+          $place_id = $via_place['ID'];
+          $place_name_detail = $via_place['place_name'].', '.$via_place['address'].', '.$thana_arr[$via_place['thana_id']].', '.$district_arr[$via_place['district_id']];
+          $result_via_places[$place_id] = array(
+              'place_name' => $via_place['place_name'],
+              'detail' => $place_name_detail
+          );
+      }
+    }
+		return $result_via_places;
+	}
+}
+
+
+if ( !function_exists('get_thana_under_dist_arr') ) {
+	function get_thana_under_dist_arr() {
+
+    $district_arr = get_district_arr();
+
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->order_by('thana_name');
+    $query = $CI->db->get('place_thana');
+    $thanas = $query->result_array();
+
+    $result_thanas = array();
+    foreach ($thanas as $thana) {
+      if(($thana['thana_name'] != '') && ($thana['ID'] > 0)){
+          $thana_id = $thana['ID'];
+          $thana_name = $thana['thana_name'].'->'.$district_arr[$thana['district_id']];
+          $result_thanas[$thana_id] = $thana_name;
+      }
+    }
+		return $result_thanas;
+	}
+}
+
 
 if ( !function_exists('get_district_arr') ) {
 	function get_district_arr() {
@@ -132,6 +184,25 @@ if ( !function_exists('get_divisions_arr') ) {
       }
     }
 		return $result_division;
+	}
+}
+
+if ( !function_exists('get_companies_arr') ) {
+	function get_companies_arr() {
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->order_by('company_name');
+    $query = $CI->db->get('company');
+    $companies = $query->result_array();
+
+    $result_companies = array();
+    foreach ($companies as $company) {
+      if(($company['company_name'] != '') && ($company['ID'] > 0)){
+        $company_id = $company['ID'];
+        $result_companies[$company_id] = $company['company_name'];
+      }
+    }
+		return $result_companies;
 	}
 }
 
@@ -210,6 +281,17 @@ if ( !function_exists('get_user_status') ) {
 	}
 }
 
+if ( !function_exists('get_via_place_type_arr') ) {
+	function get_via_place_type_arr() {
+		$st_arr = array(
+			'launch' => 'Launch',
+			'bus' => 'Bus',
+			'air' => 'Air',
+		);
+		return $st_arr;
+	}
+}
+
 if ( !function_exists('get_user_status_class') ) {
 	function get_user_status_class( $key  = 0) {
 		$st_arr = array(
@@ -221,12 +303,53 @@ if ( !function_exists('get_user_status_class') ) {
 	}
 }
 
+if ( !function_exists('get_launch_cabin_floor') ) {
+	function get_launch_cabin_floor() {
+		$st_arr = array(
+			'1st' => 'First Floor',
+			'2nd' => 'Second Floor',
+			'3rd' => 'Third Floor',
+      '4th' => 'Fourth Floor',
+      '5th' => 'Fifth Floor',
+		);
+		return $st_arr;
+	}
+}
+
+if ( !function_exists('seat_taka_format') ) {
+	function seat_taka_format($amount) {
+      $amount = 'TK '.number_format($amount, 2, '.', '').' /=';
+		return $amount;
+	}
+}
+
+
+
+if ( !function_exists('get_launch_cabin_type') ) {
+	function get_launch_cabin_type( $key  = '') {
+		$st_arr = array(
+			'Single' => 'Single',
+			'Double' => 'Double',
+			'VIP' => 'VIP',
+      'Green Place' => 'Green Place',
+      'White Place' => 'White Place',
+      'Duplex' => 'Duplex',
+		);
+    if($key != ''){
+		    return $st_arr[$key];
+    }else{
+      return $st_arr;
+    }
+	}
+}
+
 if ( !function_exists('get_user_role') ) {
 	function get_user_role( $key  = 'all') {
 		$st_arr = array(
 			'administrator' => 'Administrator',
 			'agent' => 'Agent',
-			'company_holder' => 'Company Holder',
+      'supervisor' => 'Supervisor',
+			'company_owner' => 'Company Owner',
 			'company_manager' => 'Company Manager',
 			'subscriber' => 'Subscriber',
 		);

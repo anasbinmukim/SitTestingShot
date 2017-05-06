@@ -27,6 +27,9 @@ $route['launch/(:any)'] = 'launch/$1';
 $route['places']   = 'places';
 $route['places/(:any)'] = 'places/$1';
 
+$route['counters']   = 'counters';
+$route['counters/(:any)'] = 'counters/$1';
+
 $route['companies']   = 'companies';
 $route['companies/(:any)'] = 'companies/$1';
 

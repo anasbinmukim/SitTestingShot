@@ -29,28 +29,12 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     <span class="caption-subject font-dark sbold uppercase">Manage Users</span>
                 </div>
                 <div class="actions">
-                    <div class="btn-group btn-group-devided" data-toggle="buttons">
-                        <label class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm active">
-                            <input type="radio" name="options" class="toggle" id="option1">Add New</label>
-                    </div>
-                    <div class="btn-group">
-                        <a class="btn red btn-outline btn-circle" href="javascript:;" data-toggle="dropdown">
-                            <i class="fa fa-share"></i>
-                            <span class="hidden-xs"> Tools </span>
-                            <i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="dropdown-menu pull-right">
-                            <li>
-                                <a href="javascript:;"> Export to CSV </a>
-                            </li>
-                            <li class="divider"> </li>
-                            <li>
-                                <a href="javascript:;"> Print Invoices </a>
-                            </li>
-                        </ul>
+                    <div class="btn-group btn-group-devided">
+                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/admin/users/register'); ?>">Add New User</a>
                     </div>
                 </div>
             </div>
+
             <div class="portlet-body">
                 <div class="table-container">
                     <div class="table-actions-wrapper">
@@ -64,41 +48,34 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                         <button class="btn btn-sm green table-group-action-submit">
                             <i class="fa fa-check"></i> Submit</button>
                     </div>
-                    <table class="table table-striped table-bordered table-hover table-checkable" id="datatable_manage_users" data-url="<?php echo site_url('admin/users/get_all_users'); ?>">
+
+                    <table class="table table-striped table-bordered table-hover table-checkable" id="users-tbl" data-url="<?php echo site_url('admin/users/get_all');?>">
                         <thead>
-                            <tr role="row" class="heading">
-                                <th width="2%">
-                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="group-checkable" data-set="#sample_2 .checkboxes" />
-                                        <span></span>
-                                    </label>
-                                </th>
-                                <th width="5%">&nbsp;</th>
-                                <th width="200"> Name </th>
-                                <th width="200"> Email </th>
-                                <th width="10%"> Role </th>
-                                <th width="10%"> Status </th>
-                                <th width="15%"> Date </th>
-                                <th width="10%"> Actions </th>
+                            <tr>
+                                <th width="5%"></th>
+                                <th> Name </th>
+                                <th> Email </th>
+                                <th> Role </th>
+                                <th> Status </th>
+                                <th class="text-center"> Created </th>
+                                <th class="text-center"> Actions </th>
                             </tr>
                             <tr role="row" class="filter">
-                                <td> </td>
-                                <td></td>
-                                <td>
-                                    <input type="text" class="form-control form-filter input-sm" name="name"> </td>
-                                <td>
-                                    <input type="text" class="form-control form-filter input-sm" name="email"> </td>
-                                <td>
+                                <td class="filter-cw-td"></td>
+                                <td class="filter-cw-td"><input type="text" name="name" placeholder="Name" id="name" class="form-control form-filter input-sm" value=""></td>
+                                <td class="filter-cw-td"><input type="text" name="email" class="form-control form-filter input-sm"></td>
+                                <td class="filter-cw-td">
                                     <select class="form-control form-filter input-sm" name="user_role">
                                         <option value="">Select</option>
                                         <option value="administrator">Administrator</option>
                                         <option value="agent">Agent</option>
-                                        <option value="company_holder">Company Holder</option>
+                                        <option value="supervisor">Supervisor</option>
+                                        <option value="company_owner">Company Owner</option>
                                         <option value="company_manager">Company Manager</option>
                                         <option value="subscriber">Subscriber</option>
                                     </select>
                                 </td>
-                                <td>
+                                <td class="filter-cw-td">
                                     <select class="form-control form-filter input-sm" name="is_active">
                                         <option value="">Status</option>
                                         <option value="1">Active</option>
@@ -106,17 +83,10 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                         <option value="3">Deleted</option>
                                     </select>
                                 </td>
-                                <td>
-                                    <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-                                        <input type="text" class="form-control form-filter input-sm" readonly name="reg_date" placeholder="From">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-sm default" type="button">
-                                                <i class="fa fa-calendar"></i>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </td>
-                                <td>
+                                <td class="filter-cw-td"><input type="text" name="created_at" class="form-control form-filter input-sm date-picker_created"></td>
+
+                                <td class="filter-cw-td">
+
                                     <button class="btn btn-xs green btn-outline filter-submit margin-bottom">
                                         <i class="fa fa-search"></i>
                                     </button>
@@ -127,10 +97,18 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                 </td>
                             </tr>
                         </thead>
-                        <tbody> </tbody>
+                        <tbody>
+
+                        </tbody>
+
                     </table>
+
+
                 </div>
             </div>
+
+
+
         </div>
         <!-- End: Users List Table -->
 

@@ -9,7 +9,7 @@ class Companies extends RM_Controller {
             $this->load->model('companies_model');
             $this->load->helper('url');
             if ( ! $this->session->userdata('logged_in') ) {
-							redirect('/login/');
+							redirect('/login');
 						}
     }
 

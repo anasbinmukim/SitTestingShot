@@ -1,5 +1,5 @@
 <!-- BEGIN PAGE HEADER-->
-<h1 class="page-title">Launch</h1>
+<h1 class="page-title">Launch Route</h1>
 <div class="page-bar">
     <ul class="page-breadcrumb">
         <li>
@@ -8,7 +8,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>Launch</span>
+            <span>Route</span>
         </li>
     </ul>
 </div>
@@ -23,11 +23,11 @@ require_once(FCPATH.'/application/views/success-error-message.php');
             <div class="portlet-title">
                 <div class="caption font-dark">
                     <i class="icon-settings font-dark"></i>
-                    <span class="caption-subject bold uppercase">Launch</span>
+                    <span class="caption-subject bold uppercase">Launch Route</span>
                 </div>
                 <div class="actions">
                     <div class="btn-group btn-group-devided">
-                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/launch/register'); ?>">Add New Lanuch</a>
+                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/launch/route/register'); ?>">Add New</a>
                     </div>
                 </div>
             </div>
@@ -35,23 +35,21 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="table_area">
                     <thead>
                         <tr>
-                            <th class="all">Name</th>
-                            <th class="min-phone-l">Route</th>
-                            <th class="none">Place 1</th>
-                            <th class="none">Place 2</th>
-                            <th class="none">Via places</th>
+                            <th class="all">Route</th>
+                            <th class="min-phone-l">Place Start/End</th>
+                            <th class="min-phone-l">Place Start/End</th>
+                            <th class="none">Route Path</th>
                             <th width="20" class="all">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                      <?php foreach ($launch_rows as $launch) { ?>
+                      <?php foreach ($launch_route_rows as $route) { ?>
                           <tr>
-                              <td><?php echo $launch->launch_name; ?></td>
-                              <td><?php echo $launch->route_name; ?></td>
-                              <td><?php echo $launch->place_1; ?></td>
-                              <td><?php echo $launch->place_2; ?></td>
-                              <td><?php echo $launch->via_places; ?></td>
-                              <td><?php echo '<div class="center-block"><a href="'.site_url('launch/edit/'.encrypt($launch->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this launch?\');" href="'.site_url('launch/delete/'.encrypt($launch->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
+                              <td><?php echo $route->route; ?></td>
+                              <td><?php echo $route->place_1; ?></td>
+                              <td><?php echo $route->place_2; ?></td>
+                              <td><?php echo $route->route_path; ?></td>
+                              <td><?php echo '<div class="center-block"><a href="'.site_url('launch/route/edit/'.encrypt($route->route_id)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this route?\');" href="'.site_url('launch/route/delete/'.encrypt($route->route_id)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
                           </tr>
                         <?php } ?>
                     </tbody>

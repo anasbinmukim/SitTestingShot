@@ -35,8 +35,18 @@
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item  ">
-                        <a href="<?php echo site_url('launch/add_new'); ?>" class="nav-link ">
-                            <span class="title">Add New</span>
+                        <a href="<?php echo site_url('launch/cabin'); ?>" class="nav-link ">
+                            <span class="title">Cabin</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
+                        <a href="<?php echo site_url('launch/schedule'); ?>" class="nav-link ">
+                            <span class="title">Schedule</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
+                        <a href="<?php echo site_url('launch/route'); ?>" class="nav-link ">
+                            <span class="title">Route</span>
                         </a>
                     </li>
                     <li class="nav-item  ">
@@ -55,6 +65,20 @@
                 <ul class="sub-menu">
                     <li class="nav-item  ">
                         <a href="<?php echo site_url('companies/register'); ?>" class="nav-link ">
+                            <span class="title">Register New</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item  ">
+                <a href="<?php echo site_url('counters'); ?>" class="nav-link nav-toggle">
+                    <i class="icon-diamond"></i>
+                    <span class="title">Counters</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item  ">
+                        <a href="<?php echo site_url('counters/register'); ?>" class="nav-link ">
                             <span class="title">Register New</span>
                         </a>
                     </li>
@@ -146,7 +170,7 @@
                 </ul>
             </li>
             <li class="nav-item  ">
-                <a href="<?php echo site_url('/admin/users/'); ?>" class="nav-link nav-toggle">
+                <a href="<?php echo site_url('/admin/users'); ?>" class="nav-link nav-toggle">
                     <i class="icon-user"></i>
                     <span class="title">User</span>
                     <span class="arrow"></span>
