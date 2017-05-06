@@ -9,7 +9,7 @@ class Profile extends RM_Controller {
 		}
 		public function index($page = 'personal-info')
 		{
-				redirect('/profile/manage/');
+				redirect('/profile/manage');
 		}
 
 

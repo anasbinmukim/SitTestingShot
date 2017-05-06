@@ -33,6 +33,9 @@ $route['counters/(:any)'] = 'counters/$1';
 $route['companies']   = 'companies';
 $route['companies/(:any)'] = 'companies/$1';
 
+$route['booking']   = 'booking';
+$route['booking/(:any)'] = 'booking/$1';
+
 // $route['news/create'] = 'news/create';
 // $route['news/(:any)'] = 'news/view/$1';
 // $route['news'] = 'news';

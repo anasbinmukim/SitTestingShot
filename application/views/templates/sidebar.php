@@ -50,6 +50,16 @@
                         </a>
                     </li>
                     <li class="nav-item  ">
+                        <a href="<?php echo site_url('booking/launch'); ?>" class="nav-link ">
+                            <span class="title">Booking</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
+                        <a href="<?php echo site_url('booking/launch/mycabin'); ?>" class="nav-link ">
+                            <span class="title">My Cabin</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
                         <a href="<?php echo site_url('launch/manage_booking'); ?>" class="nav-link ">
                             <span class="title">Manage Booking</span>
                         </a>
