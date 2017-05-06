@@ -40,6 +40,11 @@
                         </a>
                     </li>
                     <li class="nav-item  ">
+                        <a href="<?php echo site_url('launch/schedule'); ?>" class="nav-link ">
+                            <span class="title">Schedule</span>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
                         <a href="<?php echo site_url('launch/route'); ?>" class="nav-link ">
                             <span class="title">Route</span>
                         </a>

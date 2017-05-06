@@ -63,6 +63,17 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                   ?>
                                   </select>
                               </div>
+                              <div class="form-group">
+                                  <label class="control-label">Type</label>
+                                  <select name="type" id="type" class="form-control select2me">
+                                  <?php
+                                    $via_place_arr = get_via_place_type_arr();
+                                    foreach($via_place_arr as $pkey => $pvalue){
+                                      echo '<option value="'.$pkey.'">'.$pvalue.'</option>';
+                                    }
+                                  ?>
+                                  </select>
+                              </div>
                               <div class="margin-top-10">
                                   <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                   <input type="submit" class="btn green" name="add_via_place" value="Add">

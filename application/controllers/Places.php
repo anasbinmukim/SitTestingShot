@@ -412,6 +412,7 @@ class Places extends RM_Controller {
             'address'=> trim($this->input->post('address')),
             'district_id'=> trim($this->input->post('district_id')),
             'thana_id'=> trim($this->input->post('thana_id')),
+            'type'=> trim($this->input->post('type')),
           );
 
           if( !$this->form_validation->run() ) {
@@ -434,6 +435,7 @@ class Places extends RM_Controller {
             'address'=> trim($this->input->post('address')),
             'district_id'=> trim($this->input->post('district_id')),
             'thana_id'=> trim($this->input->post('thana_id')),
+            'type'=> trim($this->input->post('type')),
           );
 
           $place_id = $this->input->post('place_id');
