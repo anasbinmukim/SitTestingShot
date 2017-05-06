@@ -31,7 +31,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
               </div>
               <div class="actions">
                   <div class="btn-group btn-group-devided">
-                      <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/places/add_new/district'); ?>">Add New</a>
+                      <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/places/add/district'); ?>">Add New</a>
                   </div>
               </div>
           </div>

@@ -21,17 +21,6 @@
 require_once(FCPATH.'/application/views/success-error-message.php');
 ?>
 
-<?php echo html_escape($company_data['company_name']); ?>
-<?php echo html_escape($company_data['company_logo']); ?>
-<?php echo html_escape($company_data['company_description']); ?>
-<?php echo html_escape($company_data['company_address']); ?>
-<?php echo html_escape($company_data['company_phone']); ?>
-<?php echo html_escape($company_data['company_mobile']); ?>
-<?php echo html_escape($company_data['company_email']); ?>
-<?php echo html_escape($company_data['company_bank_account']); ?>
-<?php echo html_escape($company_data['withdrawal_method']); ?>
-<?php echo html_escape($company_data['company_type']); ?>
-
 
 <div class="row">
     <div class="col-md-12">

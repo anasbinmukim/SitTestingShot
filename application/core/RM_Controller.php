@@ -20,8 +20,8 @@ class RM_Controller extends CI_Controller
 			$user_profile = $this->common->get( 'users', array( 'ID' => $this->session->userdata('user_id') ) );
 			if(!empty($user_profile)){
 					$profile_photo = $user_profile->profile_photo;
-					if( $profile_photo && file_exists( getcwd().'/files/media/'.$profile_photo ) ){
-							$this->data['profile_photo'] = base_url( 'files/media/'.$profile_photo );
+					if( $profile_photo && file_exists( getcwd().'/files/profile/'.$profile_photo ) ){
+							$this->data['profile_photo'] = base_url( 'files/profile/'.$profile_photo );
 					}
 					$this->data['display_name'] = $user_profile->display_name;
 					$this->data['first_name'] = $user_profile->first_name;

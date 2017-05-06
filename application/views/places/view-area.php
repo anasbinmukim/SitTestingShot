@@ -29,113 +29,40 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     <i class="icon-settings font-dark"></i>
                     <span class="caption-subject bold uppercase">Area</span>
                 </div>
-                <div class="tools"> </div>
+                <div class="actions">
+                    <div class="btn-group btn-group-devided">
+                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/places/add/area'); ?>">Add New</a>
+                    </div>
+                </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="sample_1">
+                <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="table_area">
                     <thead>
                         <tr>
-                            <th class="all">First name</th>
-                            <th class="min-phone-l">Last name</th>
-                            <th class="min-tablet">Position</th>
-                            <th class="none">Office</th>
-                            <th class="none">Age</th>
-                            <th class="none">Start date</th>
-                            <th class="desktop">Salary</th>
-                            <th class="all">Extn.</th>
+                            <th class="all">Area name</th>
+                            <th class="min-phone-l">Thana</th>
+                            <th class="none">District</th>
+                            <th class="none">Zone</th>
+                            <th width="20" class="all">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Tiger</td>
-                            <td>Nixon</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>2011/04/25</td>
-                            <td>$320,800</td>
-                            <td>
-                                <div class="btn-group pull-right">
-                                    <button class="btn green btn-xs btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                                        <i class="fa fa-angle-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <a href="javascript:;">
-                                                <i class="fa fa-print"></i> Print </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                <i class="fa fa-file-pdf-o"></i> Save as PDF </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                <i class="fa fa-file-excel-o"></i> Export to Excel </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Garrett</td>
-                            <td>Winters</td>
-                            <td>Accountant</td>
-                            <td>Tokyo</td>
-                            <td>63</td>
-                            <td>2011/07/25</td>
-                            <td>$170,750</td>
-                            <td>
-                                <div class="btn-group pull-right">
-                                    <button class="btn green btn-xs btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                                        <i class="fa fa-angle-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <a href="javascript:;">
-                                                <i class="fa fa-print"></i> Print </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                <i class="fa fa-file-pdf-o"></i> Save as PDF </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                <i class="fa fa-file-excel-o"></i> Export to Excel </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Donna</td>
-                            <td>Snider</td>
-                            <td>Customer Support</td>
-                            <td>New York</td>
-                            <td>27</td>
-                            <td>2011/01/25</td>
-                            <td>$112,000</td>
-                            <td>
-                                <div class="btn-group pull-right">
-                                    <button class="btn green btn-xs btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                                        <i class="fa fa-angle-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <a href="javascript:;">
-                                                <i class="fa fa-print"></i> Print </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                <i class="fa fa-file-pdf-o"></i> Save as PDF </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                <i class="fa fa-file-excel-o"></i> Export to Excel </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
+                      <?php
+                        $thana_arr = get_thana_arr();
+                        $district_arr = get_district_arr();
+                      ?>
+                      <?php foreach ($area_rows as $area) { ?>
+                          <?php
+                            $thana_name = $thana_arr[$area->thana_id];
+                          ?>
+                          <tr>
+                              <td><?php echo $area->area_name; ?></td>
+                              <td><?php echo $thana_name; ?></td>
+                              <td></td>
+                              <td></td>
+                              <td><?php echo '<div class="center-block"><a href="'.site_url('places/edit/area/'.encrypt($area->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this district?\');" href="'.site_url('places/delete/area/'.encrypt($area->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
+                          </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>

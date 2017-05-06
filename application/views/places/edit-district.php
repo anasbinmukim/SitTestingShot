@@ -63,6 +63,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                   <input type="hidden" name="district_id" value="<?php echo $row_id; ?>">
 
                               <div class="margin-top-10">
+                                  <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                   <input type="submit" class="btn green" name="update_district" value="Update">
                               </div>
                           </form>

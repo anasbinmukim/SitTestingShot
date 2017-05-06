@@ -8,6 +8,10 @@
   <div class="alert alert-danger"><strong>Error!</strong> <?php echo $this->session->flashdata('error_msg'); ?> </div>
 <?php endif; ?>
 
+<?php if($this->session->flashdata('delete_msg')): ?>
+  <div class="alert alert-danger"><strong>Deleted!</strong> <?php echo $this->session->flashdata('delete_msg'); ?> </div>
+<?php endif; ?>
+
 <?php
 $error_message = $this->session->flashdata('error_msg_arr');
 if(!empty($error_message)){

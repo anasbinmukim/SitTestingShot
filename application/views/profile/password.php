@@ -50,6 +50,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                           <label class="control-label">Re-type New Password</label>
                                           <input type="password" name="conf_password" class="form-control" /> </div>
                                       <div class="margin-top-10">
+                                          <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                           <input type="submit" class="btn green" name="update_password" value="Change Password">
                                       </div>
                                   </form>
