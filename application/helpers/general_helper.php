@@ -96,6 +96,34 @@ if ( !function_exists('get_thana_arr') ) {
 	}
 }
 
+if ( !function_exists('get_via_places_arr') ) {
+	function get_via_places_arr($type = 'launch') {
+
+    $district_arr = get_district_arr();
+    $thana_arr = get_thana_arr();
+    $condition = array('type'=> $type);
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->where($condition);
+    $CI->db->order_by('place_name');
+    $query = $CI->db->get('via_place');
+    $via_places = $query->result_array();
+
+    $result_via_places = array();
+    foreach ($via_places as $via_place) {
+      if(($via_place['place_name'] != '') && ($via_place['ID'] > 0)){
+          $place_id = $via_place['ID'];
+          $place_name_detail = $via_place['place_name'].', '.$via_place['address'].', '.$thana_arr[$via_place['thana_id']].', '.$district_arr[$via_place['district_id']];
+          $result_via_places[$place_id] = array(
+              'place_name' => $via_place['place_name'],
+              'detail' => $place_name_detail
+          );
+      }
+    }
+		return $result_via_places;
+	}
+}
+
 
 if ( !function_exists('get_thana_under_dist_arr') ) {
 	function get_thana_under_dist_arr() {
@@ -250,6 +278,17 @@ if ( !function_exists('get_user_status') ) {
 			3 => 'Deleted',
 		);
 		return $st_arr[$key];
+	}
+}
+
+if ( !function_exists('get_via_place_type_arr') ) {
+	function get_via_place_type_arr() {
+		$st_arr = array(
+			'launch' => 'Launch',
+			'bus' => 'Bus',
+			'air' => 'Air',
+		);
+		return $st_arr;
 	}
 }
 

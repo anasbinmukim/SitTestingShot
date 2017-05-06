@@ -116,7 +116,7 @@ class Launch extends RM_Controller {
       //Add New Company
       if(($this->input->post('register_new_cabin') !== NULL) || ($this->input->post('update_cabin') !== NULL)){
           $this->form_validation->set_rules('launch_id', 'Select Launch', 'trim|required');
-          $this->form_validation->set_rules('cabin_number', 'Cabin Number', 'trim|required|htmlspecialchars|min_length[2]');
+          $this->form_validation->set_rules('cabin_number', 'Cabin Number', 'trim|required|htmlspecialchars|callback_cabin_number_check|min_length[2]');
 					$this->form_validation->set_rules('cabin_fare', 'Cabin Fare', 'trim|required|numeric');
 					$this->form_validation->set_rules('floor', 'Floor', 'trim|required|htmlspecialchars');
 					$this->form_validation->set_rules('cabin_class', 'Cabin class', 'trim|required|htmlspecialchars');
@@ -158,6 +158,18 @@ class Launch extends RM_Controller {
       }
 
     }//EOF process cabin info
+
+
+		public function cabin_number_check()
+		{
+			$cabin_number = $this->common->get( 'launch_cabin', array( 'launch_id' => trim($this->input->post('launch_id')), 'cabin_number' => trim($this->input->post('cabin_number'))) );
+			if(!empty($cabin_number)){
+					$this->form_validation->set_message('cabin_number_check', 'This cabin number already exists, please try with new one.');
+					return FALSE;
+			}
+			else
+				return TRUE;
+		}
 
 		public function route($display = 'route', $route_solt_id = 0)
 		{
@@ -261,6 +273,141 @@ class Launch extends RM_Controller {
       }
 
     }//EOF process route info
+
+
+
+		public function schedule($display = 'schedule', $schedule_solt_id = 0)
+		{
+
+				$this->data['css_files'] = array(
+					base_url('assets/global/plugins/datatables/datatables.min.css'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
+	        base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
+	        base_url('assets/global/plugins/select2/css/select2.min.css'),
+	        base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
+					base_url('assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css'),
+					base_url('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css'),
+	      );
+
+	      $this->data['js_files'] = array(
+					base_url('assets/global/scripts/datatable.js'),
+					base_url('assets/global/plugins/datatables/datatables.min.js'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+					base_url('seatassets/js/table-datatables-responsive.js'),
+	        base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
+	        base_url('assets/global/plugins/select2/js/select2.full.min.js'),
+	        base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
+					base_url('assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'),
+					base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
+					base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
+	      );
+
+				$this->data['launch_arr'] = $this->get_launch_arr();
+				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
+
+				if($display == 'schedule'){
+		        $this->data['title'] = 'Launch schedule'; // Capitalize the first letter
+						$result = $this->common->get_all( 'launch_schedule' );
+						$this->data['launch_schedule_rows'] = $result;
+				}
+
+				if($display == 'register'){
+						$this->data['title'] = 'Add schedule';
+				}
+
+				if($display == 'edit'){
+					//Get route ID of this Entry
+		      $schedule_id = decrypt($schedule_solt_id)*1;
+					if( !is_int($schedule_id) || !$schedule_id ) {
+		        $this->session->set_flashdata('delete_msg','Can not be edited');
+						redirect('/launch/route');
+					}else{
+							$schedule_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
+							$this->data['schedule_data'] = $schedule_details;
+			        $this->data['title'] = 'Edit Schedule';
+						}
+				}
+
+				if($display == 'delete'){
+					//Get route ID of this Entry
+		      $schedule_id = decrypt($schedule_solt_id)*1;
+					if( !is_int($schedule_id) || !$schedule_id ) {
+		        $this->session->set_flashdata('delete_msg','Can not be deleted!');
+						redirect('/launch/schedule');
+					}else{
+						$this->common->delete( 'launch_schedule', array( 'sche_id' =>  $schedule_id ) );
+						$this->session->set_flashdata('delete_msg','Schedule has been deleted!');
+						redirect('/launch/schedule');
+						}
+				}
+
+				// Start: Process launch schedule
+				$this->process_launch_schedule();
+				// End: Process launch schedule
+
+        $this->load->view('templates/header', $this->data);
+				$this->load->view('templates/sidebar', $this->data);
+        $this->load->view('launch/schedule/'.$display, $this->data);
+        $this->load->view('templates/footer', $this->data);
+		}
+
+		//Process schedule Info
+    private function process_launch_schedule(){
+      //Add New Company
+      if(($this->input->post('register_new_schedule') !== NULL) || ($this->input->post('update_schedule') !== NULL)){
+
+					$this->form_validation->set_rules('launch_id', 'Select Launch', 'trim|required');
+          $this->form_validation->set_rules('date', 'Travel Date', 'trim|required|min_length[10]');
+          $this->form_validation->set_rules('route_id', 'Select Route', 'trim|required');
+					$this->form_validation->set_rules('time_start', 'Leaving time', 'trim|required|htmlspecialchars');
+          $this->form_validation->set_rules('time_end', 'Arrival Time', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('start_from', 'Start From', 'trim|required|htmlspecialchars');
+					$this->form_validation->set_rules('destination_to', 'Destination To', 'trim|required|htmlspecialchars');
+
+
+					$route_id = $this->input->post('route_id');
+					$launch_route_array = $this->get_launch_route_arr();
+					$route_name = '';
+					$route_path = '';
+					if(isset($launch_route_array[$route_id]['route'])){
+						$route_name = $launch_route_array[$route_id]['route'];
+						$route_path = $launch_route_array[$route_id]['route_path'];
+					}
+
+
+          if( !$this->form_validation->run() ) {
+  					$error_message_array = $this->form_validation->error_array();
+  					$this->session->set_flashdata('error_msg_arr', $error_message_array);
+  				}else{
+            $data_arr = array(
+              'launch_id'=> trim($this->input->post('launch_id')),
+              'date'=> trim($this->input->post('date')),
+              'route_id'=> trim($this->input->post('route_id')),
+							'route_name'=> $route_name,
+							'via_places'=> $route_path,
+							'start_from'=> trim($this->input->post('start_from')),
+							'destination_to'=> trim($this->input->post('destination_to')),
+              'start_time'=> trim($this->input->post('time_start')),
+              'destination_time'=> trim($this->input->post('time_end')),
+							'updated_at' => date('Y-m-d H:i:s'),
+							'updated_by' => $this->session->userdata('user_id'),
+            );
+
+            if(($this->input->post('update_schedule_id') !== NULL) && ($this->input->post('update_schedule') !== NULL)){
+                $sche_id = $this->input->post('update_schedule_id');
+                $this->common->update( 'launch_schedule', $data_arr, array( 'sche_id' =>  $sche_id ) );
+      					$this->session->set_flashdata('success_msg','Updated done!');
+                redirect('/launch/schedule');
+            }else{
+              $sche_id = $this->common->insert( 'launch_schedule', $data_arr );
+              $this->session->set_flashdata('success_msg','Added done!');
+              redirect('/launch/schedule');
+            }
+
+  				}
+      }
+
+    }//EOF process schedule info
 
 
 		public function register(){
