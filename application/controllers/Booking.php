@@ -20,7 +20,56 @@ class Booking extends RM_Controller {
         $this->load->view('templates/footer', $this->data);
 		}
 
-		public function launch($launch_id = null, $schedule_id = null)
+		public function launch_cabin($schedule_id = NULL)
+		{
+
+				$this->data['js_files'] = array(
+					base_url('seatassets/js/bookseatprocess.js'),
+					base_url('seatassets/js/jquery.number.js'),
+				);
+
+				$this->data['launch_arr'] = $this->get_launch_arr();
+				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
+
+				//Get row ID of this Entry
+	      $schedule_id = decrypt($schedule_id)*1;
+				if( !is_int($schedule_id) || !$schedule_id ) {
+	        $this->session->set_flashdata('delete_msg','Can not be booked');
+					redirect('/booking/launch');
+				}else{
+	        $launch_schedule_data_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
+	        $this->data['launch_schedule_data'] = $launch_schedule_data_details;
+	        if (empty($this->data['launch_schedule_data']))
+	        {
+	                show_404();
+	        }else{
+							$launch_id = $launch_schedule_data_details['launch_id'];
+							$this->data['available_cabins'] = $this->get_available_launch_cabin($launch_id);
+
+					}
+
+	      }
+
+				$this->data['title'] = 'Available Cabins';
+				$this->load->view('templates/header', $this->data);
+				$this->load->view('templates/sidebar', $this->data);
+				$this->load->view('booking/launch/cabin', $this->data);
+				$this->load->view('templates/footer', $this->data);
+		}
+
+		public function get_available_launch_cabin($launch_id, $date = NULL){
+				$schedule_condition = '1=1 ';
+
+				$schedule_condition .= ' AND launch_id = "'.$launch_id.'"';
+
+				//$schedule_condition .= ' AND date = "'.$travel_date.'"';
+
+				$result = $this->common->get_all('launch_cabin', $schedule_condition);
+
+				return $result;
+		}
+
+		public function launch($launch_id = 'id', $travel_date = 'date', $start_from = 'from', $destination_to = 'to', $schedule_id = NULL)
 		{
 
 				// Start: Process launch schedule
@@ -46,31 +95,39 @@ class Booking extends RM_Controller {
 				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
 
 				$schedule_condition = '1=1 ';
-				$today = date('Y-m-d');
-				$schedule_condition .= ' AND date >= "'.$today.'"';
 
-
-				if($launch_id > 0){
+				if(($launch_id != 'id') && ($launch_id > 0)){
 					$schedule_condition .= ' AND launch_id = "'.$launch_id.'"';
-					$result = $this->common->get_all('launch_schedule', $schedule_condition);
-					$this->data['launch_schedule_rows'] = $result;
-					$this->data['title'] = 'Launch Booking';
-					$this->load->view('templates/header', $this->data);
-					$this->load->view('templates/sidebar', $this->data);
-					$this->load->view('booking/launch/search-form', $this->data);
-					$this->load->view('booking/launch/launch', $this->data);
-					$this->load->view('templates/footer', $this->data);
-				}else{
-					$result = $this->common->get_all('launch_schedule', $schedule_condition);
-					$this->data['launch_schedule_rows'] = $result;
-					$this->data['title'] = 'Cabin Booking';
-					$this->load->view('templates/header', $this->data);
-					$this->load->view('templates/sidebar', $this->data);
-					$this->load->view('booking/launch/search-form', $this->data);
-					$this->load->view('booking/launch/launch', $this->data);
-					$this->load->view('templates/footer', $this->data);
 				}
 
+				if(($travel_date != 'date') && ($travel_date)){
+					$schedule_condition .= ' AND date = "'.$travel_date.'"';
+				}else{
+					$today = date('Y-m-d');
+					$schedule_condition .= ' AND date >= "'.$today.'"';
+				}
+
+				if(($start_from != 'from') && ($start_from !='')){
+					$schedule_condition .= ' AND start_from LIKE "'.$start_from.'"';
+				}
+
+				if(($destination_to != 'to') && ($destination_to != '')){
+					$schedule_condition .= ' AND destination_to LIKE "'.$destination_to.'"';
+				}
+
+				if(($launch_id != 'id') && ($launch_id > 0)){
+					$schedule_condition .= ' AND launch_id = "'.$launch_id.'"';
+				}
+
+
+				$result = $this->common->get_all('launch_schedule', $schedule_condition);
+				$this->data['launch_schedule_rows'] = $result;
+				$this->data['title'] = 'Cabin Booking';
+				$this->load->view('templates/header', $this->data);
+				$this->load->view('templates/sidebar', $this->data);
+				$this->load->view('booking/launch/search-form', $this->data);
+				$this->load->view('booking/launch/launch', $this->data);
+				$this->load->view('templates/footer', $this->data);
 
 
 		}//EOF launch booking

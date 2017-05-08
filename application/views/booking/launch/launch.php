@@ -19,7 +19,7 @@
                             <th class="none">Route</th>
                             <th class="none">Start Time</th>
                             <th class="none">Destination Time</th>
-                            <th width="20" class="all">Action</th>
+                            <th width="20" class="all">Available</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,6 +30,8 @@
                             if(isset($launch_arr[$schedule->launch_id]['launch_name'])){
                                   $launch_name = $launch_arr[$schedule->launch_id]['launch_name'];
                             }
+
+                            $available_cabins = 0;
                           ?>
                           <tr>
                               <td><?php echo $launch_name; ?></td>
@@ -39,7 +41,7 @@
                               <td><?php echo $schedule->route_name; ?></td>
                               <td><?php echo $schedule->start_time; ?></td>
                               <td><?php echo $schedule->destination_time; ?></td>
-                              <td><?php echo '<div class="center-block"><a class="btn grey-salsa btn-outline btn-circle btn-sm" href="'.site_url('/booking/launch/'.$launch_id.'/'.encrypt($schedule->sche_id)).'" title="Book Now">Book Now</a>'; ?></td>
+                              <td><?php echo '<div class="center-block"><a class="btn green btn-outline btn-circle btn-sm" href="'.site_url('/booking/launch-cabin/'.encrypt($schedule->sche_id)).'" title="Available Cabins">Cabins ('.$available_cabins.') </a>'; ?></td>
                           </tr>
                         <?php } ?>
                     </tbody>
