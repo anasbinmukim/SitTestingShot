@@ -318,7 +318,7 @@ if ( !function_exists('get_launch_cabin_floor') ) {
 
 if ( !function_exists('seat_taka_format') ) {
 	function seat_taka_format($amount) {
-      $amount = 'TK '.number_format($amount, 2, '.', '').' /=';
+      $amount = '&#x9f3;'.number_format($amount, 2, '.', '');
 		return $amount;
 	}
 }

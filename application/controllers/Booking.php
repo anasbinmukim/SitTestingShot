@@ -5,6 +5,7 @@ class Booking extends RM_Controller {
 		public function __construct()
 		{
 				parent::__construct();
+				$this->load->library('session');
 				if( !$this->session->userdata('logged_in') ) {
 					redirect('login');
 				}
@@ -20,8 +21,62 @@ class Booking extends RM_Controller {
         $this->load->view('templates/footer', $this->data);
 		}
 
-		public function launch_cabin($schedule_id = NULL)
+		public function launchcabin($schedule_solt_id = NULL, $request_cabin_solt_ids = NULL, $cabin_item_solt_id = NULL, $booking_ref_number = NULL)
 		{
+				if(($this->input->post('submit_cabins_request') !== NULL) && ($this->input->post('cabin_ids') !== NULL)){
+						$cabin_ids = $this->input->post('cabin_ids');
+						$launch_id = $this->input->post('launch_id');
+						$travel_date = $this->input->post('travel_date');
+						$booking_ref_number = $this->session->userdata('user_id').'_'.time().'_'.mt_rand();
+						$this->session->set_userdata('booking_ref_number', $booking_ref_number);
+						$requested_cabin_cart_data = array();
+							if(is_array($cabin_ids) && (count($cabin_ids)> 0)){
+								//add data to hold this cabins for next few minutes
+								foreach ($cabin_ids as $key => $cabin_id) {
+									$booked_item_data = array();
+									$booked_item_data = array(
+											'launch_id' => $launch_id,
+											'cabin_id' => $cabin_id,
+											'travel_date' => $travel_date,
+											'booking_ref_number' => $booking_ref_number,
+											'booking_status' => 'Pending',
+											'booking_time' => date('Y-m-d H:i:s'),
+									);
+									//Add data to database
+									$this->common->insert( 'launch_cabin_booked', $booked_item_data );
+
+									$cabin_details = array();
+									$cabin_details = $this->common->get( 'launch_cabin', array( 'ID' => $cabin_id ), 'array' );
+									$requested_cabin_cart_data[$cabin_id] = $cabin_details;
+								}
+								$this->session->set_userdata('cabin_booking_cart_items', $requested_cabin_cart_data);
+								$comma_cabin_ids = implode(",", $cabin_ids);
+								$cabins_solt_ids = encrypt($comma_cabin_ids);
+								redirect('/booking/launchcabin/'.$schedule_solt_id.'/'.$cabins_solt_ids);
+								exit;
+							}
+				}
+
+				//Cancle cabin booking request
+				if(($this->input->post('submit_cabins_cancle_request') !== NULL) && ($this->input->post('request_cabin_solt_ids') !== NULL)){
+						$request_cabin_solt_ids = $this->input->post('request_cabin_solt_ids');
+						$request_cabin_comma_ids = decrypt($request_cabin_solt_ids);
+						$request_cabin_ids = explode(",", $request_cabin_comma_ids);
+
+						$booking_ref_number = $this->input->post('booking_ref_number');
+						foreach ($request_cabin_ids as $key => $cabin_item_id) {
+							$this->common->delete( 'launch_cabin_booked', array( 'cabin_id' =>  $cabin_item_id, 'booking_ref_number' =>  $booking_ref_number ) );
+						}
+						//Reset all seasons for booking
+						$this->session->unset_userdata('booking_ref_number');
+						$this->session->unset_userdata('cabin_booking_cart_items');
+						
+						redirect('/booking/launch');
+						exit;
+				}
+
+				///Process launch cabin book now page
+				$this->process_launch_cabin_booknow();
 
 				$this->data['js_files'] = array(
 					base_url('seatassets/js/bookseatprocess.js'),
@@ -31,30 +86,173 @@ class Booking extends RM_Controller {
 				$this->data['launch_arr'] = $this->get_launch_arr();
 				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
 
-				//Get row ID of this Entry
-	      $schedule_id = decrypt($schedule_id)*1;
-				if( !is_int($schedule_id) || !$schedule_id ) {
-	        $this->session->set_flashdata('delete_msg','Can not be booked');
-					redirect('/booking/launch');
-				}else{
-	        $launch_schedule_data_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
-	        $this->data['launch_schedule_data'] = $launch_schedule_data_details;
-	        if (empty($this->data['launch_schedule_data']))
-	        {
-	                show_404();
-	        }else{
-							$launch_id = $launch_schedule_data_details['launch_id'];
-							$this->data['available_cabins'] = $this->get_available_launch_cabin($launch_id);
+				$this->data['schedule_solt_id'] = $schedule_solt_id;
+				$this->data['request_cabin_solt_ids'] = $request_cabin_solt_ids;
 
+				//Get schedule_id
+	      $schedule_id = decrypt($schedule_solt_id)*1;
+				if( !is_int($schedule_id) || !$schedule_id ) {
+		        $this->session->set_flashdata('delete_msg','Can not be booked');
+						redirect('/booking/launch');
+				}else{
+		        $launch_schedule_data_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
+		        $this->data['launch_schedule_data'] = $launch_schedule_data_details;
+		        if (empty($this->data['launch_schedule_data']))
+		        {
+		            show_404();
+		        }else{
+								$launch_id = $launch_schedule_data_details['launch_id'];
+								$this->data['available_cabins'] = $this->get_available_launch_cabin($launch_id);
+						}
+		     }
+
+
+				//get request cabin ids
+				if($request_cabin_solt_ids != NULL){
+
+					//Redirect for unauthorized access
+					if(!$this->session->userdata('booking_ref_number')){
+						redirect('/booking/launch');
+						exit;
 					}
 
-	      }
+					$request_cabin_comma_ids = decrypt($request_cabin_solt_ids);
+					$request_cabin_ids = explode(",", $request_cabin_comma_ids);
 
-				$this->data['title'] = 'Available Cabins';
-				$this->load->view('templates/header', $this->data);
-				$this->load->view('templates/sidebar', $this->data);
-				$this->load->view('booking/launch/cabin', $this->data);
-				$this->load->view('templates/footer', $this->data);
+
+					//Remove cabin items from cart of cabin request
+					if(($cabin_item_solt_id != NULL) && ($booking_ref_number != NULL)){
+							$cabin_item_id = decrypt($cabin_item_solt_id)*1;
+
+							//Removed item from booking database
+							$this->common->delete( 'launch_cabin_booked', array( 'cabin_id' =>  $cabin_item_id, 'booking_ref_number' =>  $booking_ref_number ) );
+
+							//Reset season array
+							$cabin_booking_cart_items = $this->session->userdata('cabin_booking_cart_items');
+							unset($cabin_booking_cart_items[$cabin_item_id]);
+							$this->session->set_userdata('cabin_booking_cart_items', $cabin_booking_cart_items);
+
+
+							$request_remove_item_arr = array($cabin_item_id);
+							$request_cabin_ids = array_diff($request_cabin_ids, $request_remove_item_arr);
+
+							if(is_array($request_cabin_ids) && (count($request_cabin_ids)> 0)){
+								$comma_cabin_ids = implode(",", $request_cabin_ids);
+								$cabins_solt_ids = encrypt($comma_cabin_ids);
+								redirect('/booking/launchcabin/'.$schedule_solt_id.'/'.$cabins_solt_ids);
+								exit;
+							}else{
+								redirect('/booking/launchcabin/'.$schedule_solt_id);
+								exit;
+							}
+					}
+
+					if(is_array($request_cabin_ids) && (count($request_cabin_ids)> 0)){
+						$this->data['request_cabin_ids'] = $request_cabin_ids;
+						$cabin_condition = '1=1 ';
+						if(($launch_id != '') && ($launch_id > 0)){
+							$cabin_condition .= ' AND launch_id = "'.$launch_id.'"';
+						}
+
+						$cabin_condition .= " AND `ID` IN (".implode(',',$request_cabin_ids).")";
+
+						$result = $this->common->get_all('launch_cabin', $cabin_condition);
+
+						$this->data['requested_available_cabins'] = $result;
+					}
+
+					$this->data['title'] = 'Request Cabins Booking';
+					$this->load->view('templates/header', $this->data);
+					$this->load->view('templates/sidebar', $this->data);
+					$this->load->view('booking/launch/cabin-request', $this->data);
+					$this->load->view('templates/footer', $this->data);
+				}else{
+					$this->data['title'] = 'Available Cabins';
+					$this->load->view('templates/header', $this->data);
+					$this->load->view('templates/sidebar', $this->data);
+					$this->load->view('booking/launch/cabin', $this->data);
+					$this->load->view('templates/footer', $this->data);
+				}
+		}
+
+		private function process_launch_cabin_booknow(){
+				if(($this->input->post('submit_cabins_confirm_request') !== NULL) && ($this->input->post('request_cabin_solt_ids') !== NULL) && ($this->session->userdata('cabin_booking_cart_items'))){
+						$this->form_validation->set_rules('passenger_name', 'Passenger Name', 'trim|required|htmlspecialchars|min_length[2]');
+						$this->form_validation->set_rules('passenger_mobile', 'Passenger Mobile', 'trim|is_natural|required|htmlspecialchars|min_length[6]');
+						$this->form_validation->set_rules('passenger_email', 'Passenger Email', 'trim|valid_email');
+						$this->form_validation->set_rules('passenger_age', 'Passenger Age', 'trim|is_natural');
+
+						if( !$this->form_validation->run() ) {
+							$error_message_array = $this->form_validation->error_array();
+							$this->session->set_flashdata('error_msg_arr', $error_message_array);
+						}else{
+							$cabin_price  = 0;
+							$cabin_price  = 0;
+							$booking_charge  = 0;
+							$paid_amount  = 0;
+							$vat  = 0;
+							$cabin_booking_cart_items = $this->session->userdata('cabin_booking_cart_items');
+							foreach ($cabin_booking_cart_items as $cabin_id => $cabin_details) {
+								//get requested cabin data
+								$cabin_price  += $cabin_details['cabin_fare'];
+								$booking_charge  += $cabin_details['booking_charge'];
+
+							}
+
+							$vat = ($booking_charge * 5)  / 100 ;
+
+							//Grand total for paid amount
+							$paid_amount += $cabin_price;
+							$paid_amount += $booking_charge;
+							$paid_amount += $vat;
+
+
+							$booking_item_data = array();
+							$booking_item_data = array(
+									'booking_ref_num' => trim($this->input->post('booking_ref_number')),
+									'passenger_name' => trim($this->input->post('passenger_name')),
+									'passenger_email' => trim($this->input->post('passenger_mobile')),
+									'passenger_mobile' => trim($this->input->post('passenger_email')),
+									'passenger_age' => trim($this->input->post('passenger_age')),
+									'cabin_price' => $cabin_price,
+									'booking_charge' => $booking_charge,
+									'paid_amount' => $paid_amount,
+									'vat' => $vat,
+									'booking_status' => 'Confirm',
+									'booking_date' => date('Y-m-d H:i:s'),
+									'booking_by' => $this->session->userdata('user_id'),
+							);
+							//Add data to database
+							$new_booking_id = $this->common->insert( 'launch_booking', $booking_item_data );
+
+							$booking_ref_number = $this->input->post('booking_ref_number');
+							foreach ($cabin_booking_cart_items as $cabin_id => $cabin_details) {
+								//update booking confirmation data
+								$booked_item_data = array();
+								$booked_item_data = array(
+										'booking_id' => $new_booking_id,
+										'cabin_number' => $cabin_details['cabin_number'],
+										'booking_ref_number' => $booking_ref_number,
+										'booking_status' => 'Confirm',
+										'booking_time' => date('Y-m-d H:i:s'),
+								);
+								$booked_item_where = array();
+								$booked_item_where = array(
+										'cabin_id' => $cabin_id,
+										'booking_ref_number' => $booking_ref_number,
+								);
+								//Add data to database
+								$this->common->update('launch_cabin_booked', $booked_item_data, $booked_item_where);
+							}
+							//Reset all seasons for booking
+							$this->session->unset_userdata('booking_ref_number');
+							$this->session->unset_userdata('cabin_booking_cart_items');
+
+							$this->session->set_flashdata('success_msg','Booking Complete');
+							redirect('/booking/launch');
+							exit;
+						}//eof if no error
+				}
 		}
 
 		public function get_available_launch_cabin($launch_id, $date = NULL){
@@ -113,10 +311,6 @@ class Booking extends RM_Controller {
 
 				if(($destination_to != 'to') && ($destination_to != '')){
 					$schedule_condition .= ' AND destination_to LIKE "'.$destination_to.'"';
-				}
-
-				if(($launch_id != 'id') && ($launch_id > 0)){
-					$schedule_condition .= ' AND launch_id = "'.$launch_id.'"';
 				}
 
 

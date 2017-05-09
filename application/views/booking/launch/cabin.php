@@ -2,8 +2,8 @@
 <?php
   $launch_id = $launch_schedule_data['launch_id'];
   $launch_name = $launch_arr[$launch_id]['launch_name'];
-  $travel_date = $launch_schedule_data['date'];
-  $travel_date = date('l F j, Y', strtotime($travel_date));
+  $travel_date_db = $launch_schedule_data['date'];
+  $travel_date = date('l F j, Y', strtotime($travel_date_db));
 ?>
 <h1 class="page-title">
   <?php echo $launch_name; ?>
@@ -70,7 +70,7 @@
               ?>
               <?php foreach ($available_cabins as $cabins) { ?>
                 <?php if($cabin_type == $cabins->cabin_type){ ?>
-                  <a data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" href="javascript:void(0)" class="icon-btn launch_cabin">
+                  <a data-cabin_id = "<?php echo $cabins->ID; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" href="javascript:void(0)" class="icon-btn launch_cabin">
                       <i class="fa fa-bed"></i>
                       <div> <?php echo $cabins->cabin_number; ?> </div>
                       <span class="badge badge-info"> &#x9f3;<?php echo $cabins->cabin_fare; ?> </span>
@@ -107,12 +107,18 @@
             </tbody>
             <tbody class="total_cabin_price">
                 <tr class="hover">
-                    <td> Total </td>
+                    <td> Total <span id="total_number_of_selected_cabin" class=""> 0 </span> Cabin</td>
                     <td> &#x9f3;<span id="total_price">0.00</span></td>
                 </tr>
             </tbody>
         </table>
-
+          <form id="form_process_request_cabins" action="" method="post">
+            <input type="hidden" name="launch_id" value="<?php echo $launch_id; ?>">
+            <input type="hidden" name="travel_date" value="<?php echo $travel_date_db; ?>">
+            <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
+            <input type="submit" name="submit_cabins_request" class="btn green" value="Request To Book" />
+            <input type="button" class="btn default" onClick="window.location.reload()" value="Cancle" />
+          </form>
         </div>
     </div>
 </div>
