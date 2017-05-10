@@ -1,5 +1,6 @@
 <!-- BEGIN PAGE HEADER-->
 <?php
+  $schedule_id = $launch_schedule_data['sche_id'];
   $launch_id = $launch_schedule_data['launch_id'];
   $launch_name = $launch_arr[$launch_id]['launch_name'];
   $travel_date_db = $launch_schedule_data['date'];
@@ -40,7 +41,9 @@
 <div class="row">
 <div class="col-md-8">
 
-
+  <?php
+  //debug($already_proceed_cabins);
+  ?>
 <div class="row">
 <?php foreach ($cabin_types as $cabin_type) { ?>
     <div class="col-md-12">
@@ -66,15 +69,33 @@
               [is_allow] => 1
               [cabin_status] => Available -->
               <?php
-              //debug($available_cabins);
+              //debug($already_proceed_cabins);
+              $cabin_columns = array_column($already_proceed_cabins, 'cabin_id');
+              //debug($cabin_columns);
               ?>
               <?php foreach ($available_cabins as $cabins) { ?>
                 <?php if($cabin_type == $cabins->cabin_type){ ?>
-                  <a data-cabin_id = "<?php echo $cabins->ID; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" href="javascript:void(0)" class="icon-btn launch_cabin">
-                      <i class="fa fa-bed"></i>
-                      <div> <?php echo $cabins->cabin_number; ?> </div>
-                      <span class="badge badge-info"> &#x9f3;<?php echo $cabins->cabin_fare; ?> </span>
-                  </a>
+
+                      <?php
+                        $already_booked_key = '';
+                        $already_booked_key = array_search($cabins->ID, $cabin_columns, true);
+                      ?>
+
+                      <?php if( is_int($already_booked_key) ){ ?>
+                        <?php $exists_book_status = strtolower($already_proceed_cabins[$already_booked_key]['booking_status']); ?>
+                        <span data-cabin_id = "<?php echo $cabins->ID; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" class="icon-btn <?php echo 'booking_status_'.$exists_book_status; ?>">
+                            <i class="fa fa-bed"></i>
+                            <div> <?php echo $cabins->cabin_number; ?> </div>
+                            <span class="badge badge-info"> &#x9f3;<?php echo $cabins->cabin_fare; ?> </span>
+                        </span>
+                      <?php }else{ ?>
+                        <a data-cabin_id = "<?php echo $cabins->ID; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" href="javascript:void(0)" class="icon-btn launch_cabin">
+                            <i class="fa fa-bed"></i>
+                            <div> <?php echo $cabins->cabin_number; ?> </div>
+                            <span class="badge badge-info"> &#x9f3;<?php echo $cabins->cabin_fare; ?> </span>
+                        </a>
+                      <?php } ?>
+                      <?php $already_booked_key = ''; ?>
                   <?php } ?>
               <?php } ?>
             </div>
@@ -113,12 +134,18 @@
             </tbody>
         </table>
           <form id="form_process_request_cabins" action="" method="post">
+            <input type="hidden" name="schedule_id" value="<?php echo $schedule_id; ?>">
             <input type="hidden" name="launch_id" value="<?php echo $launch_id; ?>">
             <input type="hidden" name="travel_date" value="<?php echo $travel_date_db; ?>">
             <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
-            <input type="submit" name="submit_cabins_request" class="btn green" value="Request To Book" />
+            <input type="submit" id="submit_cabins_request" disabled="disabled" name="submit_cabins_request" class="btn green" value="Request To Book" />
             <input type="button" class="btn default" onClick="window.location.reload()" value="Cancle" />
           </form>
+
+
+          <?php if($this->session->has_userdata('cart_items_url')){ ?>
+              <br /><br /><p><a href="<?php echo site_url($this->session->userdata('cart_items_url')); ?>" class="btn red">Confirm pending cabins</a></p>
+          <?php } ?>
         </div>
     </div>
 </div>

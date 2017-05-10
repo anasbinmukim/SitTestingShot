@@ -5,7 +5,6 @@
   $travel_date = $launch_schedule_data['date'];
   $travel_date = date('l F j, Y', strtotime($travel_date));
   $booking_ref_number = $this->session->userdata('booking_ref_number');
-  //$cabin_booking_cart_items = $this->session->userdata('cabin_booking_cart_items');
 ?>
 <h1 class="page-title">
   <?php echo $launch_name; ?>
@@ -43,7 +42,11 @@ require_once(FCPATH.'/application/views/success-error-message.php');
               </div>
           </div>
           <div class="portlet-body">
-
+          <?php
+          if(empty($requested_available_cabins)){
+            echo "Search and select agian!";
+          }else{
+          ?>
           <table class="table table-striped table-bordered table-hover">
               <thead>
                   <tr>
@@ -97,6 +100,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                   </tr>
               </tbody>
           </table>
+          <?php } ?>
           </div>
       </div>
   </div>

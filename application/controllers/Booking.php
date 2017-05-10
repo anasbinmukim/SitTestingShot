@@ -25,9 +25,10 @@ class Booking extends RM_Controller {
 		{
 				if(($this->input->post('submit_cabins_request') !== NULL) && ($this->input->post('cabin_ids') !== NULL)){
 						$cabin_ids = $this->input->post('cabin_ids');
+						$schedule_id = $this->input->post('schedule_id');
 						$launch_id = $this->input->post('launch_id');
 						$travel_date = $this->input->post('travel_date');
-						$booking_ref_number = $this->session->userdata('user_id').'_'.time().'_'.mt_rand();
+						$booking_ref_number = $this->session->userdata('user_id').'UT'.time().'TR'.mt_rand();
 						$this->session->set_userdata('booking_ref_number', $booking_ref_number);
 						$requested_cabin_cart_data = array();
 							if(is_array($cabin_ids) && (count($cabin_ids)> 0)){
@@ -35,6 +36,7 @@ class Booking extends RM_Controller {
 								foreach ($cabin_ids as $key => $cabin_id) {
 									$booked_item_data = array();
 									$booked_item_data = array(
+											'schedule_id' => $schedule_id,
 											'launch_id' => $launch_id,
 											'cabin_id' => $cabin_id,
 											'travel_date' => $travel_date,
@@ -52,7 +54,9 @@ class Booking extends RM_Controller {
 								$this->session->set_userdata('cabin_booking_cart_items', $requested_cabin_cart_data);
 								$comma_cabin_ids = implode(",", $cabin_ids);
 								$cabins_solt_ids = encrypt($comma_cabin_ids);
-								redirect('/booking/launchcabin/'.$schedule_solt_id.'/'.$cabins_solt_ids);
+								$cart_items_url = '/booking/launchcabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
+								$this->session->set_userdata('cart_items_url', $cart_items_url);
+								redirect($cart_items_url);
 								exit;
 							}
 				}
@@ -64,13 +68,17 @@ class Booking extends RM_Controller {
 						$request_cabin_ids = explode(",", $request_cabin_comma_ids);
 
 						$booking_ref_number = $this->input->post('booking_ref_number');
-						foreach ($request_cabin_ids as $key => $cabin_item_id) {
-							$this->common->delete( 'launch_cabin_booked', array( 'cabin_id' =>  $cabin_item_id, 'booking_ref_number' =>  $booking_ref_number ) );
+
+						$cabin_booking_cart_items = $this->session->userdata('cabin_booking_cart_items');
+						foreach ($cabin_booking_cart_items as $cabin_id => $cabin_details) {
+							$this->common->delete( 'launch_cabin_booked', array( 'cabin_id' =>  $cabin_id, 'booking_ref_number' =>  $booking_ref_number ) );
 						}
+
 						//Reset all seasons for booking
 						$this->session->unset_userdata('booking_ref_number');
 						$this->session->unset_userdata('cabin_booking_cart_items');
-						
+						$this->session->unset_userdata('cart_items_url');
+
 						redirect('/booking/launch');
 						exit;
 				}
@@ -101,8 +109,11 @@ class Booking extends RM_Controller {
 		        {
 		            show_404();
 		        }else{
+								$schedule_id = $launch_schedule_data_details['sche_id'];
 								$launch_id = $launch_schedule_data_details['launch_id'];
+								$date = $launch_schedule_data_details['date'];
 								$this->data['available_cabins'] = $this->get_available_launch_cabin($launch_id);
+								$this->data['already_proceed_cabins'] = $this->get_already_proceed_launch_cabin($schedule_id, $launch_id, $date);
 						}
 		     }
 
@@ -116,9 +127,16 @@ class Booking extends RM_Controller {
 						exit;
 					}
 
-					$request_cabin_comma_ids = decrypt($request_cabin_solt_ids);
-					$request_cabin_ids = explode(",", $request_cabin_comma_ids);
+					//Get cabin requested cabin ids from URL
+					//$request_cabin_comma_ids = decrypt($request_cabin_solt_ids);
+					//$request_cabin_ids = explode(",", $request_cabin_comma_ids);
 
+					//Get requested cabin ids from seasson
+					$cabin_booking_cart_items = $this->session->userdata('cabin_booking_cart_items');
+				  $request_cabin_ids = array();
+				  foreach ($cabin_booking_cart_items as $cabin_id => $cabin_details) {
+				    $request_cabin_ids[] = $cabin_id;
+				  }
 
 					//Remove cabin items from cart of cabin request
 					if(($cabin_item_solt_id != NULL) && ($booking_ref_number != NULL)){
@@ -139,7 +157,9 @@ class Booking extends RM_Controller {
 							if(is_array($request_cabin_ids) && (count($request_cabin_ids)> 0)){
 								$comma_cabin_ids = implode(",", $request_cabin_ids);
 								$cabins_solt_ids = encrypt($comma_cabin_ids);
-								redirect('/booking/launchcabin/'.$schedule_solt_id.'/'.$cabins_solt_ids);
+								$cart_items_url = '/booking/launchcabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
+								$this->session->set_userdata('cart_items_url', $cart_items_url);
+								redirect($cart_items_url);
 								exit;
 							}else{
 								redirect('/booking/launchcabin/'.$schedule_solt_id);
@@ -167,6 +187,11 @@ class Booking extends RM_Controller {
 					$this->load->view('booking/launch/cabin-request', $this->data);
 					$this->load->view('templates/footer', $this->data);
 				}else{
+					//If already have pending booking it redirect to cart page
+					if($this->session->has_userdata('cart_items_url')){
+						redirect($this->session->userdata('cart_items_url'));
+						exit;
+					}
 					$this->data['title'] = 'Available Cabins';
 					$this->load->view('templates/header', $this->data);
 					$this->load->view('templates/sidebar', $this->data);
@@ -211,9 +236,10 @@ class Booking extends RM_Controller {
 							$booking_item_data = array(
 									'booking_ref_num' => trim($this->input->post('booking_ref_number')),
 									'passenger_name' => trim($this->input->post('passenger_name')),
-									'passenger_email' => trim($this->input->post('passenger_mobile')),
-									'passenger_mobile' => trim($this->input->post('passenger_email')),
+									'passenger_mobile' => trim($this->input->post('passenger_mobile')),
+									'passenger_email' => trim($this->input->post('passenger_email')),
 									'passenger_age' => trim($this->input->post('passenger_age')),
+									'passenger_gender' => trim($this->input->post('passenger_gender')),
 									'cabin_price' => $cabin_price,
 									'booking_charge' => $booking_charge,
 									'paid_amount' => $paid_amount,
@@ -247,6 +273,7 @@ class Booking extends RM_Controller {
 							//Reset all seasons for booking
 							$this->session->unset_userdata('booking_ref_number');
 							$this->session->unset_userdata('cabin_booking_cart_items');
+							$this->session->unset_userdata('cart_items_url');
 
 							$this->session->set_flashdata('success_msg','Booking Complete');
 							redirect('/booking/launch');
@@ -255,14 +282,34 @@ class Booking extends RM_Controller {
 				}
 		}
 
-		public function get_available_launch_cabin($launch_id, $date = NULL){
+		//Return all availalbe cabins of a launch that can be book or already booked
+		public function get_available_launch_cabin($launch_id){
 				$schedule_condition = '1=1 ';
-
 				$schedule_condition .= ' AND launch_id = "'.$launch_id.'"';
-
-				//$schedule_condition .= ' AND date = "'.$travel_date.'"';
-
+				$schedule_condition .= ' AND is_allow = 1';
 				$result = $this->common->get_all('launch_cabin', $schedule_condition);
+				return $result;
+		}
+
+		//Return all cabins that already being process and can't be booked
+		public function get_already_proceed_launch_cabin($schedule_id, $launch_id, $travel_date){
+				$result = array();
+
+				$schedule_condition = '1=1 ';
+				$schedule_condition .= ' AND schedule_id = "'.$schedule_id.'"';
+				$schedule_condition .= ' AND launch_id = "'.$launch_id.'"';
+				$schedule_condition .= ' AND ( booking_status = "Confirm"';
+				$schedule_condition .= ' OR booking_status = "Pending"';
+				$schedule_condition .= ' OR booking_status = "Hold" )';
+				$schedule_condition .= ' AND travel_date = "'.$travel_date.'"';
+				$booked_cabins = $this->common->get_all('launch_cabin_booked', $schedule_condition);
+
+				foreach ($booked_cabins as $cabins) {
+						$result[] = array(
+							'cabin_id' => $cabins->cabin_id,
+							'booking_status' => $cabins->booking_status,
+						);
+				}
 
 				return $result;
 		}

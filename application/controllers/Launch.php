@@ -116,7 +116,6 @@ class Launch extends RM_Controller {
       //Add New Company
       if(($this->input->post('register_new_cabin') !== NULL) || ($this->input->post('update_cabin') !== NULL)){
           $this->form_validation->set_rules('launch_id', 'Select Launch', 'trim|required');
-          $this->form_validation->set_rules('cabin_number', 'Cabin Number', 'trim|required|htmlspecialchars|callback_cabin_number_check|min_length[2]');
 					$this->form_validation->set_rules('cabin_fare', 'Cabin Fare', 'trim|required|numeric');
 					$this->form_validation->set_rules('floor', 'Floor', 'trim|required|htmlspecialchars');
 					$this->form_validation->set_rules('cabin_class', 'Cabin class', 'trim|required|htmlspecialchars');
@@ -124,6 +123,12 @@ class Launch extends RM_Controller {
 					$this->form_validation->set_rules('cabin_type', 'Cabin Type', 'trim|required|htmlspecialchars');
 					$this->form_validation->set_rules('allow_person', 'Number of tickets', 'trim|required|integer');
 					$this->form_validation->set_rules('is_allow', 'Available for booked', 'trim|required|htmlspecialchars');
+
+					if($this->input->post('update_cabin') !== NULL){
+						$this->form_validation->set_rules('cabin_number', 'Cabin Number', 'trim|required|htmlspecialchars|min_length[2]');
+					}else{
+						$this->form_validation->set_rules('cabin_number', 'Cabin Number', 'trim|required|htmlspecialchars|callback_cabin_number_check|min_length[2]');
+					}
 
           if( !$this->form_validation->run() ) {
   					$error_message_array = $this->form_validation->error_array();

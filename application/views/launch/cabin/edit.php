@@ -53,7 +53,9 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Cabin Number</label>
-                                        <input type="text" name="cabin_number" placeholder="D124" class="form-control" value="<?php echo html_escape($cabin_data['cabin_number']); ?>" /> </div>
+                                        <input type="text" disabled="disabled" name="cabin_number_display" placeholder="D124" class="form-control" value="<?php echo html_escape($cabin_data['cabin_number']); ?>" />
+                                        <input type="hidden" name="cabin_number" value="<?php echo html_escape($cabin_data['cabin_number']); ?>">
+                                    </div>
                                     <div class="form-group">
                                         <label>Cabin fare</label>
                                         <div class="input-group input-icon right">

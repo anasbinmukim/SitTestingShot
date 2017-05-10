@@ -8,5 +8,12 @@
     background-color: #E9EDEF;
 }
 
-
-.book_launch_cabin .launch_cabin.selected{ background: #dadada; } 
+.book_launch_cabin .icon-btn{ background: #26C281; color: #FFFFFF !important;}
+.book_launch_cabin .icon-btn>div{color: #FFFFFF !important;}
+.book_launch_cabin .launch_cabin.selected{ background: #F3C200; }
+.book_launch_cabin .icon-btn.booking_status_confirm{ background: #E43A45; }
+.book_launch_cabin .icon-btn.booking_status_pending{ background: #8775A7; }
+.book_launch_cabin .icon-btn.booking_status_hold{ background: #67809F; }
+/*.book_launch_cabin .icon-btn.booking_status_confirm, .book_launch_cabin .icon-btn.booking_status_pending, .book_launch_cabin .icon-btn.booking_status_hold{
+  color: #FFFFFF !important;
+}*/
