@@ -79,17 +79,18 @@
                       <?php
                         $already_booked_key = '';
                         $already_booked_key = array_search($cabins->ID, $cabin_columns, true);
+                        $launch_cabin_solt_id = encrypt($cabins->ID);
                       ?>
 
                       <?php if( is_int($already_booked_key) ){ ?>
                         <?php $exists_book_status = strtolower($already_proceed_cabins[$already_booked_key]['booking_status']); ?>
-                        <span data-cabin_id = "<?php echo $cabins->ID; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" class="icon-btn <?php echo 'booking_status_'.$exists_book_status; ?>">
+                        <span data-cabin_id = "<?php echo $launch_cabin_solt_id; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" class="icon-btn <?php echo 'booking_status_'.$exists_book_status; ?>">
                             <i class="fa fa-bed"></i>
                             <div> <?php echo $cabins->cabin_number; ?> </div>
                             <span class="badge badge-info"> &#x9f3;<?php echo $cabins->cabin_fare; ?> </span>
                         </span>
                       <?php }else{ ?>
-                        <a data-cabin_id = "<?php echo $cabins->ID; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" href="javascript:void(0)" class="icon-btn launch_cabin">
+                        <a data-cabin_id = "<?php echo $launch_cabin_solt_id; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" href="javascript:void(0)" class="icon-btn launch_cabin">
                             <i class="fa fa-bed"></i>
                             <div> <?php echo $cabins->cabin_number; ?> </div>
                             <span class="badge badge-info"> &#x9f3;<?php echo $cabins->cabin_fare; ?> </span>
@@ -141,7 +142,6 @@
             <input type="submit" id="submit_cabins_request" disabled="disabled" name="submit_cabins_request" class="btn green" value="Request To Book" />
             <input type="button" class="btn default" onClick="window.location.reload()" value="Cancle" />
           </form>
-
 
           <?php if($this->session->has_userdata('cart_items_url')){ ?>
               <br /><br /><p><a href="<?php echo site_url($this->session->userdata('cart_items_url')); ?>" class="btn red">Confirm pending cabins</a></p>

@@ -180,6 +180,22 @@
                 </ul>
             </li>
             <li class="nav-item  ">
+                <a href="<?php echo site_url('/accounts'); ?>" class="nav-link nav-toggle">
+                    <i class="icon-user"></i>
+                    <span class="title">Accounts</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item  ">
+                        <a href="<?php echo site_url('/accounts/deposit'); ?>" class="nav-link ">
+                            <i class="icon-user"></i>
+                            <span class="title">Deposit</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+            <li class="nav-item  ">
                 <a href="<?php echo site_url('/admin/users'); ?>" class="nav-link nav-toggle">
                     <i class="icon-user"></i>
                     <span class="title">User</span>

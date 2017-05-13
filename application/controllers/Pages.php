@@ -20,6 +20,8 @@ class Pages extends RM_Controller {
 		                show_404();
 		        }
 
+						$this->data['my_account_balance'] = $this->common->get_user_meta($this->session->userdata('user_id'), 'account_balance');
+
 		        $this->data['title'] = ucfirst($page); // Capitalize the first letter
 
 		        $this->load->view('templates/header', $this->data);

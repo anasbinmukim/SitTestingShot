@@ -2,14 +2,25 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Booking extends RM_Controller {
+
+		public $booking_date_time;
+		public $currently_logged_user;
+
+		const BOOKING_STATUS_CONFIRM = 'Confirm';
+		const BOOKING_STATUS_PENDING = 'Pending';
+
 		public function __construct()
 		{
 				parent::__construct();
+				$this->load->model('booking_model');
 				$this->load->library('session');
 				if( !$this->session->userdata('logged_in') ) {
 					redirect('login');
 				}
 				$this->common->check_user_exists();
+
+				$this->booking_date_time = date('Y-m-d H:i:s');
+				$this->currently_logged_user = $this->session->userdata('user_id');
 		}
 		public function index()
 		{
@@ -33,7 +44,8 @@ class Booking extends RM_Controller {
 						$requested_cabin_cart_data = array();
 							if(is_array($cabin_ids) && (count($cabin_ids)> 0)){
 								//add data to hold this cabins for next few minutes
-								foreach ($cabin_ids as $key => $cabin_id) {
+								foreach ($cabin_ids as $key => $cabin_solt_id) {
+									$cabin_id = decrypt($cabin_solt_id)*1;
 									$booked_item_data = array();
 									$booked_item_data = array(
 											'schedule_id' => $schedule_id,
@@ -41,8 +53,8 @@ class Booking extends RM_Controller {
 											'cabin_id' => $cabin_id,
 											'travel_date' => $travel_date,
 											'booking_ref_number' => $booking_ref_number,
-											'booking_status' => 'Pending',
-											'booking_time' => date('Y-m-d H:i:s'),
+											'booking_status' => self::BOOKING_STATUS_PENDING,
+											'booking_time' => $this->booking_date_time,
 									);
 									//Add data to database
 									$this->common->insert( 'launch_cabin_booked', $booked_item_data );
@@ -231,7 +243,6 @@ class Booking extends RM_Controller {
 							$paid_amount += $booking_charge;
 							$paid_amount += $vat;
 
-
 							$booking_item_data = array();
 							$booking_item_data = array(
 									'booking_ref_num' => trim($this->input->post('booking_ref_number')),
@@ -244,12 +255,42 @@ class Booking extends RM_Controller {
 									'booking_charge' => $booking_charge,
 									'paid_amount' => $paid_amount,
 									'vat' => $vat,
-									'booking_status' => 'Confirm',
-									'booking_date' => date('Y-m-d H:i:s'),
-									'booking_by' => $this->session->userdata('user_id'),
+									'booking_status' => self::BOOKING_STATUS_CONFIRM,
+									'booking_date' => $this->booking_date_time,
+									'booking_by' => $this->currently_logged_user,
 							);
 							//Add data to database
 							$new_booking_id = $this->common->insert( 'launch_booking', $booking_item_data );
+
+							//User balance transaction
+							$trans_data = array(
+									'user_id' => $this->currently_logged_user,
+									'transaction_date' => $this->booking_date_time,
+									'booking_amount' => $cabin_price,
+									'booking_fee' => $booking_charge,
+									'shipping_charge' => 0,
+									'handling_fee' => 0,
+									'vat' => $vat,
+									'gross_amount' => $paid_amount,
+									'net_amount' => $cabin_price,
+									'transaction_type' => USER_TRANS_TYPE_PAYMENT_TO,
+									'transaction_for' => 'Cabin Booking',
+									'payment_method' => '',
+									'payment_status' => PAYMENT_STATUS_CONFIRMED,
+									'updated_at' => $this->booking_date_time,
+									'updated_by' => $this->currently_logged_user,
+							);
+							$trans_id = $this->common->insert( 'user_transactions', $trans_data );
+							$account_balance = 0;
+							$account_balance = $this->common->get_user_meta($this->currently_logged_user, 'account_balance');
+							$account_balance = $account_balance - $paid_amount;
+							$this->common->update_user_meta($this->currently_logged_user, 'account_balance', $account_balance);
+							$transaction_id = time().'X'.$this->currently_logged_user.'X'.$trans_id;
+							$trans_arr = array(
+									'transaction_id' => $transaction_id,
+									'balance' => $account_balance,
+							);
+							$this->common->update('user_transactions', $trans_arr, array( 'ID' => $trans_id ));
 
 							$booking_ref_number = $this->input->post('booking_ref_number');
 							foreach ($cabin_booking_cart_items as $cabin_id => $cabin_details) {
@@ -267,7 +308,7 @@ class Booking extends RM_Controller {
 										'cabin_id' => $cabin_id,
 										'booking_ref_number' => $booking_ref_number,
 								);
-								//Add data to database
+								//confirm booking
 								$this->common->update('launch_cabin_booked', $booked_item_data, $booked_item_where);
 							}
 							//Reset all seasons for booking
@@ -442,5 +483,55 @@ class Booking extends RM_Controller {
 			}
 			return $result_routes;
 		}
+
+
+		public function mybooking($booking_type = 'launch', $user_solt_id = NULL){
+
+			$this->data['css_files'] = array(
+				base_url('assets/global/plugins/datatables/datatables.min.css'),
+				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
+			);
+
+			$this->data['js_files'] = array(
+				base_url('assets/global/scripts/datatable.js'),
+				base_url('assets/global/plugins/datatables/datatables.min.js'),
+				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+				base_url('seatassets/js/table-datatables-responsive.js'),
+			);
+
+			if($user_solt_id != NULL){
+					$user_id = decrypt($user_solt_id)*1;
+			}else{
+					$user_id = $this->currently_logged_user;
+			}
+
+			$condition = '1=1 ';
+			$condition .= ' AND booking_by = "'.$user_id.'"';
+
+			$join_arr_left = array(
+				'launch_cabin_booked lcb' => 'lcb.booking_id = lb.ID',
+				'launch l' => 'lcb.launch_id = l.ID',
+				'launch_schedule ls' => 'lcb.schedule_id = ls.sche_id',
+			);
+
+
+			$limit = 1000;
+			$offset = 0;
+			$order_by = 'ID ';
+			$order = 'DESC ';
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'launch_booking lb', $condition, 'lb.*, lcb.booking_id, lcb.schedule_id, lcb.launch_id, lcb.cabin_id, lcb.cabin_number, lcb.travel_date, lcb.booking_status, l.launch_name, ls.start_from, ls.destination_to', $sort, $limit, $offset, $join_arr_left );
+
+			$this->data['launch_booking_rows'] = $result;
+
+
+			$this->data['title'] = 'My Booking';
+			$this->load->view('templates/header', $this->data);
+			$this->load->view('templates/sidebar', $this->data);
+			$this->load->view('booking/my-booking', $this->data);
+			$this->load->view('templates/footer', $this->data);
+
+		}//EOF mybooking
 
 }

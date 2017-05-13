@@ -35,6 +35,9 @@ $route['companies/(:any)'] = 'companies/$1';
 
 $route['booking']   = 'booking';
 $route['booking/(:any)'] = 'booking/$1';
+
+$route['accounts']   = 'accounts';
+$route['accounts/(:any)'] = 'accounts/$1';
 // $route['booking/launch-cabin/(:any)'] = 'booking/launch_cabin/$1';
 // $route['booking/launch-cabin-request/(:any)'] = 'booking/launch_cabin_request/$1';
 
