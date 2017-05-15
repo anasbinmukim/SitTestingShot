@@ -31,7 +31,13 @@ class Launch extends RM_Controller {
 					base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
 				);
 
-				$result = $this->common->get_all( 'launch' );
+				$join_arr_left = array(
+					'launch_route lr' => 'lr.route_id = l.route_id',
+				);
+				$order_by = 'launch_name ';
+				$order = 'ASC ';
+				$sort = $order_by.' '.$order;
+				$result = $this->common->get_all( 'launch l', '', 'l.*, lr.route, lr.route_path, lr.place_1, lr.place_2', $sort, '', '', $join_arr_left );
 				$this->data['launch_rows'] = $result;
 
         $this->data['title'] = 'Launch Booking'; // Capitalize the first letter
@@ -185,6 +191,7 @@ class Launch extends RM_Controller {
 	        base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
 	        base_url('assets/global/plugins/select2/css/select2.min.css'),
 	        base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
+					base_url('assets/global/plugins/jquery-nestable/jquery.nestable.css'),
 	      );
 
 	      $this->data['js_files'] = array(
@@ -194,12 +201,22 @@ class Launch extends RM_Controller {
 					base_url('seatassets/js/table-datatables-responsive.js'),
 	        base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
 	        base_url('assets/global/plugins/select2/js/select2.full.min.js'),
+					base_url('assets/global/plugins/jquery-nestable/jquery.nestable.js'),
+					base_url('assets/pages/scripts/ui-nestable.min.js'),
 	        base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
 	      );
 
 				if($display == 'route'){
 		        $this->data['title'] = 'Launch Route'; // Capitalize the first letter
-						$result = $this->common->get_all( 'launch_route' );
+						$join_arr_left = array(
+							'via_place vp_1' => 'vp_1.ID = lr.place_1',
+							'via_place vp_2' => 'vp_2.ID = lr.place_2',
+						);
+						$order_by = 'route ';
+						$order = 'ASC ';
+						$sort = $order_by.' '.$order;
+						$result = $this->common->get_all( 'launch_route lr', '', 'lr.*, vp_1.place_name as place_1, vp_2.place_name as place_2', $sort, '', '', $join_arr_left );
+						$this->data['launch_rows'] = $result;
 						$this->data['launch_route_rows'] = $result;
 				}
 
@@ -244,10 +261,43 @@ class Launch extends RM_Controller {
       //Add New Company
       if(($this->input->post('register_new_route') !== NULL) || ($this->input->post('update_route') !== NULL)){
           $this->form_validation->set_rules('route', 'Route Name', 'trim|required|htmlspecialchars|min_length[4]');
-          $this->form_validation->set_rules('place_1', 'Place Start', 'trim|required|htmlspecialchars|min_length[2]');
-          $this->form_validation->set_rules('place_2', 'Place End', 'trim|required|htmlspecialchars|min_length[2]');
-					$this->form_validation->set_rules('route_path', 'Route Path', 'trim|htmlspecialchars');
-          $this->form_validation->set_rules('route_search', 'Route Search', 'trim|htmlspecialchars');
+          $this->form_validation->set_rules('place_1', 'Place Start', 'trim|required');
+          $this->form_validation->set_rules('place_2', 'Place End', 'trim|required');
+
+					$route_path = '';
+					$route_search = '';
+
+					$route_via_comma_places = '';
+					$route_via_dash_places = '';
+					if($this->input->post('route_via_places') !== NULL){
+						$route_via_places = $this->input->post('route_via_places');
+						$route_via_dash_places = implode('-', $route_via_places);
+						$route_via_comma_places = implode(', ', $route_via_places);
+					}
+
+					$route_path_reorder_dash_str = '';
+					$route_path_reorder_comma_str = '';
+					if($this->input->post('route_path_order') !== NULL){
+						$route_path_order_arr = json_decode($this->input->post('route_path_order'));
+						$route_path_reorder = array();
+						foreach ($route_path_order_arr as $reorder_place) {
+							$route_path_reorder[] = $reorder_place->id;
+						}
+						$route_path_reorder_dash_str = implode('-', $route_path_reorder);
+						$route_path_reorder_comma_str = implode(', ', $route_path_reorder);
+					}
+
+					if($this->input->post('update_route') !== NULL){
+							$route_path = $route_path_reorder_dash_str;
+							$route_search = $route_path_reorder_comma_str;
+							if($this->input->post('route_via_places') !== NULL){
+								$route_path = $route_via_dash_places;
+								$route_search = $route_via_comma_places;
+							}
+					}else{
+							$route_path = $route_via_dash_places;
+							$route_search = $route_via_comma_places;
+					}
 
           if( !$this->form_validation->run() ) {
   					$error_message_array = $this->form_validation->error_array();
@@ -257,8 +307,8 @@ class Launch extends RM_Controller {
               'route'=> trim($this->input->post('route')),
               'place_1'=> trim($this->input->post('place_1')),
               'place_2'=> trim($this->input->post('place_2')),
-              'route_path'=> trim($this->input->post('route_path')),
-              'route_search'=> trim($this->input->post('route_search')),
+              'route_path'=> trim($route_path),
+							'route_search'=> trim($route_search),
             );
 
             if(($this->input->post('update_route_id') !== NULL) && ($this->input->post('update_route') !== NULL)){
@@ -268,8 +318,8 @@ class Launch extends RM_Controller {
                 redirect('/launch/route');
             }else{
               $route_id = $this->common->insert( 'launch_route', $data_arr );
-              $this->session->set_flashdata('success_msg','Added done!');
-              redirect('/launch/route');
+              $this->session->set_flashdata('success_msg','Added done! Please re-order route path!');
+              redirect('launch/route/edit/'.encrypt($route_id));
             }
 
 
@@ -312,7 +362,14 @@ class Launch extends RM_Controller {
 
 				if($display == 'schedule'){
 		        $this->data['title'] = 'Launch schedule'; // Capitalize the first letter
-						$result = $this->common->get_all( 'launch_schedule' );
+						$join_arr_left = array(
+							'launch_route lr' => 'ls.route_id = lr.route_id',
+							'launch l' => 'ls.launch_id = l.ID',
+						);
+						$order_by = 'sche_id ';
+						$order = 'DESC ';
+						$sort = $order_by.' '.$order;
+						$result = $this->common->get_all( 'launch_schedule ls', '', 'ls.*, l.launch_name, lr.route_path', $sort, '', '', $join_arr_left );
 						$this->data['launch_schedule_rows'] = $result;
 				}
 
@@ -388,8 +445,6 @@ class Launch extends RM_Controller {
               'launch_id'=> trim($this->input->post('launch_id')),
               'date'=> trim($this->input->post('date')),
               'route_id'=> trim($this->input->post('route_id')),
-							'route_name'=> $route_name,
-							'via_places'=> $route_path,
 							'start_from'=> trim($this->input->post('start_from')),
 							'destination_to'=> trim($this->input->post('destination_to')),
               'start_time'=> trim($this->input->post('time_start')),
@@ -597,7 +652,7 @@ class Launch extends RM_Controller {
 			return $result_launch;
 		}
 
-		public function manage_booking(){
+		public function __________manage_booking(){
 			$this->data['title'] = 'Manage Booking'; // Capitalize the first letter
 
 			$this->data['css_files'] = array(
@@ -623,7 +678,7 @@ class Launch extends RM_Controller {
 		}
 
 
-		public function manage_booking_rowdata(){
+		public function _______manage_booking_rowdata(){
 			$iTotalRecords = 178;
 		  $iDisplayLength = intval($_REQUEST['length']);
 		  $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;

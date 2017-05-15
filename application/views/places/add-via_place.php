@@ -12,7 +12,11 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>Via place</span>
+            <a href="<?php echo site_url('/places/view/via_place'); ?>">Via Places</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>Add Via place</span>
         </li>
     </ul>
 </div>
@@ -37,32 +41,21 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                           <form action="" method="post">
                               <div class="form-group">
                                   <label class="control-label">Place name</label>
-                                  <input type="text" name="place_name" class="form-control" /> </div>
+                                  <input type="text" name="place_name" class="form-control" value="<?php echo set_value('place_name'); ?>" /> </div>
                               <div class="form-group">
                                   <label class="control-label">Place address</label>
-                                  <input type="text" name="address" class="form-control" /> </div>
+                                  <input type="text" name="address" class="form-control" value="<?php echo set_value('address'); ?>" /> </div>
           										<div class="form-group">
               										<label class="control-label">Select Thana/Upazilla</label>
               										<select name="thana_id" id="thana_id" class="form-control select2me">
               										<?php
-              											$thana_arr = get_thana_arr();
+              											$thana_arr = get_thana_under_dist_arr();
               											foreach($thana_arr as $tkey => $tvalue){
               												echo '<option value="'.$tkey.'">'.$tvalue.'</option>';
               											}
               										?>
               										</select>
           										</div>
-                              <div class="form-group">
-                                  <label class="control-label">Select District</label>
-                                  <select name="district_id" id="district_id" class="form-control select2me">
-                                  <?php
-                                    $district_arr = get_district_arr();
-                                    foreach($district_arr as $dkey => $dvalue){
-                                      echo '<option value="'.$dkey.'">'.$dvalue.'</option>';
-                                    }
-                                  ?>
-                                  </select>
-                              </div>
                               <div class="form-group">
                                   <label class="control-label">Type</label>
                                   <select name="type" id="type" class="form-control select2me">

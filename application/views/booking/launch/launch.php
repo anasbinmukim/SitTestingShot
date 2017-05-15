@@ -28,23 +28,17 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     <tbody>
                       <?php foreach ($launch_schedule_rows as $schedule) { ?>
                         <?php
-                            $launch_id = $schedule->launch_id;
-                            $launch_name = '';
-                            if(isset($launch_arr[$schedule->launch_id]['launch_name'])){
-                                  $launch_name = $launch_arr[$schedule->launch_id]['launch_name'];
-                            }
-
                             $available_cabins = 0;
                           ?>
                           <tr>
-                              <td><?php echo $launch_name; ?></td>
+                              <td><?php echo $schedule->launch_name; ?></td>
                               <td><?php echo $schedule->date; ?></td>
                               <td><?php echo $schedule->start_from; ?></td>
                               <td><?php echo $schedule->destination_to; ?></td>
-                              <td><?php echo $schedule->route_name; ?></td>
+                              <td><?php echo $schedule->route_path; ?></td>
                               <td><?php echo $schedule->start_time; ?></td>
                               <td><?php echo $schedule->destination_time; ?></td>
-                              <td><?php echo '<div class="center-block"><a class="btn green btn-outline btn-circle btn-sm" href="'.site_url('/booking/launchcabin/'.encrypt($schedule->sche_id)).'" title="Available Cabins">Cabins ('.$available_cabins.') </a>'; ?></td>
+                              <td><?php echo '<div class="center-block"><a class="btn green btn-outline btn-circle btn-sm" href="'.site_url('/LaunchBooking/Cabin/'.encrypt($schedule->sche_id)).'" title="Available Cabins">Cabins ('.$available_cabins.') </a>'; ?></td>
                           </tr>
                         <?php } ?>
                     </tbody>

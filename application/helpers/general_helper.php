@@ -99,7 +99,6 @@ if ( !function_exists('get_thana_arr') ) {
 if ( !function_exists('get_via_places_arr') ) {
 	function get_via_places_arr($type = 'launch') {
 
-    $district_arr = get_district_arr();
     $thana_arr = get_thana_arr();
     $condition = array('type'=> $type);
     $CI =& get_instance();
@@ -113,7 +112,7 @@ if ( !function_exists('get_via_places_arr') ) {
     foreach ($via_places as $via_place) {
       if(($via_place['place_name'] != '') && ($via_place['ID'] > 0)){
           $place_id = $via_place['ID'];
-          $place_name_detail = $via_place['place_name'].', '.$via_place['address'].', '.$thana_arr[$via_place['thana_id']].', '.$district_arr[$via_place['district_id']];
+          $place_name_detail = $via_place['place_name'].', '.$via_place['address'].', '.$thana_arr[$via_place['thana_id']];
           $result_via_places[$place_id] = array(
               'place_name' => $via_place['place_name'],
               'detail' => $place_name_detail
@@ -140,7 +139,7 @@ if ( !function_exists('get_thana_under_dist_arr') ) {
     foreach ($thanas as $thana) {
       if(($thana['thana_name'] != '') && ($thana['ID'] > 0)){
           $thana_id = $thana['ID'];
-          $thana_name = $thana['thana_name'].'->'.$district_arr[$thana['district_id']];
+          $thana_name = $thana['thana_name'].' -> '.$district_arr[$thana['district_id']];
           $result_thanas[$thana_id] = $thana_name;
       }
     }
@@ -346,12 +345,13 @@ if ( !function_exists('get_launch_cabin_type') ) {
 if ( !function_exists('get_user_role') ) {
 	function get_user_role( $key  = 'all') {
 		$st_arr = array(
-			'administrator' => 'Administrator',
+      'subscriber' => 'Subscriber',
 			'agent' => 'Agent',
       'supervisor' => 'Supervisor',
+      'company_accountant' => 'Company Accountant',
+      'company_manager' => 'Company Manager',
 			'company_owner' => 'Company Owner',
-			'company_manager' => 'Company Manager',
-			'subscriber' => 'Subscriber',
+      'administrator' => 'Administrator',
 		);
 		if ( $key  == 'all' ) {
 			return $st_arr;

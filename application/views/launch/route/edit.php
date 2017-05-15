@@ -44,13 +44,13 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       <label class="control-label">Place Start/End</label>
                                         <select name="place_1" id="place_1" class="form-control select2me">
                                         <?php
-                                          $district_arr = get_district_arr();
+                                          $via_place_arr = get_via_places_arr();
                                           $place_1 = $route_data['place_1'];
-                                          foreach($district_arr as $dkey => $dvalue){
+                                          foreach($via_place_arr as $vpkey => $vpvalue){
                                             $selected = 0;
-                                            if($place_1 == $dvalue)
+                                            if($place_1 == $vpkey)
                                               $selected = 'selected = "selected" ';
-                                            echo '<option '.$selected.' value="'.$dvalue.'">'.$dvalue.'</option>';
+                                            echo '<option '.$selected.' value="'.$vpkey.'">'.$vpvalue['place_name'].'</option>';
                                           }
                                         ?>
                                       </select>
@@ -59,25 +59,49 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       <label class="control-label">Place Start/End</label>
                                         <select name="place_2" id="place_2" class="form-control select2me">
                                         <?php
-                                          $district_arr = get_district_arr();
+                                          $via_place_arr = get_via_places_arr();
                                           $place_2 = $route_data['place_2'];
-                                          foreach($district_arr as $dkey => $dvalue){
+                                          foreach($via_place_arr as $vpkey => $vpvalue){
                                             $selected = 0;
-                                            if($place_2 == $dvalue)
+                                            if($place_2 == $vpkey)
                                               $selected = 'selected = "selected" ';
-                                            echo '<option '.$selected.' value="'.$dvalue.'">'.$dvalue.'</option>';
+                                            echo '<option '.$selected.' value="'.$vpkey.'">'.$vpvalue['place_name'].'</option>';
                                           }
                                         ?>
                                       </select>
                                     </div>
                               </div>
                               <div class="col-md-6">
+                                <div class="form-group select2-bootstrap-prepend">
+                                    <label class="control-label">Route Via Places</label>
+                                    <select name="route_via_places[]" id="route_via_places" class="form-control select2me"  multiple>
+                                      <?php
+                                        $via_place_arr = get_via_places_arr();
+                                        foreach($via_place_arr as $vpkey => $vpvalue){
+                                          echo '<option value="'.$vpvalue['place_name'].'">'.$vpvalue['place_name'].'</option>';
+                                        }
+                                      ?>
+                                    </select>
+                                  </div>
                                   <div class="form-group">
-                                      <label class="control-label">Route path</label>
-                                      <textarea class="form-control" placeholder="dhaka-barishal" name="route_path"><?php echo html_escape($route_data['route_path']); ?></textarea></div>
-                                  <div class="form-group">
-                                      <label class="control-label">Route Search</label>
-                                      <textarea class="form-control" placeholder="Dhaka, Barishal" name="route_search"><?php echo html_escape($route_data['route_search']); ?></textarea></div>
+                                    <input type="hidden" id="nestable_list_1_output" name="route_path_order" value="">
+                                    <label class="control-label">Route Path Re-Order</label>
+                                    <div class="dd" id="nestable_list_1">
+                                      <ol class="dd-list">
+                                        <?php
+                                          $route_path = $route_data['route_path'];
+                                          $route_path_arr = explode('-', $route_path);
+
+                                          foreach ($route_path_arr as $key => $value) {
+                                        ?>
+                                          <li class="dd-item" data-id="<?php echo $value; ?>">
+                                              <div class="dd-handle"> <?php echo $value; ?> </div>
+                                          </li>
+                                          <?php } ?>
+                                      </ol>
+                                    </div>
+                                  </div>
+
                               </div>
 
 

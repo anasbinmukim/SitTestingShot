@@ -43,24 +43,18 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                             <th class="min-phone-l">Address</th>
                             <th class="none">Thana</th>
                             <th class="none">District</th>
+                            <th class="none">Place type</th>
                             <th width="20" class="all">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                      <?php
-                        $thana_arr = get_thana_arr();
-                        $district_arr = get_district_arr();
-                      ?>
                       <?php foreach ($via_place_rows as $places) { ?>
-                          <?php
-                            $thana_name = $thana_arr[$places->thana_id];
-                            $district_name = $district_arr[$places->district_id];
-                          ?>
                           <tr>
                               <td><?php echo $places->place_name; ?></td>
-                              <td><?php echo $places->address; ?>, <?php echo $thana_name; ?>, <?php echo $district_name; ?></td>
-                              <td><?php echo $thana_name; ?></td>
-                              <td><?php echo $district_name; ?></td>
+                              <td><?php echo $places->address; ?>, <?php echo $places->thana_name; ?></td>
+                              <td><?php echo $places->thana_name; ?></td>
+                              <td><?php echo $places->district_name; ?></td>
+                              <td><?php echo $places->type; ?></td>
                               <td><?php echo '<div class="center-block"><a href="'.site_url('places/edit/via_place/'.encrypt($places->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this place?\');" href="'.site_url('places/delete/via_place/'.encrypt($places->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
                           </tr>
                         <?php } ?>

@@ -19,7 +19,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a href="<?php echo site_url('/booking/launch'); ?>">Launch</a>
+            <a href="<?php echo site_url('/LaunchBooking'); ?>">Launch</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>

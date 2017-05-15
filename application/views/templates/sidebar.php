@@ -50,12 +50,12 @@
                         </a>
                     </li>
                     <li class="nav-item  ">
-                        <a href="<?php echo site_url('booking/launch'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('LaunchBooking'); ?>" class="nav-link ">
                             <span class="title">Booking</span>
                         </a>
                     </li>
                     <li class="nav-item  ">
-                        <a href="<?php echo site_url('booking/launch/mycabin'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('LaunchBooking/MyCabin'); ?>" class="nav-link ">
                             <span class="title">My Cabin</span>
                         </a>
                     </li>
@@ -149,11 +149,6 @@
                     <li class="nav-item  ">
                         <a href="<?php echo site_url('places/view/division'); ?>" class="nav-link ">
                             <span class="title">Division</span>
-                        </a>
-                    </li>
-                    <li class="nav-item  ">
-                        <a href="<?php echo site_url('places/view/zone'); ?>" class="nav-link ">
-                            <span class="title">Zone</span>
                         </a>
                     </li>
                 </ul>

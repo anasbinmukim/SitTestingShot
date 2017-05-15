@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Booking extends RM_Controller {
+class LaunchBooking extends RM_Controller {
 
 		public $booking_date_time;
 		public $currently_logged_user;
@@ -22,17 +22,127 @@ class Booking extends RM_Controller {
 				$this->booking_date_time = date('Y-m-d H:i:s');
 				$this->currently_logged_user = $this->session->userdata('user_id');
 		}
+
 		public function index()
 		{
-        $this->data['title'] = 'Booking';
 
-        $this->load->view('templates/header', $this->data);
+				// Start: Process launch schedule
+				$this->process_launch_schedule_search();
+				// End: Process launch schedule
+
+				$this->data['css_files'] = array(
+					base_url('assets/global/plugins/datatables/datatables.min.css'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
+					base_url('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css'),
+				);
+
+				$this->data['js_files'] = array(
+					base_url('assets/global/scripts/datatable.js'),
+					base_url('assets/global/plugins/datatables/datatables.min.js'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+					base_url('seatassets/js/table-datatables-responsive.js'),
+					base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
+					base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
+				);
+
+				$this->data['launch_arr'] = $this->get_launch_arr();
+				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
+
+				$schedule_condition = '1=1 ';
+
+				$today = date('Y-m-d');
+				$schedule_condition .= ' AND date >= "'.$today.'"';
+
+
+				$join_arr_left = array(
+					'launch_route lr' => 'ls.route_id = lr.route_id',
+					'launch l' => 'ls.launch_id = l.ID',
+				);
+				$order_by = 'sche_id ';
+				$order = 'DESC ';
+				$sort = $order_by.' '.$order;
+				$result = $this->common->get_all( 'launch_schedule ls', $schedule_condition, 'ls.*, l.launch_name, lr.route_path', $sort, '', '', $join_arr_left );
+
+
+				$this->data['launch_schedule_rows'] = $result;
+				$this->data['title'] = 'Cabin Booking';
+				$this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
-        $this->load->view('booking/booking', $this->data);
-        $this->load->view('templates/footer', $this->data);
-		}
+				$this->load->view('booking/launch/search-form', $this->data);
+				$this->load->view('booking/launch/launch', $this->data);
+				$this->load->view('templates/footer', $this->data);
 
-		public function launchcabin($schedule_solt_id = NULL, $request_cabin_solt_ids = NULL, $cabin_item_solt_id = NULL, $booking_ref_number = NULL)
+
+		}//EOF launch booking
+
+
+		public function search($launch_id = 'id', $travel_date = 'date', $start_from = 'from', $destination_to = 'to', $schedule_id = NULL)
+		{
+
+				// Start: Process launch schedule
+				$this->process_launch_schedule_search();
+				// End: Process launch schedule
+
+				$this->data['css_files'] = array(
+					base_url('assets/global/plugins/datatables/datatables.min.css'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
+					base_url('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css'),
+				);
+
+				$this->data['js_files'] = array(
+					base_url('assets/global/scripts/datatable.js'),
+					base_url('assets/global/plugins/datatables/datatables.min.js'),
+					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+					base_url('seatassets/js/table-datatables-responsive.js'),
+					base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
+					base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
+				);
+
+				$this->data['launch_arr'] = $this->get_launch_arr();
+				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
+
+				$schedule_condition = '1=1 ';
+
+				if(($launch_id != 'id') && ($launch_id > 0)){
+					$schedule_condition .= ' AND launch_id = "'.$launch_id.'"';
+				}
+
+				if(($travel_date != 'date') && ($travel_date)){
+					$schedule_condition .= ' AND date = "'.$travel_date.'"';
+				}else{
+					$today = date('Y-m-d');
+					$schedule_condition .= ' AND date >= "'.$today.'"';
+				}
+
+				if(($start_from != 'from') && ($start_from !='')){
+					$schedule_condition .= ' AND start_from LIKE "'.$start_from.'"';
+				}
+
+				if(($destination_to != 'to') && ($destination_to != '')){
+					$schedule_condition .= ' AND destination_to LIKE "'.$destination_to.'"';
+				}
+
+				$join_arr_left = array(
+					'launch_route lr' => 'ls.route_id = lr.route_id',
+					'launch l' => 'ls.launch_id = l.ID',
+				);
+				$order_by = 'sche_id ';
+				$order = 'DESC ';
+				$sort = $order_by.' '.$order;
+				$result = $this->common->get_all( 'launch_schedule ls', $schedule_condition, 'ls.*, l.launch_name, lr.route_path', $sort, '', '', $join_arr_left );
+
+				$this->data['launch_schedule_rows'] = $result;
+				$this->data['title'] = 'Cabin Booking';
+				$this->load->view('templates/header', $this->data);
+				$this->load->view('templates/sidebar', $this->data);
+				$this->load->view('booking/launch/search-form', $this->data);
+				$this->load->view('booking/launch/launch', $this->data);
+				$this->load->view('templates/footer', $this->data);
+
+
+		}//EOF launch booking
+
+		public function Cabin($schedule_solt_id = NULL, $request_cabin_solt_ids = NULL, $cabin_item_solt_id = NULL, $booking_ref_number = NULL)
 		{
 				if(($this->input->post('submit_cabins_request') !== NULL) && ($this->input->post('cabin_ids') !== NULL)){
 						$cabin_ids = $this->input->post('cabin_ids');
@@ -66,7 +176,7 @@ class Booking extends RM_Controller {
 								$this->session->set_userdata('cabin_booking_cart_items', $requested_cabin_cart_data);
 								$comma_cabin_ids = implode(",", $cabin_ids);
 								$cabins_solt_ids = encrypt($comma_cabin_ids);
-								$cart_items_url = '/booking/launchcabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
+								$cart_items_url = '/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
 								$this->session->set_userdata('cart_items_url', $cart_items_url);
 								redirect($cart_items_url);
 								exit;
@@ -91,7 +201,7 @@ class Booking extends RM_Controller {
 						$this->session->unset_userdata('cabin_booking_cart_items');
 						$this->session->unset_userdata('cart_items_url');
 
-						redirect('/booking/launch');
+						redirect('/LaunchBooking');
 						exit;
 				}
 
@@ -113,7 +223,7 @@ class Booking extends RM_Controller {
 	      $schedule_id = decrypt($schedule_solt_id)*1;
 				if( !is_int($schedule_id) || !$schedule_id ) {
 		        $this->session->set_flashdata('delete_msg','Can not be booked');
-						redirect('/booking/launch');
+						redirect('/LaunchBooking');
 				}else{
 		        $launch_schedule_data_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
 		        $this->data['launch_schedule_data'] = $launch_schedule_data_details;
@@ -135,7 +245,7 @@ class Booking extends RM_Controller {
 
 					//Redirect for unauthorized access
 					if(!$this->session->userdata('booking_ref_number')){
-						redirect('/booking/launch');
+						redirect('/LaunchBooking');
 						exit;
 					}
 
@@ -169,12 +279,12 @@ class Booking extends RM_Controller {
 							if(is_array($request_cabin_ids) && (count($request_cabin_ids)> 0)){
 								$comma_cabin_ids = implode(",", $request_cabin_ids);
 								$cabins_solt_ids = encrypt($comma_cabin_ids);
-								$cart_items_url = '/booking/launchcabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
+								$cart_items_url = '/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
 								$this->session->set_userdata('cart_items_url', $cart_items_url);
 								redirect($cart_items_url);
 								exit;
 							}else{
-								redirect('/booking/launchcabin/'.$schedule_solt_id);
+								redirect('/LaunchBooking/Cabin/'.$schedule_solt_id);
 								exit;
 							}
 					}
@@ -317,7 +427,7 @@ class Booking extends RM_Controller {
 							$this->session->unset_userdata('cart_items_url');
 
 							$this->session->set_flashdata('success_msg','Booking Complete');
-							redirect('/booking/launch');
+							redirect('/LaunchBooking');
 							exit;
 						}//eof if no error
 				}
@@ -355,65 +465,6 @@ class Booking extends RM_Controller {
 				return $result;
 		}
 
-		public function launch($launch_id = 'id', $travel_date = 'date', $start_from = 'from', $destination_to = 'to', $schedule_id = NULL)
-		{
-
-				// Start: Process launch schedule
-				$this->process_launch_schedule_search();
-				// End: Process launch schedule
-
-				$this->data['css_files'] = array(
-					base_url('assets/global/plugins/datatables/datatables.min.css'),
-					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
-					base_url('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css'),
-				);
-
-				$this->data['js_files'] = array(
-					base_url('assets/global/scripts/datatable.js'),
-					base_url('assets/global/plugins/datatables/datatables.min.js'),
-					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
-					base_url('seatassets/js/table-datatables-responsive.js'),
-					base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
-					base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
-				);
-
-				$this->data['launch_arr'] = $this->get_launch_arr();
-				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
-
-				$schedule_condition = '1=1 ';
-
-				if(($launch_id != 'id') && ($launch_id > 0)){
-					$schedule_condition .= ' AND launch_id = "'.$launch_id.'"';
-				}
-
-				if(($travel_date != 'date') && ($travel_date)){
-					$schedule_condition .= ' AND date = "'.$travel_date.'"';
-				}else{
-					$today = date('Y-m-d');
-					$schedule_condition .= ' AND date >= "'.$today.'"';
-				}
-
-				if(($start_from != 'from') && ($start_from !='')){
-					$schedule_condition .= ' AND start_from LIKE "'.$start_from.'"';
-				}
-
-				if(($destination_to != 'to') && ($destination_to != '')){
-					$schedule_condition .= ' AND destination_to LIKE "'.$destination_to.'"';
-				}
-
-
-				$result = $this->common->get_all('launch_schedule', $schedule_condition);
-				$this->data['launch_schedule_rows'] = $result;
-				$this->data['title'] = 'Cabin Booking';
-				$this->load->view('templates/header', $this->data);
-				$this->load->view('templates/sidebar', $this->data);
-				$this->load->view('booking/launch/search-form', $this->data);
-				$this->load->view('booking/launch/launch', $this->data);
-				$this->load->view('templates/footer', $this->data);
-
-
-		}//EOF launch booking
-
 		//Process launch schedule search
 		private function process_launch_schedule_search(){
 				if(($this->input->post('launch_booking_search') !== NULL)){
@@ -441,7 +492,7 @@ class Booking extends RM_Controller {
 						}else{
 								$destination_to = 'to';
 						}
-						redirect('/booking/launch/'.$launch_id.'/'.$travel_date.'/'.$start_from.'/'.$destination_to);
+						redirect('/LaunchBooking/Search/'.$launch_id.'/'.$travel_date.'/'.$start_from.'/'.$destination_to);
 						exit;
 
 				}
@@ -485,7 +536,7 @@ class Booking extends RM_Controller {
 		}
 
 
-		public function mybooking($booking_type = 'launch', $user_solt_id = NULL){
+		public function MyCabin($booking_type = 'launch', $user_solt_id = NULL){
 
 			$this->data['css_files'] = array(
 				base_url('assets/global/plugins/datatables/datatables.min.css'),
@@ -512,16 +563,18 @@ class Booking extends RM_Controller {
 				'launch_cabin_booked lcb' => 'lcb.booking_id = lb.ID',
 				'launch l' => 'lcb.launch_id = l.ID',
 				'launch_schedule ls' => 'lcb.schedule_id = ls.sche_id',
+				'launch_route lr' => 'ls.route_id = lr.route_id',
 			);
 
 
 			$limit = 1000;
 			$offset = 0;
+			$group_by = ' lcb.booking_id ';
 			$order_by = 'ID ';
 			$order = 'DESC ';
 			$sort = $order_by.' '.$order;
 
-			$result = $this->common->get_all( 'launch_booking lb', $condition, 'lb.*, lcb.booking_id, lcb.schedule_id, lcb.launch_id, lcb.cabin_id, lcb.cabin_number, lcb.travel_date, lcb.booking_status, l.launch_name, ls.start_from, ls.destination_to', $sort, $limit, $offset, $join_arr_left );
+			$result = $this->booking_model->get_all( 'launch_booking lb', $condition, 'lb.*, lcb.booking_id, lcb.schedule_id, lcb.launch_id, lcb.cabin_id, lcb.cabin_number, lcb.travel_date, lcb.booking_status, l.launch_name, ls.start_from, ls.destination_to, lr.route as route_name, lr.route_path as via_places, GROUP_CONCAT(lcb.cabin_number SEPARATOR \' & \') total_cabin_numbers', $group_by, $sort, $limit, $offset, $join_arr_left );
 
 			$this->data['launch_booking_rows'] = $result;
 
@@ -529,7 +582,7 @@ class Booking extends RM_Controller {
 			$this->data['title'] = 'My Booking';
 			$this->load->view('templates/header', $this->data);
 			$this->load->view('templates/sidebar', $this->data);
-			$this->load->view('booking/my-booking', $this->data);
+			$this->load->view('booking/launch/my-booking', $this->data);
 			$this->load->view('templates/footer', $this->data);
 
 		}//EOF mybooking

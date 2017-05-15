@@ -89,7 +89,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                           $selected = 0;
                                           if($start_from == $dvalue['place_name'])
                                             $selected = 'selected = "selected" ';
-                                          echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['detail'].'</option>';
+                                          echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['place_name'].'</option>';
                                         }
                                       ?>
                                     </select>
@@ -107,7 +107,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                           $selected = 0;
                                           if($destination_to == $dvalue['place_name'])
                                             $selected = 'selected = "selected" ';
-                                          echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['detail'].'</option>';
+                                          echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['place_name'].'</option>';
                                         }
                                       ?>
                                     </select>

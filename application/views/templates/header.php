@@ -201,7 +201,7 @@
                                             <i class="icon-user"></i> My Profile </a>
                                     </li>
                                     <li>
-                                        <a href="#">
+                                        <a href="<?php echo site_url('/booking/mybooking'); ?>">
                                             <i class="icon-calendar"></i> My Booking </a>
                                     </li>
                                     <li class="divider"> </li>

@@ -27,7 +27,7 @@ $search_date = date('Y-m-d');
                 </div>
                 <div class="actions">
                     <div class="btn-group btn-group-devided">
-                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/booking/launch'); ?>">Reload</a>
+                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/LaunchBooking'); ?>">Reload</a>
                     </div>
                 </div>
             </div>
@@ -38,6 +38,7 @@ $search_date = date('Y-m-d');
                           <div class="form-group">
                             <label class="control-label">Select Launch</label>
                               <select name="launch_id" id="launch_id" class="form-control select2me">
+                                  <<option value="id">Select Launch</option>
                               <?php
                                 foreach($launch_arr as $lkey => $lvalue){
                                   echo '<option value="'.$lvalue['ID'].'">'.$lvalue['launch_name'].'</option>';
@@ -63,10 +64,11 @@ $search_date = date('Y-m-d');
                           <div class="form-group">
                             <label class="control-label">Leaving From</label>
                               <select name="start_from" id="start_from" class="form-control select2me">
+                                  <<option value="from">Select From</option>
                               <?php
                                 $via_places_arr = get_via_places_arr();
                                 foreach($via_places_arr as $dkey => $dvalue){
-                                  echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['detail'].'</option>';
+                                  echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['place_name'].'</option>';
                                 }
                               ?>
                             </select>
@@ -76,10 +78,11 @@ $search_date = date('Y-m-d');
                           <div class="form-group">
                             <label class="control-label">Destination To</label>
                               <select name="destination_to" id="destination_to" class="form-control select2me">
+                                <<option value="to">Select To</option>
                               <?php
                                 $via_places_arr = get_via_places_arr();
                                 foreach($via_places_arr as $dkey => $dvalue){
-                                  echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['detail'].'</option>';
+                                  echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['place_name'].'</option>';
                                 }
                               ?>
                             </select>

@@ -80,7 +80,14 @@ class Places extends RM_Controller {
                   base_url('seatassets/js/table-datatables-buttons.js'),
     						);
             }elseif($page == 'area'){
-                $result = $this->common->get_all( 'place_area' );
+                $join_arr_left = array(
+          				'place_thana pt' => 'pt.ID = pa.thana_id',
+                  'place_district pd' => 'pd.ID = pt.district_id',
+          			);
+                $order_by = 'area_name ';
+          			$order = 'ASC ';
+          			$sort = $order_by.' '.$order;
+                $result = $this->common->get_all( 'place_area pa', '', 'pa.*, pt.thana_name, pd.district_name', $sort, '', '', $join_arr_left );
                 $this->data['area_rows'] = $result;
                 $this->data['js_files'] = array(
     						  base_url('assets/global/scripts/datatable.js'),
@@ -89,7 +96,14 @@ class Places extends RM_Controller {
                   base_url('seatassets/js/table-datatables-responsive.js'),
     						);
             }elseif($page == 'via_place'){
-                $result = $this->common->get_all( 'via_place' );
+                $join_arr_left = array(
+          				'place_thana pt' => 'pt.ID = vp.thana_id',
+                  'place_district pd' => 'pd.ID = pt.district_id',
+          			);
+                $order_by = 'place_name ';
+          			$order = 'ASC ';
+          			$sort = $order_by.' '.$order;
+                $result = $this->common->get_all( 'via_place vp', '', 'vp.*, pt.thana_name, pd.district_name', $sort, '', '', $join_arr_left );
                 $this->data['via_place_rows'] = $result;
                 $this->data['js_files'] = array(
     						  base_url('assets/global/scripts/datatable.js'),
@@ -97,6 +111,7 @@ class Places extends RM_Controller {
     						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
                   base_url('seatassets/js/table-datatables-responsive.js'),
     						);
+                $this->data['title'] = 'Via places';
             }else{
               $this->data['js_files'] = array(
                 base_url('assets/global/scripts/datatable.js'),
@@ -107,7 +122,7 @@ class Places extends RM_Controller {
 
             }
 
-            $this->data['title'] = ucfirst($page); // Capitalize the first letter
+            //$this->data['title'] = ucfirst($page); // Capitalize the first letter
 
             $this->load->view('templates/header', $this->data);
             $this->load->view('templates/sidebar', $this->data);
@@ -404,13 +419,12 @@ class Places extends RM_Controller {
     private function process_via_place_info(){
       //Add New Area
       if(isset($_POST['add_via_place'])){
-          $this->form_validation->set_rules('place_name', 'Place name', 'trim|required|htmlspecialchars|min_length[2]');
+          $this->form_validation->set_rules('place_name', 'Place name', 'trim|required|htmlspecialchars|callback_placename_check|min_length[2]');
           $this->form_validation->set_rules('address', 'Place Address', 'trim|required|htmlspecialchars|min_length[2]');
 
           $data_arr = array(
             'place_name'=> trim($this->input->post('place_name')),
             'address'=> trim($this->input->post('address')),
-            'district_id'=> trim($this->input->post('district_id')),
             'thana_id'=> trim($this->input->post('thana_id')),
             'type'=> trim($this->input->post('type')),
           );
@@ -427,13 +441,10 @@ class Places extends RM_Controller {
 
       //Update Area
       if(isset($_POST['update_via_place'])){
-          $this->form_validation->set_rules('place_name', 'Place name', 'trim|required|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('address', 'Place Address', 'trim|required|htmlspecialchars|min_length[2]');
 
           $data_arr = array(
-            'place_name'=> trim($this->input->post('place_name')),
             'address'=> trim($this->input->post('address')),
-            'district_id'=> trim($this->input->post('district_id')),
             'thana_id'=> trim($this->input->post('thana_id')),
             'type'=> trim($this->input->post('type')),
           );
@@ -452,7 +463,15 @@ class Places extends RM_Controller {
 
     }//EOF process Via Places info
 
-
+    public function placename_check(){
+      $exist_via_places = $this->common->get( 'via_place', array( 'place_name' => trim($this->input->post('place_name')), 'type' => trim($this->input->post('type')) ) );
+      if(!empty($exist_via_places)){
+          $this->form_validation->set_message('placename_check', 'This place already exists, please try using new one.');
+          return FALSE;
+      }
+      else
+        return TRUE;
+    }
 
 
 

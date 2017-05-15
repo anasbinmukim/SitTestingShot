@@ -47,10 +47,10 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                       <?php foreach ($launch_rows as $launch) { ?>
                           <tr>
                               <td><?php echo $launch->launch_name; ?></td>
-                              <td><?php echo $launch->route_name; ?></td>
+                              <td><?php echo $launch->route; ?></td>
                               <td><?php echo $launch->place_1; ?></td>
                               <td><?php echo $launch->place_2; ?></td>
-                              <td><?php echo $launch->via_places; ?></td>
+                              <td><?php echo $launch->route_path; ?></td>
                               <td><?php echo '<div class="center-block"><a href="'.site_url('launch/edit/'.encrypt($launch->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this launch?\');" href="'.site_url('launch/delete/'.encrypt($launch->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
                           </tr>
                         <?php } ?>

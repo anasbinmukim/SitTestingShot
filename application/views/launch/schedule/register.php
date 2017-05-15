@@ -77,7 +77,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       <?php
                                         $via_places_arr = get_via_places_arr();
                                         foreach($via_places_arr as $dkey => $dvalue){
-                                          echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['detail'].'</option>';
+                                          echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['place_name'].'</option>';
                                         }
                                       ?>
                                     </select>
@@ -91,7 +91,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       <?php
                                         $via_places_arr = get_via_places_arr();
                                         foreach($via_places_arr as $dkey => $dvalue){
-                                          echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['detail'].'</option>';
+                                          echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['place_name'].'</option>';
                                         }
                                       ?>
                                     </select>

@@ -12,7 +12,11 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>Area</span>
+            <a href="<?php echo site_url('/places/view/area'); ?>">Area</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>New Area</span>
         </li>
     </ul>
 </div>
@@ -44,7 +48,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
           										  <label class="control-label">Select Thana</label>
             										<select name="thana_id" id="thana_id" class="form-control select2me">
             										<?php
-            											$thana_arr = get_thana_arr();
+            											$thana_arr = get_thana_under_dist_arr();
             											foreach($thana_arr as $tkey => $tvalue){
             												echo '<option value="'.$tkey.'">'.$tvalue.'</option>';
             											}

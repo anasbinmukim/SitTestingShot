@@ -33,8 +33,8 @@ $route['counters/(:any)'] = 'counters/$1';
 $route['companies']   = 'companies';
 $route['companies/(:any)'] = 'companies/$1';
 
-$route['booking']   = 'booking';
-$route['booking/(:any)'] = 'booking/$1';
+$route['LaunchBooking']   = 'LaunchBooking';
+$route['LaunchBooking/(:any)'] = 'LaunchBooking/$1';
 
 $route['accounts']   = 'accounts';
 $route['accounts/(:any)'] = 'accounts/$1';
@@ -44,6 +44,9 @@ $route['accounts/(:any)'] = 'accounts/$1';
 // $route['news/create'] = 'news/create';
 // $route['news/(:any)'] = 'news/view/$1';
 // $route['news'] = 'news';
+
+$route['placesbulk']   = 'placesbulk';
+$route['placesbulk/(:any)'] = 'placesbulk/$1';
 
 $route['default_controller'] = 'pages/view';
 $route['(:any)'] = 'pages/view/$1';

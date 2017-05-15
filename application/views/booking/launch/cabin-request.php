@@ -19,7 +19,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a href="<?php echo site_url('/booking/launch'); ?>">Launch</a>
+            <a href="<?php echo site_url('/LaunchBooking'); ?>">Launch</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
@@ -65,7 +65,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 ?>
                 <?php foreach ($requested_available_cabins as $key => $value) { ?>
                   <tr>
-                      <td><?php echo '<div class="center-block"><a onclick="return confirm(\'Are you sure you want to remove this?\');" href="'.site_url('/booking/launchcabin/'.$schedule_solt_id.'/'.$request_cabin_solt_ids.'/'.encrypt($value->ID).'/'.$booking_ref_number).'" title="Remove"><i class="fa fa-times text-danger"></i></a></div>'; ?></td>
+                      <td><?php echo '<div class="center-block"><a onclick="return confirm(\'Are you sure you want to remove this?\');" href="'.site_url('/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$request_cabin_solt_ids.'/'.encrypt($value->ID).'/'.$booking_ref_number).'" title="Remove"><i class="fa fa-times text-danger"></i></a></div>'; ?></td>
                       <td> <?php echo $value->cabin_number; ?> </td>
                       <td style="text-align:right;"> <?php echo seat_taka_format($value->booking_charge); ?> </td>
                       <td style="text-align:right;"> <?php echo seat_taka_format($value->cabin_fare); ?> </td>
@@ -133,7 +133,11 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     </div>
                     <div class="col-md-6">
                       <?php
-                        $passenger_gender = set_value('passenger_gender');
+
+                        if(set_value('passenger_gender') != NULL)
+                          $passenger_gender = set_value('passenger_gender');
+                        else
+                          $passenger_gender = "Male";
                       ?>
                       <div class="form-group">
                           <label class="control-label">Passenger Gender</label>

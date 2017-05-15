@@ -12,6 +12,10 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
+            <a href="<?php echo site_url('/places/view/via_place'); ?>">Via Places</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
             <span>Places</span>
         </li>
     </ul>
@@ -43,7 +47,8 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                               ?>
                               <div class="form-group">
                                   <label class="control-label">Place name</label>
-                                  <input type="text" name="place_name" class="form-control" value="<?php echo html_escape($result_place->place_name); ?>" /> </div>
+                                  <input type="text" name="place_name" disabled="disabled" class="form-control" value="<?php echo html_escape($result_place->place_name); ?>" />
+                              </div>
                               <div class="form-group">
                                   <label class="control-label">Place address</label>
                                   <input type="text" name="address" class="form-control" value="<?php echo html_escape($result_place->address); ?>" /> </div>
@@ -52,7 +57,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 										<label class="control-label">Select Thana/Upazilla</label>
                 										<select name="thana_id" id="thana_id" class="form-control">
                 										<?php
-                											$thana_arr = get_thana_arr();
+                											$thana_arr = get_thana_under_dist_arr();
                 											foreach($thana_arr as $tkey => $tvalue){
                                         $selected = 0;
                                         if($tkey == $result_place->thana_id)
@@ -64,34 +69,19 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 										</select>
               										</div>
                                   <div class="form-group">
-                  										<label class="control-label">Select District</label>
-                  										<select name="district_id" id="district_id" class="form-control">
-                  										<?php
-                  											$district_arr = get_district_arr();
-                  											foreach($district_arr as $dkey => $dvalue){
+                                      <label class="control-label">Type</label>
+                                      <select name="type" id="type" class="form-control select2me">
+                                      <?php
+                                        $via_place_arr = get_via_place_type_arr();
+                                        foreach($via_place_arr as $pkey => $pvalue){
                                           $selected = 0;
-                                          if($dkey == $result_place->district_id)
+                                          if($pkey == $result_place->type)
                                             $selected = 'selected = "selected" ';
-
-                  												echo '<option '.$selected.' value="'.$dkey.'">'.$dvalue.'</option>';
-                  											}
-                  										?>
-                  										</select>
-                										</div>
-                                    <div class="form-group">
-                                        <label class="control-label">Type</label>
-                                        <select name="type" id="type" class="form-control select2me">
-                                        <?php
-                                          $via_place_arr = get_via_place_type_arr();
-                                          foreach($via_place_arr as $pkey => $pvalue){
-                                            $selected = 0;
-                                            if($pkey == $result_place->type)
-                                              $selected = 'selected = "selected" ';
-                                            echo '<option '.$selected.' value="'.$pkey.'">'.$pvalue.'</option>';
-                                          }
-                                        ?>
-                                        </select>
-                                    </div>
+                                          echo '<option '.$selected.' value="'.$pkey.'">'.$pvalue.'</option>';
+                                        }
+                                      ?>
+                                      </select>
+                                  </div>
                               <div class="margin-top-10">
                                   <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                   <input type="hidden" name="place_id" value="<?php echo $row_id; ?>">
