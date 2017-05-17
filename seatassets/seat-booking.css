@@ -1,7 +1,12 @@
 /* here app related custom css */
 .page-footer .page-footer-inner{ float:none; text-align: center; display: inherit;}
-.page-header.navbar .page-logo .logo-default {
+.page-header.navbar .page-logo .logo-default{
     max-width: 130px;
+    margin: 12px 0 0;
+}
+
+.page-header .page-header-top .page-logo .logo-default{
+    max-width: 200px;
     margin: 12px 0 0;
 }
 .form-control {

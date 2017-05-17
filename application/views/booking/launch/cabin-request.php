@@ -5,6 +5,12 @@
   $travel_date = $launch_schedule_data['date'];
   $travel_date = date('l F j, Y', strtotime($travel_date));
   $booking_ref_number = $this->session->userdata('booking_ref_number');
+
+  $dropping_place_time_data_arr = array();
+  $dropping_place_time = $launch_schedule_data['dropping_place_time'];
+  if($dropping_place_time != ''){
+    $dropping_place_time_data_arr = json_decode($dropping_place_time, TRUE);
+  }
 ?>
 <h1 class="page-title">
   <?php echo $launch_name; ?>
@@ -125,6 +131,26 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     <label class="control-label">Passenger Email</label>
                     <input type="text" name="passenger_email" class="form-control" value="<?php echo set_value('passenger_email'); ?>" /> </div>
 
+                <div class="form-group">
+                  <label class="control-label">Boarding From</label>
+                    <select name="bording_from" id="bording_from" class="form-control select2me">
+                    <?php
+                      foreach($dropping_place_time_data_arr as $place => $time){
+                        echo '<option value="'.$place.' - '.$time.'">'.$place.' - '.$time.'</option>';
+                      }
+                    ?>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Destination To</label>
+                    <select name="dropping_to" id="dropping_to" class="form-control select2me">
+                    <?php
+                      foreach($dropping_place_time_data_arr as $place => $time){
+                        echo '<option value="'.$place.' - '.$time.'">'.$place.' - '.$time.'</option>';
+                      }
+                    ?>
+                  </select>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">

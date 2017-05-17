@@ -45,8 +45,12 @@ class LaunchBooking extends RM_Controller {
 					base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
 				);
 
-				$this->data['launch_arr'] = $this->get_launch_arr();
+				$this->data['launch_search_arr'] = $this->get_schedule_launch_search_arr();
 				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
+				$this->data['search_launch_id'] = 0;
+				$this->data['search_travel_date'] = 'MM-DD-YYYY';
+				$this->data['search_start_from'] = '';
+				$this->data['search_destination_to'] = '';
 
 				$schedule_condition = '1=1 ';
 
@@ -76,8 +80,12 @@ class LaunchBooking extends RM_Controller {
 		}//EOF launch booking
 
 
-		public function search($launch_id = 'id', $travel_date = 'date', $start_from = 'from', $destination_to = 'to', $schedule_id = NULL)
+		public function search($launch_id = 'id', $travel_date = 'MM-DD-YYYY', $start_from = 'from', $destination_to = 'to', $schedule_id = NULL)
 		{
+
+				$start_from = urldecode($start_from);
+				$destination_to = urldecode($destination_to);
+
 
 				// Start: Process launch schedule
 				$this->process_launch_schedule_search();
@@ -98,29 +106,54 @@ class LaunchBooking extends RM_Controller {
 					base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
 				);
 
-				$this->data['launch_arr'] = $this->get_launch_arr();
+				$this->data['launch_search_arr'] = $this->get_schedule_launch_search_arr();
 				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
+				$this->data['search_launch_id'] = 0;
+				$this->data['search_travel_date'] = 'MM-DD-YYYY';
+				$this->data['search_start_from'] = '';
+				$this->data['search_destination_to'] = '';
 
 				$schedule_condition = '1=1 ';
 
 				if(($launch_id != 'id') && ($launch_id > 0)){
-					$schedule_condition .= ' AND launch_id = "'.$launch_id.'"';
+					$schedule_condition .= ' AND ls.launch_id = "'.$launch_id.'"';
+					$this->data['search_launch_id'] = $launch_id;
 				}
 
-				if(($travel_date != 'date') && ($travel_date)){
-					$schedule_condition .= ' AND date = "'.$travel_date.'"';
+				$today = date('Y-m-d');
+				if(($travel_date != 'MM-DD-YYYY') && ($travel_date >= $today)){
+					$schedule_condition .= ' AND ls.date = "'.$travel_date.'"';
+					$this->data['search_travel_date'] = $travel_date;
 				}else{
-					$today = date('Y-m-d');
-					$schedule_condition .= ' AND date >= "'.$today.'"';
+					$schedule_condition .= ' AND ls.date >= "'.$today.'"';
+					$this->data['search_travel_date'] = 'MM-DD-YYYY';
 				}
 
-				if(($start_from != 'from') && ($start_from !='')){
-					$schedule_condition .= ' AND start_from LIKE "'.$start_from.'"';
+
+				// if(($start_from != 'from') && ($start_from !='')){
+				// 	$schedule_condition .= ' AND ls.start_from LIKE "'.$start_from.'"';
+				// 	$this->data['search_start_from'] = $start_from;
+				// }
+
+				//route path search combination
+				if(($start_from != 'from') && ($start_from !='') && ($destination_to != 'to') && ($destination_to != '')){
+						$schedule_condition .= ' AND ls.dropping_place_time LIKE "%'.$start_from.'%"';
+						$this->data['search_start_from'] = $start_from;
+						$schedule_condition .= ' AND ls.dropping_place_time LIKE "%'.$destination_to.'%"';
+						$this->data['search_destination_to'] = $destination_to;
+
+						$schedule_condition .= ' AND ( ls.start_from LIKE "%'.$start_from.'%"';
+						$schedule_condition .= ' OR ls.destination_to LIKE "%'.$destination_to.'%" ) ';
 				}
 
-				if(($destination_to != 'to') && ($destination_to != '')){
-					$schedule_condition .= ' AND destination_to LIKE "'.$destination_to.'"';
-				}
+				//
+				// if(($destination_to != 'to') && ($destination_to != '')){
+				// 	$schedule_condition .= ' AND ls.destination_to LIKE "'.$destination_to.'"';
+				// 	$this->data['search_destination_to'] = $destination_to;
+				// }
+
+				// echo $schedule_condition;
+				// exit;
 
 				$join_arr_left = array(
 					'launch_route lr' => 'ls.route_id = lr.route_id',
@@ -366,6 +399,8 @@ class LaunchBooking extends RM_Controller {
 									'paid_amount' => $paid_amount,
 									'vat' => $vat,
 									'booking_status' => self::BOOKING_STATUS_CONFIRM,
+									'boarding' => trim($this->input->post('bording_from')),
+									'dropping' => trim($this->input->post('dropping_to')),
 									'booking_date' => $this->booking_date_time,
 									'booking_by' => $this->currently_logged_user,
 							);
@@ -499,6 +534,51 @@ class LaunchBooking extends RM_Controller {
 		}//EOF process launch schedule search
 
 
+		public function get_schedule_launch_search_arr() {
+
+			$schedule_condition = '1=1 ';
+
+			$today = date('Y-m-d');
+			$schedule_condition .= ' AND date >= "'.$today.'"';
+
+			$join_arr_left = array(
+				'launch l' => 'ls.launch_id = l.ID',
+			);
+			$order_by = 'sche_id ';
+			$order = 'DESC ';
+			$sort = $order_by.' '.$order;
+			$launchs = $this->common->get_all( 'launch_schedule ls', $schedule_condition, 'ls.sche_id, ls.dropping_place_time, l.ID as launch_id, l.launch_name, l.company_id', $sort, '', '', $join_arr_left );
+
+			$result_launch = array();
+			$result_places = array();
+			$result_all_places = array();
+			$launch_sche_search_result = array();
+
+			foreach ($launchs as $launch) {
+				if(($launch->launch_id != '') && ($launch->launch_id > 0)){
+						$launch_id = $launch->launch_id;
+						$result_launch[$launch_id] = array(
+								'ID' => $launch->launch_id,
+								'launch_name' => $launch->launch_name,
+								'company_id' => $launch->company_id
+						);
+
+						if($launch->dropping_place_time != ''){
+								$dropping_place_data_arr = json_decode($launch->dropping_place_time, TRUE);
+								$result_places = $result_places + $dropping_place_data_arr;
+						}
+				}
+			}
+			//get all places in a single array;
+			if(isset($result_places) && count($result_places) > 0){
+					$result_places = array_keys($result_places);
+			}
+
+			$launch_sche_search_result['launch'] = $result_launch;
+			$launch_sche_search_result['places'] = $result_places;
+
+			return $launch_sche_search_result;
+		}
 
 
 		public function get_launch_arr() {

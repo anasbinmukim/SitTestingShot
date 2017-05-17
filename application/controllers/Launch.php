@@ -33,11 +33,13 @@ class Launch extends RM_Controller {
 
 				$join_arr_left = array(
 					'launch_route lr' => 'lr.route_id = l.route_id',
+					'via_place vp_1' => 'vp_1.ID = lr.place_1',
+					'via_place vp_2' => 'vp_2.ID = lr.place_2',
 				);
 				$order_by = 'launch_name ';
 				$order = 'ASC ';
 				$sort = $order_by.' '.$order;
-				$result = $this->common->get_all( 'launch l', '', 'l.*, lr.route, lr.route_path, lr.place_1, lr.place_2', $sort, '', '', $join_arr_left );
+				$result = $this->common->get_all( 'launch l', '', 'l.*, lr.route, lr.route_path, vp_1.place_name as place_1, vp_2.place_name as place_2', $sort, '', '', $join_arr_left );
 				$this->data['launch_rows'] = $result;
 
         $this->data['title'] = 'Launch Booking'; // Capitalize the first letter
@@ -386,6 +388,8 @@ class Launch extends RM_Controller {
 					}else{
 							$schedule_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
 							$this->data['schedule_data'] = $schedule_details;
+							$schedule_launch_details = $this->common->get( 'launch', array( 'ID' => $schedule_details['launch_id'] ), 'array' );
+							$this->data['schedule_launch_data'] = $schedule_launch_details;
 			        $this->data['title'] = 'Edit Schedule';
 						}
 				}
@@ -457,15 +461,37 @@ class Launch extends RM_Controller {
                 $sche_id = $this->input->post('update_schedule_id');
                 $this->common->update( 'launch_schedule', $data_arr, array( 'sche_id' =>  $sche_id ) );
       					$this->session->set_flashdata('success_msg','Updated done!');
-                redirect('/launch/schedule');
+								redirect('launch/schedule/edit/'.encrypt($sche_id));
+								exit;
             }else{
               $sche_id = $this->common->insert( 'launch_schedule', $data_arr );
-              $this->session->set_flashdata('success_msg','Added done!');
-              redirect('/launch/schedule');
+              $this->session->set_flashdata('success_msg','Added done! Please Update Dropping Time');
+							redirect('launch/schedule/edit/'.encrypt($sche_id));
+							exit;
             }
 
   				}
       }
+
+
+			if((isset($_POST['update_droping_place_time'])) && (isset($_POST['update_schedule_id']))){
+				$place_time_to_drop = $this->input->post('place_time_to_drop');
+				$route_places_to_drop = $this->input->post('route_places_to_drop');
+				$route_places_to_drop = explode(',', $route_places_to_drop);
+				$place_vs_time = array_combine($route_places_to_drop, $place_time_to_drop);
+				$place_vs_time_data = json_encode($place_vs_time);
+				//$place_vs_time_data = json_decode($place_vs_time_data, TRUE);
+				$update_schedule_id = $this->input->post('update_schedule_id');
+
+				$time_data_arr = array(
+					'dropping_place_time' => $place_vs_time_data,
+				);
+
+				$this->common->update( 'launch_schedule', $time_data_arr, array( 'sche_id' =>  $update_schedule_id ) );
+				$this->session->set_flashdata('success_msg','Update done!');
+				redirect('launch/schedule/edit/'.encrypt($update_schedule_id));
+				exit;
+			}
 
     }//EOF process schedule info
 
@@ -557,7 +583,7 @@ class Launch extends RM_Controller {
 
 		//Process Launch Register
 		private function process_launch_register_info(){
-			//Add New Area
+			//Add New launch or update launch info
 			if((isset($_POST['register_new_launch'])) || (isset($_POST['update_launch']))){
 					$this->form_validation->set_rules('launch_name', 'Launch name', 'trim|required|htmlspecialchars|min_length[2]');
 					$this->form_validation->set_rules('time_start_place_1', 'Place one leaving time', 'trim|required|htmlspecialchars');
@@ -596,8 +622,6 @@ class Launch extends RM_Controller {
 						'total_cabin'=> trim($this->input->post('total_cabin')),
 						'total_capacity'=> trim($this->input->post('total_capacity')),
 						'register_info'=> trim($this->input->post('register_info')),
-						'via_places'=> $route_path,
-						'route_name'=> $route_name,
 					);
 
 					if( !$this->form_validation->run() ) {
@@ -607,12 +631,53 @@ class Launch extends RM_Controller {
 						$launch_id = $this->input->post('update_launch_id');
 						$this->common->update( 'launch', $data_arr, array( 'ID' =>  $launch_id ) );
 						$this->session->set_flashdata('success_msg','Update done!');
-						redirect('/launch');
+						redirect('launch/edit/'.encrypt($launch_id));
+						exit;
 					}else{
-						$this->common->insert( 'launch', $data_arr );
-						$this->session->set_flashdata('success_msg','Added done!');
-						redirect('/launch');
+						$launch_id = $this->common->insert( 'launch', $data_arr );
+						$this->session->set_flashdata('success_msg','Added done! Please update dropping time.');
+						redirect('launch/edit/'.encrypt($launch_id));
+						exit;
 					}
+			}
+
+
+			if((isset($_POST['update_droping_time_p1_to_p2'])) && (isset($_POST['update_launch_id']))){
+				$place_1_drop = $this->input->post('place_1_drop');
+				$p1_to_p2 = $this->input->post('p1_to_p2');
+				$p1_to_p2 = explode(',', $p1_to_p2);
+				$place_vs_time = array_combine($p1_to_p2, $place_1_drop);
+				$place_vs_time_data = json_encode($place_vs_time);
+				//$place_vs_time_data = json_decode($place_vs_time_data, TRUE);
+				$update_launch_id = $this->input->post('update_launch_id');
+
+				$time_data_arr = array(
+					'dropping_p1_to_p2' => $place_vs_time_data,
+				);
+
+				$this->common->update( 'launch', $time_data_arr, array( 'ID' =>  $update_launch_id ) );
+				$this->session->set_flashdata('success_msg','Update done!');
+				redirect('launch/edit/'.encrypt($update_launch_id));
+				exit;
+			}
+
+			if((isset($_POST['update_droping_time_p2_to_p1'])) && (isset($_POST['update_launch_id']))){
+				$place_2_drop = $this->input->post('place_2_drop');
+				$p2_to_p1 = $this->input->post('p2_to_p1');
+				$p2_to_p1 = explode(',', $p2_to_p1);
+				$place_vs_time = array_combine($p2_to_p1, $place_2_drop);
+				$place_vs_time_data = json_encode($place_vs_time);
+				//$place_vs_time_data = json_decode($place_vs_time_data, TRUE);
+				$update_launch_id = $this->input->post('update_launch_id');
+
+				$time_data_arr = array(
+					'dropping_p2_to_p1' => $place_vs_time_data,
+				);
+
+				$this->common->update( 'launch', $time_data_arr, array( 'ID' =>  $update_launch_id ) );
+				$this->session->set_flashdata('success_msg','Update done!');
+				redirect('launch/edit/'.encrypt($update_launch_id));
+				exit;
 			}
 
 		}//EOF process launch regisetr

@@ -351,6 +351,8 @@ if ( !function_exists('get_user_role') ) {
       'company_accountant' => 'Company Accountant',
       'company_manager' => 'Company Manager',
 			'company_owner' => 'Company Owner',
+      'app_support' => 'App Support',
+      'app_accountant' => 'App Accountant',
       'administrator' => 'Administrator',
 		);
 		if ( $key  == 'all' ) {

@@ -25,6 +25,20 @@ defined('USER_TRANS_TYPE_WITHDRAWAL_FROM') OR define('USER_TRANS_TYPE_WITHDRAWAL
 defined('PAYMENT_MEDHOD_DIRECT') OR define('PAYMENT_MEDHOD_DIRECT', 'Direct');
 
 
+defined('ROLE_SUBSCRIBER') OR define('ROLE_SUBSCRIBER', 'subscriber');
+defined('ROLE_AGENT') OR define('ROLE_AGENT', 'agent');
+defined('ROLE_SUPERVISOR') OR define('ROLE_SUPERVISOR', 'supervisor');
+defined('ROLE_COMPANY_ACCOUNTANT') OR define('ROLE_COMPANY_ACCOUNTANT', 'company_accountant');
+defined('ROLE_COMPANY_MANAGER') OR define('ROLE_COMPANY_MANAGER', 'company_manager');
+defined('ROLE_COMPANY_OWNER') OR define('ROLE_COMPANY_OWNER', 'company_owner');
+defined('ROLE_APP_SUPPORT') OR define('ROLE_APP_SUPPORT', 'app_support');
+defined('ROLE_APP_ACCOUNTANT') OR define('ROLE_APP_ACCOUNTANT', 'app_accountant');
+defined('ROLE_ADMINISTRATOR') OR define('ROLE_ADMINISTRATOR', 'administrator');
+
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace

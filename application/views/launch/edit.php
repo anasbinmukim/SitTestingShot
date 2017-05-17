@@ -1,4 +1,13 @@
-<?php $launch_data = $this->common->get( 'launch', array( 'ID' => $launch_id ) ); ?>
+<?php
+  $launch_data = $this->common->get( 'launch', array( 'ID' => $launch_id ) );
+
+  $join_arr_left = array(
+    'via_place vp_1' => 'vp_1.ID = lr.place_1',
+    'via_place vp_2' => 'vp_2.ID = lr.place_2',
+  );
+  $route_data = $this->common->get( 'launch_route lr', array( 'route_id' => $launch_data->route_id ), 'array', 'lr.*, vp_1.place_name as place_1, vp_2.place_name as place_2', $join_arr_left );
+  //debug($route_data);
+?>
 <!-- BEGIN PAGE HEADER-->
 <h1 class="page-title">Edit Launch</h1>
 <div class="page-bar">
@@ -82,16 +91,16 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       </select>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Place One Leaving Time</label>
+                                        <label class="control-label">Leaving Time: <?php echo $route_data['place_1']; ?></label>
                                         <input type="text" name="time_start_place_1" class="form-control timepicker timepicker-default" value="<?php echo html_escape($launch_data->time_start_place_1); ?>" /> </div>
                                     <div class="form-group">
-                                        <label class="control-label">Place One Arrival Time</label>
+                                        <label class="control-label">Arrival Time: <?php echo $route_data['place_1']; ?></label>
                                         <input type="text" name="time_end_place_1" class="form-control timepicker timepicker-default" value="<?php echo html_escape($launch_data->time_end_place_1); ?>" /> </div>
                                     <div class="form-group">
-                                        <label class="control-label">Place Two Leaving Time</label>
+                                        <label class="control-label">Leaving Time: <?php echo $route_data['place_2']; ?></label>
                                         <input type="text" name="time_start_place_2" class="form-control timepicker timepicker-default" value="<?php echo html_escape($launch_data->time_start_place_2); ?>" /> </div>
                                     <div class="form-group">
-                                        <label class="control-label">Place Two Arrival Time</label>
+                                        <label class="control-label">Arrival Time: <?php echo $route_data['place_2']; ?></label>
                                         <input type="text" name="time_end_place_2" class="form-control timepicker timepicker-default" value="<?php echo html_escape($launch_data->time_end_place_2); ?>" /> </div>
                                   </div>
 
@@ -111,6 +120,121 @@ require_once(FCPATH.'/application/views/success-error-message.php');
           </div>
       </div>
       <!-- END PROFILE CONTENT -->
+  </div>
+</div>
 
+
+<div class="row">
+    <div class="col-md-6">
+      <!-- BEGIN PROFILE CONTENT -->
+      <div class="profile-content">
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="portlet light ">
+                      <div class="portlet-title tabbable-line">
+                          <div class="caption caption-md">
+                              <i class="icon-globe theme-font hide"></i>
+                              <span class="caption-subject font-blue-madison bold uppercase">Dropping time: <?php echo $route_data['place_1']; ?> To <?php echo $route_data['place_2']; ?></span>
+                          </div>
+                      </div>
+                      <div class="portlet-body">
+                          <form action="" method="post">
+                            <?php
+                              $update_p1_to_p2_data = '';
+                              $update_p1_to_p2_data = $launch_data->dropping_p1_to_p2;
+                              if($update_p1_to_p2_data != ''){
+                                $update_p1_to_p2_data_arr = json_decode($update_p1_to_p2_data, TRUE);
+                              }
+
+                              $route_p1_to_p2_arr = '';
+                              $route_p1_to_p2_comma_str = '';
+                              if(isset($route_data['route_path'])){
+                                  $route_data_arr = explode(',', $route_data['route_search']);
+                                      foreach ($route_data_arr as $route_name) {
+                                        $route_name  = trim($route_name);
+                                        $route_p1_to_p2_arr[]  = $route_name;
+                                        $existing_time = $launch_data->time_end_place_2;
+                                        if(isset($update_p1_to_p2_data_arr[$route_name])){
+                                            $existing_time = $update_p1_to_p2_data_arr[$route_name];
+                                        }
+                                      ?>
+                                      <div class="form-group">
+                                          <label class="control-label"><?php echo $route_data['place_1']; ?> To <?php echo $route_name; ?></label>
+                                          <input type="text" name="place_1_drop[]" class="form-control timepicker timepicker-default" value="<?php echo html_escape($existing_time); ?>" /> </div>
+
+                                <?php } ?>
+                                <?php
+                                  $route_p1_to_p2_comma_str = implode(',', $route_p1_to_p2_arr);
+                                ?>
+                            <?php } ?>
+                            <div class="margin-top-10">
+                                <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
+                                <input type="hidden" name="update_launch_id" value="<?php echo $launch_data->ID; ?>">
+                                <input type="hidden" name="p1_to_p2" value="<?php echo $route_p1_to_p2_comma_str; ?>">
+                                <input type="submit" class="btn green" name="update_droping_time_p1_to_p2" value="Update Time">
+                            </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- END PROFILE CONTENT -->
+  </div>
+  <div class="col-md-6">
+    <!-- BEGIN PROFILE CONTENT -->
+    <div class="profile-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light ">
+                    <div class="portlet-title tabbable-line">
+                        <div class="caption caption-md">
+                            <i class="icon-globe theme-font hide"></i>
+                            <span class="caption-subject font-blue-madison bold uppercase">Dropping time: <?php echo $route_data['place_2']; ?> To <?php echo $route_data['place_1']; ?></span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                      <form action="" method="post">
+                        <?php
+                          $update_p2_to_p1_data = '';
+                          $update_p2_to_p1_data = $launch_data->dropping_p2_to_p1;
+                          if($update_p2_to_p1_data != ''){
+                            $update_p2_to_p1_data_arr = json_decode($update_p2_to_p1_data, TRUE);
+                          }
+
+                          $route_p2_to_p1_arr = '';
+                          $route_p2_to_p1_comma_str = '';
+                          if(isset($route_data['route_path'])){
+                              $route_data_arr2 = explode(',', $route_data['route_search']);
+                                  foreach ($route_data_arr2 as $route_name) {
+                                    $route_name  = trim($route_name);
+                                    $route_p2_to_p1_arr[]  = $route_name;
+                                    $existing_time = $launch_data->time_end_place_1;
+                                    if(isset($update_p2_to_p1_data_arr[$route_name])){
+                                        $existing_time = $update_p2_to_p1_data_arr[$route_name];
+                                    }
+                                  ?>
+                                  <div class="form-group">
+                                      <label class="control-label"><?php echo $route_data['place_2']; ?> To <?php echo $route_name; ?></label>
+                                      <input type="text" name="place_2_drop[]" class="form-control timepicker timepicker-default" value="<?php echo html_escape($existing_time); ?>" /> </div>
+
+                            <?php } ?>
+                            <?php
+                              $route_p2_to_p1_comma_str = implode(',', $route_p2_to_p1_arr);
+                            ?>
+                        <?php } ?>
+                        <div class="margin-top-10">
+                            <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
+                            <input type="hidden" name="update_launch_id" value="<?php echo $launch_data->ID; ?>">
+                            <input type="hidden" name="p2_to_p1" value="<?php echo $route_p2_to_p1_comma_str; ?>">
+                            <input type="submit" class="btn green" name="update_droping_time_p2_to_p1" value="Update Time">
+                        </div>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END PROFILE CONTENT -->
   </div>
 </div>

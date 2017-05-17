@@ -11,7 +11,7 @@ class Pages extends RM_Controller {
 		public function view($page = 'home')
 		{
 						if ( ! $this->session->userdata('logged_in') ) {
-							redirect('/login');
+							//redirect('/login');
 						}
 
 		        if ( ! file_exists(APPPATH.'views/pages/'.$page.'.php'))
@@ -20,13 +20,17 @@ class Pages extends RM_Controller {
 		                show_404();
 		        }
 
-						$this->data['my_account_balance'] = $this->common->get_user_meta($this->session->userdata('user_id'), 'account_balance');
+						$this->data['my_account_balance'] = 0;
+						if ( $this->session->userdata('logged_in') ) {
+							$this->data['my_account_balance'] = $this->common->get_user_meta($this->session->userdata('user_id'), 'account_balance');
+						}
+
 
 		        $this->data['title'] = ucfirst($page); // Capitalize the first letter
 
-		        $this->load->view('templates/header', $this->data);
-						$this->load->view('templates/sidebar', $this->data);
+		        $this->load->view('theme/header', $this->data);
+						//$this->load->view('theme/sidebar', $this->data);
 		        $this->load->view('pages/'.$page, $this->data);
-		        $this->load->view('templates/footer', $this->data);
+		        $this->load->view('theme/footer', $this->data);
 		}
 }

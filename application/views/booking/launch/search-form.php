@@ -15,7 +15,6 @@
 <!-- END PAGE HEADER-->
 <?php
 require_once(FCPATH.'/application/views/success-error-message.php');
-$search_date = date('Y-m-d');
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -36,12 +35,17 @@ $search_date = date('Y-m-d');
                     <div class="row">
                       <div class="col-md-4">
                           <div class="form-group">
-                            <label class="control-label">Select Launch</label>
                               <select name="launch_id" id="launch_id" class="form-control select2me">
-                                  <<option value="id">Select Launch</option>
+                                  <option value="id">Select Launch</option>
                               <?php
-                                foreach($launch_arr as $lkey => $lvalue){
-                                  echo '<option value="'.$lvalue['ID'].'">'.$lvalue['launch_name'].'</option>';
+                                if(isset($launch_search_arr['launch'])){
+                                  $launch_arr = $launch_search_arr['launch'];
+                                  foreach($launch_arr as $lkey => $lvalue){
+                                    $selected = '';
+                                    if($lvalue['ID'] == $search_launch_id)
+                                      $selected = 'selected = "selected" ';
+                                    echo '<option '.$selected.' value="'.$lvalue['ID'].'">'.$lvalue['launch_name'].'</option>';
+                                  }
                                 }
                               ?>
                             </select>
@@ -49,9 +53,8 @@ $search_date = date('Y-m-d');
                       </div>
                       <div class="col-md-2">
                           <div class="form-group">
-                              <label class="control-label">Travel Date</label>
-                              <div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
-                                  <input type="text" class="form-control" readonly="" name="travel_date" aria-required="true" aria-invalid="false" aria-describedby="datepicker-error" value="<?php echo $search_date; ?>">
+                              <div class="input-group date date-picker" data-date-format="yyyy-mm-dd" data-date-start-date="+0d">
+                                  <input type="text" class="form-control" readonly="" name="travel_date" aria-required="true" aria-invalid="false" aria-describedby="datepicker-error" value="<?php echo $search_travel_date; ?>">
                                   <span class="input-group-btn">
                                       <button class="btn default" type="button">
                                           <i class="fa fa-calendar"></i>
@@ -62,35 +65,42 @@ $search_date = date('Y-m-d');
                       </div>
                       <div class="col-md-2">
                           <div class="form-group">
-                            <label class="control-label">Leaving From</label>
                               <select name="start_from" id="start_from" class="form-control select2me">
-                                  <<option value="from">Select From</option>
-                              <?php
-                                $via_places_arr = get_via_places_arr();
-                                foreach($via_places_arr as $dkey => $dvalue){
-                                  echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['place_name'].'</option>';
-                                }
-                              ?>
-                            </select>
+                                  <option value="from">Select From</option>
+                                    <?php
+                                      if(isset($launch_search_arr['places'])){
+                                        $via_places_arr = $launch_search_arr['places'];
+                                        foreach($via_places_arr as $place){
+                                          $selected = '';
+                                          if($place == $search_start_from)
+                                            $selected = 'selected = "selected" ';
+                                          echo '<option '.$selected.' value="'.$place.'">'.$place.'</option>';
+                                        }
+                                      }
+                                    ?>
+                              </select>
                           </div>
                       </div>
                       <div class="col-md-2">
                           <div class="form-group">
-                            <label class="control-label">Destination To</label>
                               <select name="destination_to" id="destination_to" class="form-control select2me">
-                                <<option value="to">Select To</option>
-                              <?php
-                                $via_places_arr = get_via_places_arr();
-                                foreach($via_places_arr as $dkey => $dvalue){
-                                  echo '<option value="'.$dvalue['place_name'].'">'.$dvalue['place_name'].'</option>';
-                                }
-                              ?>
+                                <option value="to">Select To</option>
+                                <?php
+                                  if(isset($launch_search_arr['places'])){
+                                    $via_places_arr = $launch_search_arr['places'];
+                                    foreach($via_places_arr as $place){
+                                      $selected = '';
+                                      if($place == $search_destination_to)
+                                        $selected = 'selected = "selected" ';
+                                      echo '<option '.$selected.' value="'.$place.'">'.$place.'</option>';
+                                    }
+                                  }
+                                ?>
                             </select>
                           </div>
                       </div>
                       <div class="col-md-2">
                           <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
-                          <label class="control-label" style="visibility: hidden;">Search Now</label>
                           <input type="submit" class="btn green" name="launch_booking_search" value="Search Now">
                       </div>
                     </div>
