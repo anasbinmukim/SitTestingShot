@@ -12,7 +12,8 @@
 .form-control {
     background-color: #E9EDEF;
 }
-
+.page-bar .page-breadcrumb{ background-color: #FFFFFF; }
+.page-bar .page-breadcrumb.breadcrumb>li+li:before{ content: " "; }
 .book_launch_cabin .icon-btn{ background: #26C281; color: #FFFFFF !important;}
 .book_launch_cabin .icon-btn>div{color: #FFFFFF !important;}
 .book_launch_cabin .launch_cabin.selected{ background: #F3C200; }

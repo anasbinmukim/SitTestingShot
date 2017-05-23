@@ -29,6 +29,10 @@ class Counters extends RM_Controller {
         );
 
         $this->data['title'] = 'Company Counters';
+        $breadcrumb[] = array('name' => 'Companies', 'url' => 'companies');
+        $breadcrumb[] = array('name' => 'Counters', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'counters';
 
         $this->load->view('templates/header',$this->data);
         $this->load->view('templates/sidebar', $this->data);
@@ -46,7 +50,12 @@ class Counters extends RM_Controller {
                 show_404();
         }
 
-        $this->data['title'] = $counter_details['counter_name'];
+        $this->data['title'] = html_escape($counter_details['counter_name']);
+        $breadcrumb[] = array('name' => 'Companies', 'url' => 'companies');
+        $breadcrumb[] = array('name' => 'Counters', 'url' => 'counters');
+        $breadcrumb[] = array('name' => html_escape($counter_details['counter_name']), 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'counter_details';
 
         $this->load->view('templates/header',$this->data);
         $this->load->view('templates/sidebar', $this->data);
@@ -79,7 +88,12 @@ class Counters extends RM_Controller {
       // End: Process register counter
 
 
-      $this->data['title'] = 'Register New Company'; // Capitalize the first letter
+      $this->data['title'] = 'Register New Counter';
+      $breadcrumb[] = array('name' => 'Companies', 'url' => 'companies');
+      $breadcrumb[] = array('name' => 'Counters', 'url' => 'counters');
+      $breadcrumb[] = array('name' => 'New Counter', 'url' => '');
+      $this->data['breadcrumb'] = $breadcrumb;
+      $this->data['current_page'] = 'counter_add';
 
       $this->load->view('templates/header', $this->data);
       $this->load->view('templates/sidebar', $this->data);
@@ -118,7 +132,13 @@ class Counters extends RM_Controller {
         {
                 show_404();
         }
-        $this->data['title'] = $counter_details['counter_name'];
+
+        $this->data['title'] = html_escape($counter_details['counter_name']);
+        $breadcrumb[] = array('name' => 'Companies', 'url' => 'companies');
+        $breadcrumb[] = array('name' => 'Counters', 'url' => 'counters');
+        $breadcrumb[] = array('name' => 'Edit Counter', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'counter_edit';
 
       }
 

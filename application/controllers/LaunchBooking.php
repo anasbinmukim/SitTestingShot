@@ -70,6 +70,12 @@ class LaunchBooking extends RM_Controller {
 
 				$this->data['launch_schedule_rows'] = $result;
 				$this->data['title'] = 'Cabin Booking';
+				$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+				$breadcrumb[] = array('name' => 'Search Cabin', 'url' => '');
+				$this->data['breadcrumb'] = $breadcrumb;
+				$this->data['current_page'] = 'search_cabins';
+
+
 				$this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
 				$this->load->view('booking/launch/search-form', $this->data);
@@ -165,7 +171,13 @@ class LaunchBooking extends RM_Controller {
 				$result = $this->common->get_all( 'launch_schedule ls', $schedule_condition, 'ls.*, l.launch_name, lr.route_path', $sort, '', '', $join_arr_left );
 
 				$this->data['launch_schedule_rows'] = $result;
+
 				$this->data['title'] = 'Cabin Booking';
+				$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+				$breadcrumb[] = array('name' => 'Search Cabin', 'url' => '');
+				$this->data['breadcrumb'] = $breadcrumb;
+				$this->data['current_page'] = 'search_cabins';
+
 				$this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
 				$this->load->view('booking/launch/search-form', $this->data);
@@ -337,6 +349,11 @@ class LaunchBooking extends RM_Controller {
 					}
 
 					$this->data['title'] = 'Request Cabins Booking';
+					$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+					$breadcrumb[] = array('name' => 'Search', 'url' => 'LaunchBooking');
+					$breadcrumb[] = array('name' => 'Request Cabins', 'url' => '');
+					$this->data['breadcrumb'] = $breadcrumb;
+					$this->data['current_page'] = 'request_cabins';
 					$this->load->view('templates/header', $this->data);
 					$this->load->view('templates/sidebar', $this->data);
 					$this->load->view('booking/launch/cabin-request', $this->data);
@@ -348,6 +365,12 @@ class LaunchBooking extends RM_Controller {
 						exit;
 					}
 					$this->data['title'] = 'Available Cabins';
+					$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+					$breadcrumb[] = array('name' => 'Search', 'url' => 'LaunchBooking');
+					$breadcrumb[] = array('name' => 'Available Cabins', 'url' => '');
+					$this->data['breadcrumb'] = $breadcrumb;
+					$this->data['current_page'] = 'available_cabins';
+
 					$this->load->view('templates/header', $this->data);
 					$this->load->view('templates/sidebar', $this->data);
 					$this->load->view('booking/launch/cabin', $this->data);
@@ -659,7 +682,14 @@ class LaunchBooking extends RM_Controller {
 			$this->data['launch_booking_rows'] = $result;
 
 
-			$this->data['title'] = 'My Booking';
+			$this->data['title'] = 'My Launch Cabin';
+			$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+			$breadcrumb[] = array('name' => 'Available Cabin', 'url' => 'LaunchBooking');
+			$breadcrumb[] = array('name' => 'My Cabin', 'url' => '');
+			$this->data['breadcrumb'] = $breadcrumb;
+			$this->data['current_page'] = 'my_cabin_booking';
+
+
 			$this->load->view('templates/header', $this->data);
 			$this->load->view('templates/sidebar', $this->data);
 			$this->load->view('booking/launch/my-booking', $this->data);

@@ -15,6 +15,9 @@ class Places extends RM_Controller {
     public function index()
     {
         $this->data['title'] = 'Places';
+        $breadcrumb[] = array('name' => 'Places', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'places';
 
         $this->load->view('templates/header',$this->data);
         $this->load->view('templates/sidebar', $this->data);
@@ -24,6 +27,9 @@ class Places extends RM_Controller {
 
     public function view($page = 'area')
     {
+            $breadcrumb = array();
+            $this->data['title'] = 'View Area';
+            $this->data['current_page'] = 'view';
 
             if ( ! file_exists(APPPATH.'views/places/view-'.$page.'.php'))
             {
@@ -38,6 +44,11 @@ class Places extends RM_Controller {
 
             //load division info
             if($page == 'division'){
+                $this->data['title'] = 'Division of Bangladesh';
+                $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+                $breadcrumb[] = array('name' => 'Division', 'url' => '');
+                $this->data['breadcrumb'] = $breadcrumb;
+                $this->data['current_page'] = 'view_division';
                 $result = $this->common->get_all( 'place_division' );
                 $this->data['division_rows'] = $result;
 
@@ -49,6 +60,11 @@ class Places extends RM_Controller {
                   base_url('seatassets/js/table-datatables-buttons.js'),
     						);
             }elseif($page == 'zone'){
+                $this->data['title'] = 'Zone of Bangladesh';
+                $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+                $breadcrumb[] = array('name' => 'Zone', 'url' => '');
+                $this->data['breadcrumb'] = $breadcrumb;
+                $this->data['current_page'] = 'view_zone';
                 $result = $this->common->get_all( 'place_zone' );
                 $this->data['zone_rows'] = $result;
 
@@ -60,6 +76,11 @@ class Places extends RM_Controller {
                   base_url('seatassets/js/table-zone-editable.js'),
     						);
             }elseif($page == 'district'){
+                $this->data['title'] = 'District of Bangladesh';
+                $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+                $breadcrumb[] = array('name' => 'District', 'url' => '');
+                $this->data['breadcrumb'] = $breadcrumb;
+                $this->data['current_page'] = 'view_district';
                 $result = $this->common->get_all( 'place_district' );
                 $this->data['district_rows'] = $result;
                 $this->data['js_files'] = array(
@@ -70,6 +91,11 @@ class Places extends RM_Controller {
                   base_url('seatassets/js/table-district-editable.js'),
     						);
             }elseif($page == 'thana'){
+                $this->data['title'] = 'Thana/Upazilla of Bangladesh';
+                $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+                $breadcrumb[] = array('name' => 'Thana', 'url' => '');
+                $this->data['breadcrumb'] = $breadcrumb;
+                $this->data['current_page'] = 'view_thana';
                 $result = $this->common->get_all( 'place_thana' );
                 $this->data['thana_rows'] = $result;
                 $this->data['js_files'] = array(
@@ -80,6 +106,12 @@ class Places extends RM_Controller {
                   base_url('seatassets/js/table-datatables-buttons.js'),
     						);
             }elseif($page == 'area'){
+                $this->data['title'] = 'Area of Bangladesh';
+                $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+                $breadcrumb[] = array('name' => 'Area', 'url' => '');
+                $this->data['breadcrumb'] = $breadcrumb;
+                $this->data['current_page'] = 'view_area';
+
                 $join_arr_left = array(
           				'place_thana pt' => 'pt.ID = pa.thana_id',
                   'place_district pd' => 'pd.ID = pt.district_id',
@@ -96,6 +128,12 @@ class Places extends RM_Controller {
                   base_url('seatassets/js/table-datatables-responsive.js'),
     						);
             }elseif($page == 'via_place'){
+                $this->data['title'] = 'Via places of Bangladesh';
+                $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+                $breadcrumb[] = array('name' => 'Via places', 'url' => '');
+                $this->data['breadcrumb'] = $breadcrumb;
+                $this->data['current_page'] = 'view_via_place';
+
                 $join_arr_left = array(
           				'place_thana pt' => 'pt.ID = vp.thana_id',
                   'place_district pd' => 'pd.ID = pt.district_id',
@@ -150,6 +188,50 @@ class Places extends RM_Controller {
               show_404();
       }
 
+      if($page == 'area'){
+        $this->data['title'] = 'Area';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Area', 'url' => 'places/view/area');
+        $breadcrumb[] = array('name' => 'Add Area', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'add_area';
+      }elseif($page == 'via_place'){
+        $this->data['title'] = 'Via Places';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Via Place', 'url' => 'places/view/via_place');
+        $breadcrumb[] = array('name' => 'Add Via Place', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'add_via_place';
+      }elseif($page == 'thana'){
+        $this->data['title'] = 'Thana';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Thana', 'url' => 'places/view/thana');
+        $breadcrumb[] = array('name' => 'Add Thana', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'add_thana';
+      }elseif($page == 'district'){
+        $this->data['title'] = 'District';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View District', 'url' => 'places/view/district');
+        $breadcrumb[] = array('name' => 'Add District', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'add_district';
+      }elseif($page == 'division'){
+        $this->data['title'] = 'Division';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Division', 'url' => 'places/view/division');
+        $breadcrumb[] = array('name' => 'Add Division', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'add_division';
+      }elseif($page == 'zone'){
+        $this->data['title'] = 'Zone';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Zone', 'url' => 'places/view/zone');
+        $breadcrumb[] = array('name' => 'Add Zone', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'add_zone';
+      }
+
       //Start: Process division
       $this->process_division_info();
       //End: Process division
@@ -170,7 +252,6 @@ class Places extends RM_Controller {
       $this->process_via_place_info();
       //End: Process area info
 
-      $this->data['title'] = ucfirst($page); // Capitalize the first letter
 
       $this->load->view('templates/header', $this->data);
       $this->load->view('templates/sidebar', $this->data);
@@ -209,6 +290,51 @@ class Places extends RM_Controller {
               show_404();
       }
 
+      if($page == 'area'){
+        $this->data['title'] = 'Area';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Area', 'url' => 'places/view/area');
+        $breadcrumb[] = array('name' => 'Edit Area', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'edit_area';
+      }elseif($page == 'via_place'){
+        $this->data['title'] = 'Via Places';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Via Place', 'url' => 'places/view/via_place');
+        $breadcrumb[] = array('name' => 'Edit Via Place', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'edit_via_place';
+      }elseif($page == 'thana'){
+        $this->data['title'] = 'Thana';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Thana', 'url' => 'places/view/thana');
+        $breadcrumb[] = array('name' => 'Edit Thana', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'edit_thana';
+      }elseif($page == 'district'){
+        $this->data['title'] = 'District';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View District', 'url' => 'places/view/district');
+        $breadcrumb[] = array('name' => 'Edit District', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'edit_district';
+      }elseif($page == 'division'){
+        $this->data['title'] = 'Division';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Division', 'url' => 'places/view/division');
+        $breadcrumb[] = array('name' => 'Edit Division', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'edit_division';
+      }elseif($page == 'zone'){
+        $this->data['title'] = 'Zone';
+        $breadcrumb[] = array('name' => 'Places', 'url' => 'places');
+        $breadcrumb[] = array('name' => 'View Zone', 'url' => 'places/view/zone');
+        $breadcrumb[] = array('name' => 'Edit Zone', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'edit_zone';
+      }
+
+
 
       //Start: Process district info
       $this->process_district_info();
@@ -225,8 +351,6 @@ class Places extends RM_Controller {
       //Start: Process area info
       $this->process_via_place_info();
       //End: Process area info
-
-      $this->data['title'] = ucfirst($page); // Capitalize the first letter
 
       $this->load->view('templates/header', $this->data);
       $this->load->view('templates/sidebar', $this->data);

@@ -12,32 +12,15 @@
     $dropping_place_time_data_arr = json_decode($dropping_place_time, TRUE);
   }
 ?>
+<?php
+require_once(FCPATH.'/application/views/breadcrumb.php');
+require_once(FCPATH.'/application/views/success-error-message.php');
+?>
 <h1 class="page-title">
   <?php echo $launch_name; ?>
   <span class="label label-success"><?php echo $launch_schedule_data['start_from']; ?> To <?php echo $launch_schedule_data['destination_to'];?></span>
   <span class="label label-info"> <?php echo $travel_date; ?> </span>
 </h1>
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="icon-home"></i>
-            <a href="<?php echo site_url(); ?>">Home</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a href="<?php echo site_url('/LaunchBooking'); ?>">Launch</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>Cabins</span>
-        </li>
-    </ul>
-
-</div>
-<!-- END PAGE HEADER-->
-<?php
-require_once(FCPATH.'/application/views/success-error-message.php');
-?>
 <div class="row">
   <div class="col-md-6">
       <div class="portlet light ">

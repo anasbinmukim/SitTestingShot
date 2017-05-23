@@ -57,17 +57,11 @@ class Profile extends RM_Controller {
 						$this->update_profile_privacy_settings();
 						//End: Process update privacy settings
 
-						if(($this->session->userdata('user_role') == ROLE_ADMINISTRATOR)){
-							$this->load->view('templates/header',$this->data);
-							$this->load->view('templates/sidebar', $this->data);
-							$this->load->view('profile/'.$page, $this->data);
-							$this->load->view('templates/footer',$this->data);
-						}else{
-							$this->load->view('theme/header', $this->data);
-							//$this->load->view('theme/sidebar', $this->data);
-							$this->load->view('profile/'.$page, $this->data);
-							$this->load->view('theme/footer', $this->data);
-						}
+						$this->load->view('templates/header',$this->data);
+						$this->load->view('templates/sidebar', $this->data);
+						$this->load->view('profile/'.$page, $this->data);
+						$this->load->view('templates/footer',$this->data);
+
 		}
 
 

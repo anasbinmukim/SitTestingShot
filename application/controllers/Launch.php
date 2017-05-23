@@ -12,6 +12,10 @@ class Launch extends RM_Controller {
 		}
 		public function index()
 		{
+				$this->data['title'] = 'Launch';
+				$breadcrumb[] = array('name' => 'Launch', 'url' => '');
+				$this->data['breadcrumb'] = $breadcrumb;
+				$this->data['current_page'] = 'launch';
 
 				$this->data['css_files'] = array(
 					base_url('assets/global/plugins/datatables/datatables.min.css'),
@@ -41,8 +45,6 @@ class Launch extends RM_Controller {
 				$sort = $order_by.' '.$order;
 				$result = $this->common->get_all( 'launch l', '', 'l.*, lr.route, lr.route_path, vp_1.place_name as place_1, vp_2.place_name as place_2', $sort, '', '', $join_arr_left );
 				$this->data['launch_rows'] = $result;
-
-        $this->data['title'] = 'Launch Booking'; // Capitalize the first letter
 
         $this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
@@ -75,12 +77,22 @@ class Launch extends RM_Controller {
 
 				if($display == 'cabin'){
 						$this->data['title'] = 'Launch Cabin';
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+						$breadcrumb[] = array('name' => 'Cabin', 'url' => '');
+						$this->data['breadcrumb'] = $breadcrumb;
+						$this->data['current_page'] = 'cabin';
+
 						$result = $this->common->get_all( 'launch_cabin' );
 						$this->data['launch_cabin_rows'] = $result;
 				}
 
 				if($display == 'register'){
 						$this->data['title'] = 'Add New Cabin';
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+						$breadcrumb[] = array('name' => 'Cabin', 'url' => 'launch/cabin');
+						$breadcrumb[] = array('name' => 'Add New', 'url' => '');
+						$this->data['breadcrumb'] = $breadcrumb;
+						$this->data['current_page'] = 'cabin_register';
 				}
 
 				if($display == 'edit'){
@@ -93,6 +105,11 @@ class Launch extends RM_Controller {
 							$cabin_details = $this->common->get( 'launch_cabin', array( 'ID' => $cabin_id ), 'array' );
 							$this->data['cabin_data'] = $cabin_details;
 							$this->data['title'] = 'Edit Cabin';
+							$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+							$breadcrumb[] = array('name' => 'Cabin', 'url' => 'launch/cabin');
+							$breadcrumb[] = array('name' => 'Edit Cabin', 'url' => '');
+							$this->data['breadcrumb'] = $breadcrumb;
+							$this->data['current_page'] = 'cabin_edit';
 						}
 				}
 
@@ -210,6 +227,10 @@ class Launch extends RM_Controller {
 
 				if($display == 'route'){
 		        $this->data['title'] = 'Launch Route'; // Capitalize the first letter
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+						$breadcrumb[] = array('name' => 'Route', 'url' => '');
+						$this->data['breadcrumb'] = $breadcrumb;
+						$this->data['current_page'] = 'route';
 						$join_arr_left = array(
 							'via_place vp_1' => 'vp_1.ID = lr.place_1',
 							'via_place vp_2' => 'vp_2.ID = lr.place_2',
@@ -232,6 +253,11 @@ class Launch extends RM_Controller {
 							$route_details = $this->common->get( 'launch_route', array( 'route_id' => $row_id ), 'array' );
 							$this->data['route_data'] = $route_details;
 			        $this->data['title'] = 'Edit Route';
+							$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+							$breadcrumb[] = array('name' => 'Route', 'url' => 'launch/route');
+							$breadcrumb[] = array('name' => 'Edit Route', 'url' => '');
+							$this->data['breadcrumb'] = $breadcrumb;
+							$this->data['current_page'] = 'route_edit';
 						}
 				}
 
@@ -246,6 +272,15 @@ class Launch extends RM_Controller {
 						$this->session->set_flashdata('delete_msg','Route has been deleted!');
 						redirect('/launch/route');
 						}
+				}
+
+				if($display == 'register'){
+						$this->data['title'] = 'Add Route';
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+						$breadcrumb[] = array('name' => 'Route', 'url' => 'launch/route');
+						$breadcrumb[] = array('name' => 'Add Route', 'url' => '');
+						$this->data['breadcrumb'] = $breadcrumb;
+						$this->data['current_page'] = 'route_add';
 				}
 
 				// Start: Process launch route
@@ -363,7 +398,12 @@ class Launch extends RM_Controller {
 				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
 
 				if($display == 'schedule'){
-		        $this->data['title'] = 'Launch schedule'; // Capitalize the first letter
+						$this->data['title'] = 'Launch schedule';
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+						$breadcrumb[] = array('name' => 'Schedule', 'url' => '');
+						$this->data['breadcrumb'] = $breadcrumb;
+						$this->data['current_page'] = 'schedule';
+
 						$join_arr_left = array(
 							'launch_route lr' => 'ls.route_id = lr.route_id',
 							'launch l' => 'ls.launch_id = l.ID',
@@ -377,6 +417,11 @@ class Launch extends RM_Controller {
 
 				if($display == 'register'){
 						$this->data['title'] = 'Add schedule';
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+						$breadcrumb[] = array('name' => 'Schedule', 'url' => 'launch/schedule');
+						$breadcrumb[] = array('name' => 'Add Schedule', 'url' => '');
+						$this->data['breadcrumb'] = $breadcrumb;
+						$this->data['current_page'] = 'schedule_add';
 				}
 
 				if($display == 'edit'){
@@ -384,13 +429,18 @@ class Launch extends RM_Controller {
 		      $schedule_id = decrypt($schedule_solt_id)*1;
 					if( !is_int($schedule_id) || !$schedule_id ) {
 		        $this->session->set_flashdata('delete_msg','Can not be edited');
-						redirect('/launch/route');
+						redirect('launch/schedule');
 					}else{
 							$schedule_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
 							$this->data['schedule_data'] = $schedule_details;
 							$schedule_launch_details = $this->common->get( 'launch', array( 'ID' => $schedule_details['launch_id'] ), 'array' );
 							$this->data['schedule_launch_data'] = $schedule_launch_details;
 			        $this->data['title'] = 'Edit Schedule';
+							$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+							$breadcrumb[] = array('name' => 'Schedule', 'url' => 'launch/schedule');
+							$breadcrumb[] = array('name' => 'Edit Schedule', 'url' => '');
+							$this->data['breadcrumb'] = $breadcrumb;
+							$this->data['current_page'] = 'schedule_edit';
 						}
 				}
 
@@ -518,7 +568,11 @@ class Launch extends RM_Controller {
 
 			$this->data['launch_route_arr'] = $this->get_launch_route_arr();
 
-			$this->data['title'] = 'Register New Launch'; // Capitalize the first letter
+			$this->data['title'] = 'Register New Launch';
+			$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+			$breadcrumb[] = array('name' => 'New Launch', 'url' => '');
+			$this->data['breadcrumb'] = $breadcrumb;
+			$this->data['current_page'] = 'register_launch';
 
 			$this->load->view('templates/header', $this->data);
 			$this->load->view('templates/sidebar', $this->data);
@@ -556,7 +610,11 @@ class Launch extends RM_Controller {
 
 			$this->data['launch_route_arr'] = $this->get_launch_route_arr();
 
-			$this->data['title'] = 'Edit Launch'; // Capitalize the first letter
+			$this->data['title'] = 'Edit Launch';
+			$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+			$breadcrumb[] = array('name' => 'Edit Launch', 'url' => '');
+			$this->data['breadcrumb'] = $breadcrumb;
+			$this->data['current_page'] = 'edit_launch';
 
 			$this->load->view('templates/header', $this->data);
 			$this->load->view('templates/sidebar', $this->data);

@@ -1,23 +1,5 @@
-<!-- BEGIN PAGE HEADER-->
-<h1 class="page-title">Edit Company Counter</h1>
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="icon-home"></i>
-            <a href="<?php echo site_url(); ?>">Home</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a href="<?php echo site_url('companies'); ?>">Companies</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>Counter</span>
-        </li>
-    </ul>
-</div>
-<!-- END PAGE HEADER-->
 <?php
+require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
 ?>
 <div class="row">

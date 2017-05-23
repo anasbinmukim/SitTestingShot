@@ -28,9 +28,10 @@ class Pages extends RM_Controller {
 
 		        $this->data['title'] = ucfirst($page); // Capitalize the first letter
 
-		        $this->load->view('theme/header', $this->data);
-						//$this->load->view('theme/sidebar', $this->data);
-		        $this->load->view('pages/'.$page, $this->data);
-		        $this->load->view('theme/footer', $this->data);
+						$this->load->view('templates/header',$this->data);
+						$this->load->view('templates/sidebar', $this->data);
+						$this->load->view('pages/'.$page, $this->data);
+						$this->load->view('templates/footer',$this->data);
+
 		}
 }

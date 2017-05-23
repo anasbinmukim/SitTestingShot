@@ -14,6 +14,7 @@ class RM_Controller extends CI_Controller
 			$this->data['site_logo'] = base_url( 'files/media/'.$this->common->get_app_option('site_logo') );
 		}
 		$this->data['title'] = 'Online Reservation in Bangladesh';
+		$this->data['current_page'] = 'home';
 		$this->user = $this->session->userdata('user_id') ? $this->common->get( 'users', array( 'ID' => $this->session->userdata('user_id'), 'is_active' => 1 ) ) : FALSE;
 		if ( $this->session->userdata('logged_in') ) {
 			$this->data['profile_photo'] = base_url('seatassets/images/placeholder-profile-photo.jpg');

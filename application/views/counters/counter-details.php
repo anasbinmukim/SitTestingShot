@@ -1,27 +1,7 @@
-<!-- BEGIN PAGE HEADER-->
-<h1 class="page-title"><?php echo html_escape($counter_data['counter_name']); ?></h1>
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="icon-home"></i>
-            <a href="<?php echo site_url(); ?>">Home</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a href="<?php echo site_url('companies'); ?>">Companies</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span><?php echo html_escape($counter_data['counter_name']); ?></span>
-        </li>
-    </ul>
-</div>
-<!-- END PAGE HEADER-->
 <?php
+require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
 ?>
-
-
 <div class="row">
     <div class="col-md-12">
       <!-- BEGIN PROFILE CONTENT -->

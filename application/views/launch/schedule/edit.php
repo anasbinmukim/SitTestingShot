@@ -5,27 +5,8 @@ $join_arr_left = array(
 );
 $route_data = $this->common->get( 'launch_route lr', array( 'route_id' => $schedule_data['route_id'] ), 'array', 'lr.*, vp_1.place_name as place_1, vp_2.place_name as place_2', $join_arr_left );
 ?>
-
-<!-- BEGIN PAGE HEADER-->
-<h1 class="page-title">Edit Schedule</h1>
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="icon-home"></i>
-            <a href="<?php echo site_url(); ?>">Home</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a href="<?php echo site_url('launch'); ?>">Launch</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>Edit Schedule</span>
-        </li>
-    </ul>
-</div>
-<!-- END PAGE HEADER-->
 <?php
+require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
 ?>
 <div class="row">

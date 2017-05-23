@@ -1,3 +1,4 @@
-<!-- BEGIN PAGE HEADER-->
-<h1 class="page-title">Places</h1>
-<!-- END PAGE HEADER-->
+<?php
+require_once(FCPATH.'/application/views/breadcrumb.php');
+require_once(FCPATH.'/application/views/success-error-message.php');
+?>

@@ -29,7 +29,10 @@ class Companies extends RM_Controller {
           base_url('seatassets/js/table-district-editable.js'),
         );
 
-        $this->data['title'] = 'Company';
+        $this->data['title'] = 'Companies';
+        $breadcrumb[] = array('name' => 'Companies', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'companies';
 
         $this->load->view('templates/header',$this->data);
         $this->load->view('templates/sidebar', $this->data);
@@ -47,7 +50,11 @@ class Companies extends RM_Controller {
                 show_404();
         }
 
-        $this->data['title'] = $company_details['company_name'];
+        $this->data['title'] = html_escape($company_details['company_name']);
+        $breadcrumb[] = array('name' => 'Companies', 'url' => 'companies');
+        $breadcrumb[] = array('name' => html_escape($company_details['company_name']), 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'company_details';
 
         $this->load->view('templates/header',$this->data);
         $this->load->view('templates/sidebar', $this->data);
@@ -75,7 +82,11 @@ class Companies extends RM_Controller {
       // End: Process register company
 
 
-      $this->data['title'] = 'Register New Company'; // Capitalize the first letter
+      $this->data['title'] = 'Register New Company';
+      $breadcrumb[] = array('name' => 'Companies', 'url' => 'companies');
+      $breadcrumb[] = array('name' => 'Add New', 'url' => '');
+      $this->data['breadcrumb'] = $breadcrumb;
+      $this->data['current_page'] = 'add_company';
 
       $this->load->view('templates/header', $this->data);
       $this->load->view('templates/sidebar', $this->data);
@@ -110,7 +121,11 @@ class Companies extends RM_Controller {
         {
                 show_404();
         }
-        $this->data['title'] = $company_details['company_name'];
+        $this->data['title'] = html_escape($company_details['company_name']);
+        $breadcrumb[] = array('name' => 'Companies', 'url' => 'companies');
+        $breadcrumb[] = array('name' => 'Edit Company', 'url' => '');
+        $this->data['breadcrumb'] = $breadcrumb;
+        $this->data['current_page'] = 'edit_company';
 
       }
 
