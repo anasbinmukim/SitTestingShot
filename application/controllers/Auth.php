@@ -159,6 +159,7 @@ class Auth extends RM_Controller {
 							'user_id'        => $user->ID,
 							'logged_in' => TRUE,
 							'user_level'       => $user->user_level,
+							'user_role'       => $user->user_role,
 						);
 						$this->session->set_userdata($sess_array);
 

@@ -1,6 +1,47 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
+/*
+|--------------------------------------------------------------------------
+| Use for seatbooking app
+|--------------------------------------------------------------------------
+|
+|
+*/
+defined('PAYMENT_STATUS_CONFIRMED') OR define('PAYMENT_STATUS_CONFIRMED', 'Confirmed');
+
+defined('USER_TRANS_TYPE_BILL_TO') OR define('USER_TRANS_TYPE_BILL_TO', 'Bill To');
+defined('USER_TRANS_TYPE_BILL_FROM') OR define('USER_TRANS_TYPE_BILL_FROM', 'Bill From');
+defined('USER_TRANS_TYPE_PAYMENT_TO') OR define('USER_TRANS_TYPE_PAYMENT_TO', 'Payment To');
+defined('USER_TRANS_TYPE_PAYMENT_FROM') OR define('USER_TRANS_TYPE_PAYMENT_FROM', 'Payment From');
+defined('USER_TRANS_TYPE_TRANSFER_TO') OR define('USER_TRANS_TYPE_TRANSFER_TO', 'Transfer To');
+defined('USER_TRANS_TYPE_TRANSFER_FROM') OR define('USER_TRANS_TYPE_TRANSFER_FROM', 'Transfer From');
+defined('USER_TRANS_TYPE_REFUND_TO') OR define('USER_TRANS_TYPE_REFUND_TO', 'Refund To');
+defined('USER_TRANS_TYPE_REFUND_FROM') OR define('USER_TRANS_TYPE_REFUND_FROM', 'Refund From');
+defined('USER_TRANS_TYPE_DEPOSIT_TO') OR define('USER_TRANS_TYPE_DEPOSIT_TO', 'Deposit To');
+defined('USER_TRANS_TYPE_WITHDRAWAL_FROM') OR define('USER_TRANS_TYPE_WITHDRAWAL_FROM', 'Withdrawal From');
+
+defined('PAYMENT_MEDHOD_DIRECT') OR define('PAYMENT_MEDHOD_DIRECT', 'Direct');
+
+
+defined('ROLE_SUBSCRIBER') OR define('ROLE_SUBSCRIBER', 'subscriber');
+defined('ROLE_AGENT') OR define('ROLE_AGENT', 'agent');
+defined('ROLE_SUPERVISOR') OR define('ROLE_SUPERVISOR', 'supervisor');
+defined('ROLE_COMPANY_ACCOUNTANT') OR define('ROLE_COMPANY_ACCOUNTANT', 'company_accountant');
+defined('ROLE_COMPANY_MANAGER') OR define('ROLE_COMPANY_MANAGER', 'company_manager');
+defined('ROLE_COMPANY_OWNER') OR define('ROLE_COMPANY_OWNER', 'company_owner');
+defined('ROLE_APP_SUPPORT') OR define('ROLE_APP_SUPPORT', 'app_support');
+defined('ROLE_APP_ACCOUNTANT') OR define('ROLE_APP_ACCOUNTANT', 'app_accountant');
+defined('ROLE_ADMINISTRATOR') OR define('ROLE_ADMINISTRATOR', 'administrator');
+
+//Allow time in seconds for booking confirmation. expired pending booking will be removed
+defined('ALLOW_PENDING_CABIN_TIME') OR define('ALLOW_PENDING_CABIN_TIME', '1200');
+
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace

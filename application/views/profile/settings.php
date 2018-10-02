@@ -1,7 +1,7 @@
 <!-- BEGIN PAGE HEADER-->
 <h1 class="page-title">My Profile</h1>
 <div class="page-bar">
-    <ul class="page-breadcrumb">
+    <ul class="page-breadcrumb breadcrumb">
         <li>
             <i class="icon-home"></i>
             <a href="<?php echo site_url(); ?>">Home</a>
