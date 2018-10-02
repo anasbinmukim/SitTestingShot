@@ -108,14 +108,18 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                             <div class="form-group">
                                 <label class="control-label">Role</label>
                                 <select name="user_role" id="user_role" class="form-control">
-                                  <?php $user_role = $edit_user_profile->user_role; ?>
                                   <option value="">Select One</option>
-                                  <option <?php if($user_role == 'subscriber'){ ?> selected="selected" <?php } ?> value="subscriber">Subscriber</option>
-                                  <option <?php if($user_role == 'agent'){ ?> selected="selected" <?php } ?> value="agent">Agent</option>
-                                  <option <?php if($user_role == 'supervisor'){ ?> selected="selected" <?php } ?> value="supervisor">Supervisor</option>
-                                  <option <?php if($user_role == 'company_owner'){ ?> selected="selected" <?php } ?> value="company_owner">Company Owner</option>
-                                  <option <?php if($user_role == 'company_manager'){ ?> selected="selected" <?php } ?> value="company_manager">Company Manager</option>
-                                  <option <?php if($user_role == 'administrator'){ ?> selected="selected" <?php } ?> value="administrator">Administrator</option>
+                                  <?php $user_role = $edit_user_profile->user_role; ?>
+                                  <?php
+                                    $all_user_role = get_user_role('all');
+                                    foreach ($all_user_role as $role_key => $role_value) {
+                                      $selected = '';
+                                      if($user_role == $role_key){
+                                        $selected = ' selected="selected" ';
+                                      }
+                                      echo '<option '. $selected .' value="'.$role_key.'">'.$role_value.'</option>';
+                                    }
+                                  ?>
                                 </select>
                             </div>
                             <div class="margin-top-10">

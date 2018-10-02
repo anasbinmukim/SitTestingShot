@@ -48,11 +48,80 @@ class Launch extends RM_Controller {
 
         $this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
-        $this->load->view('launch/launch', $this->data);
+        $this->load->view('admin/launch/launch', $this->data);
         $this->load->view('templates/footer', $this->data);
 		}
 
-		public function cabin($display = 'cabin', $cabin_solt_id = 0)
+		public function SettingLaunch($launch_solt_id = NULL)
+		{
+			$launch_id = decrypt($launch_solt_id)*1;
+			if( !is_int($launch_id) || !$launch_id ) {
+				$this->session->set_flashdata('delete_msg','Can not be edited');
+				redirect('admin/launch');
+			}else{
+				$this->data['css_files'] = array(
+					base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
+					base_url('assets/global/plugins/select2/css/select2.min.css'),
+					base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
+					base_url('assets/global/plugins/jquery-nestable/jquery.nestable.css'),
+				);
+
+				$this->data['js_files'] = array(
+					base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
+					base_url('assets/global/plugins/select2/js/select2.full.min.js'),
+					base_url('assets/global/plugins/jquery-nestable/jquery.nestable.js'),
+					base_url('assets/pages/scripts/ui-nestable.min.js'),
+					base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
+				);
+
+				// Start: Process launch cabin
+				$this->process_launch_settings();
+				// End: Process launch cabin
+
+				$this->data['launch_arr'] = $this->get_launch_arr();
+
+				$this->data['title'] = 'Launch Settings';
+				$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+				$breadcrumb[] = array('name' => 'Settings', 'url' => '');
+				$this->data['breadcrumb'] = $breadcrumb;
+				$this->data['current_page'] = 'launch_settings';
+
+				$launch_details = $this->common->get( 'launch', array( 'ID' => $launch_id ), 'array' );
+				$this->data['launch_data'] = $launch_details;
+
+				$this->load->view('templates/header', $this->data);
+				$this->load->view('templates/sidebar', $this->data);
+				$this->load->view('admin/launch/launch-settings', $this->data);
+				$this->load->view('templates/footer', $this->data);
+			}
+
+		}
+
+		public function process_launch_settings(){
+			//Add New Company
+			if(($this->input->post('update_launch_settings') !== NULL)){
+					$this->form_validation->set_rules('launch_supervisor', 'Supervisor', 'trim|required');
+					$this->form_validation->set_rules('launch_booking_manager', 'Booking Manager', 'trim');
+
+					$launch_id = $this->input->post('settings_launch_id');
+					$launch_supervisor = $this->input->post('launch_supervisor');
+
+					$route_path = '';
+					$route_search = '';
+
+					if( !$this->form_validation->run() ) {
+						$error_message_array = $this->form_validation->error_array();
+						$this->session->set_flashdata('error_msg_arr', $error_message_array);
+					}else{
+							//Supervisor updated
+							$meta_id = $this->common->update_launch_meta($launch_id, 'launch_supervisor', $launch_supervisor);
+							$this->session->set_flashdata('success_msg','Update done!');
+							redirect('admin/launch/SettingLaunch/'.encrypt($launch_id));
+					}
+			}
+		}
+
+		public function cabin($display = 'all-cabins', $cabin_solt_id = NULL)
 		{
 
 				$this->data['css_files'] = array(
@@ -75,21 +144,33 @@ class Launch extends RM_Controller {
 
 				$this->data['launch_arr'] = $this->get_launch_arr();
 
-				if($display == 'cabin'){
-						$this->data['title'] = 'Launch Cabin';
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
-						$breadcrumb[] = array('name' => 'Cabin', 'url' => '');
-						$this->data['breadcrumb'] = $breadcrumb;
-						$this->data['current_page'] = 'cabin';
+				if($display == 'all-cabins'){
+						//$cabin_solt_id parameter will work as launch ID for this display mode
+						$launch_id = decrypt($cabin_solt_id)*1;
+						if(($launch_id > 0) && ($cabin_solt_id != NULL)){
+							$this->data['title'] = 'Launch Cabin';
+							$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+							$breadcrumb[] = array('name' => 'Cabin', 'url' => '');
+							$this->data['breadcrumb'] = $breadcrumb;
+							$this->data['current_page'] = 'cabin';
+							$result = $this->common->get_all( 'launch_cabin', array('launch_id' => $launch_id ) );
+							$this->data['launch_cabin_rows'] = $result;
+						}else{
+							$this->data['title'] = 'Launch Cabin';
+							$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+							$breadcrumb[] = array('name' => 'Cabin', 'url' => '');
+							$this->data['breadcrumb'] = $breadcrumb;
+							$this->data['current_page'] = 'cabin';
+							$result = $this->common->get_all( 'launch_cabin' );
+							$this->data['launch_cabin_rows'] = $result;
+						}
 
-						$result = $this->common->get_all( 'launch_cabin' );
-						$this->data['launch_cabin_rows'] = $result;
 				}
 
 				if($display == 'register'){
 						$this->data['title'] = 'Add New Cabin';
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
-						$breadcrumb[] = array('name' => 'Cabin', 'url' => 'launch/cabin');
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+						$breadcrumb[] = array('name' => 'Cabin', 'url' => 'admin/launch/cabin');
 						$breadcrumb[] = array('name' => 'Add New', 'url' => '');
 						$this->data['breadcrumb'] = $breadcrumb;
 						$this->data['current_page'] = 'cabin_register';
@@ -100,13 +181,13 @@ class Launch extends RM_Controller {
 					$cabin_id = decrypt($cabin_solt_id)*1;
 					if( !is_int($cabin_id) || !$cabin_id ) {
 						$this->session->set_flashdata('delete_msg','Can not be edited');
-						redirect('/launch/cabin');
+						redirect('admin/launch/cabin');
 					}else{
 							$cabin_details = $this->common->get( 'launch_cabin', array( 'ID' => $cabin_id ), 'array' );
 							$this->data['cabin_data'] = $cabin_details;
 							$this->data['title'] = 'Edit Cabin';
-							$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
-							$breadcrumb[] = array('name' => 'Cabin', 'url' => 'launch/cabin');
+							$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+							$breadcrumb[] = array('name' => 'Cabin', 'url' => 'admin/launch/cabin');
 							$breadcrumb[] = array('name' => 'Edit Cabin', 'url' => '');
 							$this->data['breadcrumb'] = $breadcrumb;
 							$this->data['current_page'] = 'cabin_edit';
@@ -118,11 +199,11 @@ class Launch extends RM_Controller {
 					$cabin_id = decrypt($cabin_solt_id)*1;
 					if( !is_int($cabin_id) || !$cabin_id ) {
 						$this->session->set_flashdata('delete_msg','Can not be deleted!');
-						redirect('/launch/cabin');
+						redirect('admin/launch/cabin');
 					}else{
 						$this->common->delete( 'launch_cabin', array( 'ID' =>  $cabin_id ) );
 						$this->session->set_flashdata('delete_msg','Cabin has been deleted!');
-						redirect('/launch/cabin');
+						redirect('admin/launch/cabin');
 						}
 				}
 
@@ -132,7 +213,7 @@ class Launch extends RM_Controller {
 
 				$this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
-				$this->load->view('launch/cabin/'.$display, $this->data);
+				$this->load->view('admin/launch/cabin/'.$display, $this->data);
 				$this->load->view('templates/footer', $this->data);
 		}
 
@@ -159,6 +240,20 @@ class Launch extends RM_Controller {
   					$error_message_array = $this->form_validation->error_array();
   					$this->session->set_flashdata('error_msg_arr', $error_message_array);
   				}else{
+
+						if($this->input->post('cabin_type') == 'Double'){
+							$cabin_number = trim($this->input->post('cabin_number'));
+							$cabin_fare = trim($this->input->post('cabin_fare'));
+							$allow_person = trim($this->input->post('allow_person'));
+							$cabin_number_a = $cabin_number . '-A';
+							$cabin_number_b = $cabin_number . '-B';
+							$cabin_fare_a = round($cabin_fare / 2);
+							$cabin_fare_b = round($cabin_fare / 2);
+							$cabin_ticket_a = round($allow_person / 2);
+							$cabin_ticket_b = round($allow_person / 2);
+							$pair_number = $cabin_number;
+						}
+
             $data_arr = array(
               'launch_id'=> trim($this->input->post('launch_id')),
               'cabin_number'=> trim($this->input->post('cabin_number')),
@@ -175,11 +270,30 @@ class Launch extends RM_Controller {
                 $cabin_id = $this->input->post('update_cabin_id');
                 $this->common->update( 'launch_cabin', $data_arr, array( 'ID' =>  $cabin_id ) );
       					$this->session->set_flashdata('success_msg','Updated done!');
-                redirect('/launch/cabin');
+                redirect('admin/launch/cabin');
             }else{
-              $cabin_id = $this->common->insert( 'launch_cabin', $data_arr );
+
+							//Process if double cabin
+							if($this->input->post('cabin_type') == 'Double'){
+								$data_arr['cabin_number'] = $cabin_number_a;
+								$data_arr['cabin_fare'] = $cabin_fare_a;
+								$data_arr['allow_person'] = $cabin_ticket_a;
+	              $cabin_id = $this->common->insert( 'launch_cabin', $data_arr );
+								$this->common->update( 'launch_cabin', array( 'pair_number' =>  $pair_number ), array( 'ID' =>  $cabin_id ) );
+
+								$data_arr['cabin_number'] = $cabin_number_b;
+								$data_arr['cabin_fare'] = $cabin_fare_b;
+								$data_arr['allow_person'] = $cabin_ticket_b;
+	              $cabin_id = $this->common->insert( 'launch_cabin', $data_arr );
+								$this->common->update( 'launch_cabin', array( 'pair_number' =>  $pair_number ), array( 'ID' =>  $cabin_id ) );
+							}else{
+								$cabin_id = $this->common->insert( 'launch_cabin', $data_arr );
+							}
+
+
+
               $this->session->set_flashdata('success_msg','Added done!');
-              redirect('/launch/cabin');
+              redirect('admin/launch/cabin');
             }
 
 
@@ -227,7 +341,7 @@ class Launch extends RM_Controller {
 
 				if($display == 'route'){
 		        $this->data['title'] = 'Launch Route'; // Capitalize the first letter
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
 						$breadcrumb[] = array('name' => 'Route', 'url' => '');
 						$this->data['breadcrumb'] = $breadcrumb;
 						$this->data['current_page'] = 'route';
@@ -248,13 +362,13 @@ class Launch extends RM_Controller {
 		      $row_id = decrypt($route_solt_id)*1;
 					if( !is_int($row_id) || !$row_id ) {
 		        $this->session->set_flashdata('delete_msg','Can not be edited');
-						redirect('/launch/route');
+						redirect('admin/launch/route');
 					}else{
 							$route_details = $this->common->get( 'launch_route', array( 'route_id' => $row_id ), 'array' );
 							$this->data['route_data'] = $route_details;
 			        $this->data['title'] = 'Edit Route';
-							$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
-							$breadcrumb[] = array('name' => 'Route', 'url' => 'launch/route');
+							$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+							$breadcrumb[] = array('name' => 'Route', 'url' => 'admin/launch/route');
 							$breadcrumb[] = array('name' => 'Edit Route', 'url' => '');
 							$this->data['breadcrumb'] = $breadcrumb;
 							$this->data['current_page'] = 'route_edit';
@@ -266,18 +380,18 @@ class Launch extends RM_Controller {
 		      $row_id = decrypt($route_solt_id)*1;
 					if( !is_int($row_id) || !$row_id ) {
 		        $this->session->set_flashdata('delete_msg','Can not be deleted!');
-						redirect('/launch/route');
+						redirect('admin/launch/route');
 					}else{
 						$this->common->delete( 'launch_route', array( 'route_id' =>  $row_id ) );
 						$this->session->set_flashdata('delete_msg','Route has been deleted!');
-						redirect('/launch/route');
+						redirect('admin/launch/route');
 						}
 				}
 
 				if($display == 'register'){
 						$this->data['title'] = 'Add Route';
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
-						$breadcrumb[] = array('name' => 'Route', 'url' => 'launch/route');
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+						$breadcrumb[] = array('name' => 'Route', 'url' => 'admin/launch/route');
 						$breadcrumb[] = array('name' => 'Add Route', 'url' => '');
 						$this->data['breadcrumb'] = $breadcrumb;
 						$this->data['current_page'] = 'route_add';
@@ -289,7 +403,7 @@ class Launch extends RM_Controller {
 
         $this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
-        $this->load->view('launch/route/'.$display, $this->data);
+        $this->load->view('admin/launch/route/'.$display, $this->data);
         $this->load->view('templates/footer', $this->data);
 		}
 
@@ -352,11 +466,11 @@ class Launch extends RM_Controller {
                 $route_id = $this->input->post('update_route_id');
                 $this->common->update( 'launch_route', $data_arr, array( 'route_id' =>  $route_id ) );
       					$this->session->set_flashdata('success_msg','Updated done!');
-                redirect('/launch/route');
+                redirect('admin/launch/route');
             }else{
               $route_id = $this->common->insert( 'launch_route', $data_arr );
               $this->session->set_flashdata('success_msg','Added done! Please re-order route path!');
-              redirect('launch/route/edit/'.encrypt($route_id));
+              redirect('admin/launch/route/edit/'.encrypt($route_id));
             }
 
 
@@ -399,7 +513,7 @@ class Launch extends RM_Controller {
 
 				if($display == 'schedule'){
 						$this->data['title'] = 'Launch schedule';
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
 						$breadcrumb[] = array('name' => 'Schedule', 'url' => '');
 						$this->data['breadcrumb'] = $breadcrumb;
 						$this->data['current_page'] = 'schedule';
@@ -417,8 +531,8 @@ class Launch extends RM_Controller {
 
 				if($display == 'register'){
 						$this->data['title'] = 'Add schedule';
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
-						$breadcrumb[] = array('name' => 'Schedule', 'url' => 'launch/schedule');
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+						$breadcrumb[] = array('name' => 'Schedule', 'url' => 'admin/launch/schedule');
 						$breadcrumb[] = array('name' => 'Add Schedule', 'url' => '');
 						$this->data['breadcrumb'] = $breadcrumb;
 						$this->data['current_page'] = 'schedule_add';
@@ -429,15 +543,15 @@ class Launch extends RM_Controller {
 		      $schedule_id = decrypt($schedule_solt_id)*1;
 					if( !is_int($schedule_id) || !$schedule_id ) {
 		        $this->session->set_flashdata('delete_msg','Can not be edited');
-						redirect('launch/schedule');
+						redirect('admin/launch/schedule');
 					}else{
 							$schedule_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
 							$this->data['schedule_data'] = $schedule_details;
 							$schedule_launch_details = $this->common->get( 'launch', array( 'ID' => $schedule_details['launch_id'] ), 'array' );
 							$this->data['schedule_launch_data'] = $schedule_launch_details;
 			        $this->data['title'] = 'Edit Schedule';
-							$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
-							$breadcrumb[] = array('name' => 'Schedule', 'url' => 'launch/schedule');
+							$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+							$breadcrumb[] = array('name' => 'Schedule', 'url' => 'admin/launch/schedule');
 							$breadcrumb[] = array('name' => 'Edit Schedule', 'url' => '');
 							$this->data['breadcrumb'] = $breadcrumb;
 							$this->data['current_page'] = 'schedule_edit';
@@ -449,11 +563,11 @@ class Launch extends RM_Controller {
 		      $schedule_id = decrypt($schedule_solt_id)*1;
 					if( !is_int($schedule_id) || !$schedule_id ) {
 		        $this->session->set_flashdata('delete_msg','Can not be deleted!');
-						redirect('/launch/schedule');
+						redirect('admin/launch/schedule');
 					}else{
 						$this->common->delete( 'launch_schedule', array( 'sche_id' =>  $schedule_id ) );
 						$this->session->set_flashdata('delete_msg','Schedule has been deleted!');
-						redirect('/launch/schedule');
+						redirect('admin/launch/schedule');
 						}
 				}
 
@@ -463,7 +577,7 @@ class Launch extends RM_Controller {
 
         $this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
-        $this->load->view('launch/schedule/'.$display, $this->data);
+        $this->load->view('admin/launch/schedule/'.$display, $this->data);
         $this->load->view('templates/footer', $this->data);
 		}
 
@@ -511,12 +625,12 @@ class Launch extends RM_Controller {
                 $sche_id = $this->input->post('update_schedule_id');
                 $this->common->update( 'launch_schedule', $data_arr, array( 'sche_id' =>  $sche_id ) );
       					$this->session->set_flashdata('success_msg','Updated done!');
-								redirect('launch/schedule/edit/'.encrypt($sche_id));
+								redirect('admin/launch/schedule/edit/'.encrypt($sche_id));
 								exit;
             }else{
               $sche_id = $this->common->insert( 'launch_schedule', $data_arr );
               $this->session->set_flashdata('success_msg','Added done! Please Update Dropping Time');
-							redirect('launch/schedule/edit/'.encrypt($sche_id));
+							redirect('admin/launch/schedule/edit/'.encrypt($sche_id));
 							exit;
             }
 
@@ -539,7 +653,7 @@ class Launch extends RM_Controller {
 
 				$this->common->update( 'launch_schedule', $time_data_arr, array( 'sche_id' =>  $update_schedule_id ) );
 				$this->session->set_flashdata('success_msg','Update done!');
-				redirect('launch/schedule/edit/'.encrypt($update_schedule_id));
+				redirect('admin/launch/schedule/edit/'.encrypt($update_schedule_id));
 				exit;
 			}
 
@@ -569,14 +683,14 @@ class Launch extends RM_Controller {
 			$this->data['launch_route_arr'] = $this->get_launch_route_arr();
 
 			$this->data['title'] = 'Register New Launch';
-			$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+			$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
 			$breadcrumb[] = array('name' => 'New Launch', 'url' => '');
 			$this->data['breadcrumb'] = $breadcrumb;
 			$this->data['current_page'] = 'register_launch';
 
 			$this->load->view('templates/header', $this->data);
 			$this->load->view('templates/sidebar', $this->data);
-			$this->load->view('launch/register', $this->data);
+			$this->load->view('admin/launch/register', $this->data);
 			$this->load->view('templates/footer', $this->data);
 
 		}
@@ -585,7 +699,7 @@ class Launch extends RM_Controller {
 			//Get launch ID
 			$launch_id = decrypt($launch_salt_id)*1;
 			if( !is_int($launch_id) || !$launch_id ) {
-					redirect('/launch');
+					redirect('admin/launch');
 			}
 
 			$this->data['launch_id'] = $launch_id;
@@ -611,14 +725,14 @@ class Launch extends RM_Controller {
 			$this->data['launch_route_arr'] = $this->get_launch_route_arr();
 
 			$this->data['title'] = 'Edit Launch';
-			$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
+			$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
 			$breadcrumb[] = array('name' => 'Edit Launch', 'url' => '');
 			$this->data['breadcrumb'] = $breadcrumb;
 			$this->data['current_page'] = 'edit_launch';
 
 			$this->load->view('templates/header', $this->data);
 			$this->load->view('templates/sidebar', $this->data);
-			$this->load->view('launch/edit', $this->data);
+			$this->load->view('admin/launch/edit', $this->data);
 			$this->load->view('templates/footer', $this->data);
 
 		}
@@ -630,11 +744,11 @@ class Launch extends RM_Controller {
 				//Get launch ID
 				$launch_id = decrypt($launch_salt_id)*1;
 				if( !is_int($launch_id) || !$launch_id ) {
-						redirect('/launch');
+						redirect('admin/launch');
 				}else{
 						$this->common->delete( 'launch', array( 'ID' =>  $launch_id ) );
 						$this->session->set_flashdata('delete_msg','Launch has been deleted!');
-						redirect('/launch');
+						redirect('admin/launch');
 				}
 
 		}
@@ -689,12 +803,12 @@ class Launch extends RM_Controller {
 						$launch_id = $this->input->post('update_launch_id');
 						$this->common->update( 'launch', $data_arr, array( 'ID' =>  $launch_id ) );
 						$this->session->set_flashdata('success_msg','Update done!');
-						redirect('launch/edit/'.encrypt($launch_id));
+						redirect('admin/launch/edit/'.encrypt($launch_id));
 						exit;
 					}else{
 						$launch_id = $this->common->insert( 'launch', $data_arr );
 						$this->session->set_flashdata('success_msg','Added done! Please update dropping time.');
-						redirect('launch/edit/'.encrypt($launch_id));
+						redirect('admin/launch/edit/'.encrypt($launch_id));
 						exit;
 					}
 			}
@@ -715,7 +829,7 @@ class Launch extends RM_Controller {
 
 				$this->common->update( 'launch', $time_data_arr, array( 'ID' =>  $update_launch_id ) );
 				$this->session->set_flashdata('success_msg','Update done!');
-				redirect('launch/edit/'.encrypt($update_launch_id));
+				redirect('admin/launch/edit/'.encrypt($update_launch_id));
 				exit;
 			}
 
@@ -734,7 +848,7 @@ class Launch extends RM_Controller {
 
 				$this->common->update( 'launch', $time_data_arr, array( 'ID' =>  $update_launch_id ) );
 				$this->session->set_flashdata('success_msg','Update done!');
-				redirect('launch/edit/'.encrypt($update_launch_id));
+				redirect('admin/launch/edit/'.encrypt($update_launch_id));
 				exit;
 			}
 
@@ -775,78 +889,4 @@ class Launch extends RM_Controller {
 			return $result_launch;
 		}
 
-		public function __________manage_booking(){
-			$this->data['title'] = 'Manage Booking'; // Capitalize the first letter
-
-			$this->data['css_files'] = array(
-				base_url('assets/global/plugins/datatables/datatables.min.css'),
-				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
-				base_url('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css'),
-			);
-			$this->data['js_files'] = array(
-				base_url('assets/global/scripts/datatable.js'),
-				base_url('assets/global/plugins/datatables/datatables.min.js'),
-				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
-				base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
-				base_url('seatassets/js/table-launch-booking-ajax.js?ver=1.0.1'),
-			);
-
-			//$this->manage_booking_rowdata();
-
-			$this->load->view('templates/header', $this->data);
-			$this->load->view('templates/sidebar', $this->data);
-			$this->load->view('launch/manage_booking', $this->data);
-			$this->load->view('templates/footer', $this->data);
-
-		}
-
-
-		public function _______manage_booking_rowdata(){
-			$iTotalRecords = 178;
-		  $iDisplayLength = intval($_REQUEST['length']);
-		  $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
-		  $iDisplayStart = intval($_REQUEST['start']);
-		  $sEcho = intval($_REQUEST['draw']);
-
-		  $records = array();
-		  $records["data"] = array();
-
-		  $end = $iDisplayStart + $iDisplayLength;
-		  $end = $end > $iTotalRecords ? $iTotalRecords : $end;
-
-		  $status_list = array(
-		    array("success" => "Pending"),
-		    array("info" => "Closed"),
-		    array("danger" => "On Hold"),
-		    array("warning" => "Fraud")
-		  );
-
-		  for($i = $iDisplayStart; $i < $end; $i++) {
-		    $status = $status_list[rand(0, 2)];
-		    $id = ($i + 1);
-		    $records["data"][] = array(
-		      '<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input name="id[]" type="checkbox" class="checkboxes" value="'.$id.'"/><span></span></label>',
-		      $id,
-		      '12/09/2013',
-		      'Jhon Doe',
-		      'Jhon Doe',
-		      '450.60$',
-		      rand(1, 10),
-		      '<span class="label label-sm label-'.(key($status)).'">'.(current($status)).'</span>',
-		      '<a href="javascript:;" class="btn btn-sm btn-outline grey-salsa"><i class="fa fa-search"></i> View</a>',
-		   );
-		  }
-
-		  if (isset($_REQUEST["customActionType"]) && $_REQUEST["customActionType"] == "group_action") {
-		    $records["customActionStatus"] = "OK"; // pass custom message(useful for getting status of group actions)
-		    $records["customActionMessage"] = "Group action successfully has been completed. Well done!"; // pass custom message(useful for getting status of group actions)
-		  }
-
-		  $records["draw"] = $sEcho;
-		  $records["recordsTotal"] = $iTotalRecords;
-		  $records["recordsFiltered"] = $iTotalRecords;
-			//print_r($records);
-			header('Content-type: application/json');
-		  echo json_encode($records);
-		}
 }

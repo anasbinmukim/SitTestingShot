@@ -77,6 +77,27 @@ if ( !function_exists('username') ) {
 	}
 }
 
+if ( !function_exists('get_users_by_role') ) {
+	function get_users_by_role($role_name = 'subscriber') {
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->where( 'user_role' , $role_name );
+    //$CI->db->where( 'deleted' , 0 );
+    $CI->db->order_by('display_name');
+    $query = $CI->db->get('users');
+    $users = $query->result_array();
+
+    $result_users = array();
+    foreach ($users as $user) {
+      if(($user['user_name'] != '') && ($user['ID'] > 0)){
+          $user_id = $user['ID'];
+          $result_users[$user_id] = $user;
+      }
+    }
+		return $result_users;
+	}
+}
+
 if ( !function_exists('get_thana_arr') ) {
 	function get_thana_arr() {
     $CI =& get_instance();
@@ -347,10 +368,13 @@ if ( !function_exists('get_user_role') ) {
 		$st_arr = array(
       'subscriber' => 'Subscriber',
 			'agent' => 'Agent',
+      'booking_manager' => 'Booking Manager',
       'supervisor' => 'Supervisor',
       'company_accountant' => 'Company Accountant',
       'company_manager' => 'Company Manager',
 			'company_owner' => 'Company Owner',
+      'doctor' => 'Doctor',
+      'doctor_assistant' => 'Doctor Assistant',
       'app_support' => 'App Support',
       'app_accountant' => 'App Accountant',
       'administrator' => 'Administrator',

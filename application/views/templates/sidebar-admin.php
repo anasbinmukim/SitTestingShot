@@ -70,24 +70,24 @@ if(($current_page == 'counters') || ($current_page == 'counter_details') || ($cu
 
             </li>
             <li class="nav-item <?php echo $current_launch; ?>">
-                <a href="<?php echo site_url('launch'); ?>" class="nav-link nav-toggle">
+                <a href="<?php echo site_url('admin/launch'); ?>" class="nav-link nav-toggle">
                     <i class="icon-diamond"></i>
                     <span class="title">Launch</span>
                     <span class="arrow"></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item  <?php echo $current_cabin; ?>">
-                        <a href="<?php echo site_url('launch/cabin'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/launch/cabin'); ?>" class="nav-link ">
                             <span class="title">Cabin</span>
                         </a>
                     </li>
                     <li class="nav-item <?php echo $current_schedule; ?>">
-                        <a href="<?php echo site_url('launch/schedule'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/launch/schedule'); ?>" class="nav-link ">
                             <span class="title">Schedule</span>
                         </a>
                     </li>
                     <li class="nav-item <?php echo $current_route; ?>">
-                        <a href="<?php echo site_url('launch/route'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/launch/route'); ?>" class="nav-link ">
                             <span class="title">Route</span>
                         </a>
                     </li>
@@ -104,14 +104,14 @@ if(($current_page == 'counters') || ($current_page == 'counter_details') || ($cu
                 </ul>
             </li>
             <li class="nav-item  <?php echo $current_company; ?>">
-                <a href="<?php echo site_url('companies'); ?>" class="nav-link nav-toggle">
+                <a href="<?php echo site_url('admin/companies'); ?>" class="nav-link nav-toggle">
                     <i class="icon-diamond"></i>
                     <span class="title">Companies</span>
                     <span class="arrow"></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item  <?php echo $current_counters; ?>">
-                        <a href="<?php echo site_url('counters'); ?>" class="nav-link nav-toggle">
+                        <a href="<?php echo site_url('admin/counters'); ?>" class="nav-link nav-toggle">
                             <i class="icon-diamond"></i>
                             <span class="title">Counters</span>
                             <span class="arrow"></span>
@@ -120,7 +120,7 @@ if(($current_page == 'counters') || ($current_page == 'counter_details') || ($cu
                 </ul>
             </li>
             <li class="nav-item <?php echo $current_view_places; ?>">
-                <a href="<?php echo site_url('places'); ?>" class="nav-link nav-toggle">
+                <a href="<?php echo site_url('admin/places'); ?>" class="nav-link nav-toggle">
                     <i class="icon-diamond"></i>
                     <span class="title">Places</span>
                     <span class="arrow"></span>
@@ -132,47 +132,47 @@ if(($current_page == 'counters') || ($current_page == 'counter_details') || ($cu
                         </a>
                         <ul class="sub-menu">
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add/area'); ?>" class="nav-link ">Area</a>
+                                <a href="<?php echo site_url('admin/places/add/area'); ?>" class="nav-link ">Area</a>
                             </li>
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add/via_place'); ?>" class="nav-link ">Via Place</a>
+                                <a href="<?php echo site_url('admin/places/add/via_place'); ?>" class="nav-link ">Via Place</a>
                             </li>
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add/thana'); ?>" class="nav-link ">Thana</a>
+                                <a href="<?php echo site_url('admin/places/add/thana'); ?>" class="nav-link ">Thana</a>
                             </li>
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add/district'); ?>" class="nav-link ">District</a>
+                                <a href="<?php echo site_url('admin/places/add/district'); ?>" class="nav-link ">District</a>
                             </li>
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add/division'); ?>" class="nav-link ">Division</a>
+                                <a href="<?php echo site_url('admin/places/add/division'); ?>" class="nav-link ">Division</a>
                             </li>
                             <li class="nav-item ">
-                                <a href="<?php echo site_url('places/add/zone'); ?>" class="nav-link ">Zone</a>
+                                <a href="<?php echo site_url('admin/places/add/zone'); ?>" class="nav-link ">Zone</a>
                             </li>
                         </ul>
                     </li>
                     <li class="nav-item  ">
-                        <a href="<?php echo site_url('places/view/area'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/places/view/area'); ?>" class="nav-link ">
                             <span class="title">Area</span>
                         </a>
                     </li>
                     <li class="nav-item  ">
-                        <a href="<?php echo site_url('places/view/via_place'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/places/view/via_place'); ?>" class="nav-link ">
                             <span class="title">Via Places</span>
                         </a>
                     </li>
                     <li class="nav-item  <?php echo $current_view_thana; ?>">
-                        <a href="<?php echo site_url('places/view/thana'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/places/view/thana'); ?>" class="nav-link ">
                             <span class="title">Thana</span>
                         </a>
                     </li>
                     <li class="nav-item  ">
-                        <a href="<?php echo site_url('places/view/district'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/places/view/district'); ?>" class="nav-link ">
                             <span class="title">District</span>
                         </a>
                     </li>
                     <li class="nav-item  ">
-                        <a href="<?php echo site_url('places/view/division'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/places/view/division'); ?>" class="nav-link ">
                             <span class="title">Division</span>
                         </a>
                     </li>
@@ -216,7 +216,7 @@ if(($current_page == 'counters') || ($current_page == 'counter_details') || ($cu
                 </ul>
             </li>
             <li class="nav-item  ">
-                <a href="<?php echo site_url('/admin/users'); ?>" class="nav-link nav-toggle">
+                <a href="<?php echo site_url('/admin/users/all'); ?>" class="nav-link nav-toggle">
                     <i class="icon-user"></i>
                     <span class="title">User</span>
                     <span class="arrow"></span>

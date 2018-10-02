@@ -35,6 +35,9 @@ defined('ROLE_APP_SUPPORT') OR define('ROLE_APP_SUPPORT', 'app_support');
 defined('ROLE_APP_ACCOUNTANT') OR define('ROLE_APP_ACCOUNTANT', 'app_accountant');
 defined('ROLE_ADMINISTRATOR') OR define('ROLE_ADMINISTRATOR', 'administrator');
 
+//Allow time in seconds for booking confirmation. expired pending booking will be removed
+defined('ALLOW_PENDING_CABIN_TIME') OR define('ALLOW_PENDING_CABIN_TIME', '1200');
+
 
 
 

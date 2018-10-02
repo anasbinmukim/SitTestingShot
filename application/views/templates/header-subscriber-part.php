@@ -1,4 +1,4 @@
-<body class="page-container-bg-solid page-header-menu-fixed">
+<body class="page-container-bg-solid page-header-menu-fixed template-front <?php echo $user_role; ?>">
     <div class="page-wrapper">
         <div class="page-wrapper-row">
             <div class="page-wrapper-top">
@@ -87,6 +87,23 @@
                                             </li>
                                         </ul>
                                     </li>
+                                    <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
+                                        <a href="<?php echo site_url('launch'); ?>"> Launch
+                                            <span class="arrow"></span>
+                                        </a>
+                                        <ul class="dropdown-menu pull-left">
+                                            <li aria-haspopup="true" class=" ">
+                                                <a href="<?php echo site_url('LaunchBooking'); ?>" class="nav-link  ">
+                                                    <i class="icon-bar-chart"></i> Available Cabin
+                                                </a>
+                                            </li>
+                                            <li aria-haspopup="true" class=" ">
+                                                <a href="" class="nav-link  ">
+                                                    <i class="icon-bulb"></i> Route </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
                                 </ul>
                             </div>
                             <!-- END MEGA MENU -->

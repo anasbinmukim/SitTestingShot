@@ -43,16 +43,16 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                         <input type="text" name="username" value="<?php echo set_value('username'); ?>" placeholder="John" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">First Name</label>
-                                        <input type="text" name="first_name" value="<?php echo set_value('user_name'); ?>" placeholder="John" class="form-control" /> </div>
+                                        <input type="text" name="first_name" value="<?php echo set_value('first_name'); ?>" placeholder="John" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">Last Name</label>
-                                        <input type="text" name="last_name" value="<?php echo set_value('user_name'); ?>" placeholder="Doe" class="form-control" /> </div>
+                                        <input type="text" name="last_name" value="<?php echo set_value('last_name'); ?>" placeholder="Doe" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">Display Name</label>
-                                        <input type="text" name="display_name" value="<?php echo set_value('user_name'); ?>" placeholder="John Doe" class="form-control" /> </div>
+                                        <input type="text" name="display_name" value="<?php echo set_value('display_name'); ?>" placeholder="John Doe" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">Email</label>
-                                        <input type="text" name="email" value="<?php echo set_value('user_name'); ?>" placeholder="info@company.com" class="form-control" /> </div>
+                                        <input type="text" name="email" value="<?php echo set_value('email'); ?>" placeholder="info@company.com" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">New Password</label>
                                         <input type="password" name="password" class="form-control" /> </div>
@@ -63,23 +63,35 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                   <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Mobile Number</label>
-                                        <input type="text" name="mobile" value="<?php echo set_value('user_name'); ?>" placeholder="01719999999" class="form-control" /> </div>
+                                        <input type="text" name="mobile" value="<?php echo set_value('mobile'); ?>" placeholder="01719999999" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">Alternate Mobile Number</label>
-                                        <input type="text" name="mobile_2" value="<?php echo set_value('user_name'); ?>" placeholder="01719999999" class="form-control" /> </div>
+                                        <input type="text" name="mobile_2" value="<?php echo set_value('mobile_2'); ?>" placeholder="01719999999" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">Phone home</label>
-                                        <input type="text" name="phone_home" value="<?php echo set_value('user_name'); ?>" placeholder="02783749" class="form-control" /> </div>
+                                        <input type="text" name="phone_home" value="<?php echo set_value('phone_home'); ?>" placeholder="02783749" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">Phone office</label>
-                                        <input type="text" name="phone_office" value="<?php echo set_value('user_name'); ?>" placeholder="02783749" class="form-control" /> </div>
+                                        <input type="text" name="phone_office" value="<?php echo set_value('phone_office'); ?>" placeholder="02783749" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">Occupation</label>
-                                        <input type="text" name="occupation" value="<?php echo set_value('user_name'); ?>" placeholder="Manager" class="form-control" /> </div>
+                                        <input type="text" name="occupation" value="<?php echo set_value('occupation'); ?>" placeholder="Manager" class="form-control" /> </div>
                                     <div class="form-group">
                                         <label class="control-label">Website URL</label>
-                                        <input type="text" name="web_url" value="<?php echo set_value('user_name'); ?>" placeholder="http://www.mywebsite.com" class="form-control" /> </div>
+                                        <input type="text" name="web_url" value="<?php echo set_value('web_url'); ?>" placeholder="http://www.mywebsite.com" class="form-control" /> </div>
 
+                                    <div class="form-group">
+                                        <label class="control-label">Role</label>
+                                        <select name="user_role" id="user_role" class="form-control">
+                                          <option value="">Select One</option>
+                                          <?php
+                                            $all_user_role = get_user_role('all');
+                                            foreach ($all_user_role as $role_key => $role_value) {
+                                              echo '<option value="'.$role_key.'">'.$role_value.'</option>';
+                                            }
+                                          ?>
+                                        </select>
+                                    </div>
                                   </div>
                                   <div class="col-md-12">
                                     <div class="margiv-top-10 form-actions right">

@@ -23,3 +23,8 @@
 /*.book_launch_cabin .icon-btn.booking_status_confirm, .book_launch_cabin .icon-btn.booking_status_pending, .book_launch_cabin .icon-btn.booking_status_hold{
   color: #FFFFFF !important;
 }*/
+
+.double_cabin_box{ margin-bottom: 20px; }
+.double_cabin_box .icon-btn{ min-width: 60px; }
+
+.user_role_switch{ margin-right: 20px; }

@@ -10,8 +10,23 @@ class Users extends RM_Controller {
 				}
 				$this->common->check_user_exists();
 		}
-		public function index()
+		public function all($user_role = NULL)
 		{
+
+				if(($user_role != NULL)){
+					$this->data['title'] = 'All '. $user_role;
+					$breadcrumb[] = array('name' => 'All Users', 'url' => '/admin/users/all');
+					$breadcrumb[] = array('name' => 'All '.$user_role, 'url' => '');
+					$this->data['breadcrumb'] = $breadcrumb;
+					$this->data['current_page'] = 'user';
+					$this->data['user_role'] = $user_role;
+				}else{
+					$this->data['title'] = 'All Users';
+					$breadcrumb[] = array('name' => 'All Users', 'url' => '');
+					$this->data['breadcrumb'] = $breadcrumb;
+					$this->data['current_page'] = 'user';
+					$this->data['user_role'] = '';
+				}
 
 
 				$this->data['css_files'] = array(
@@ -27,15 +42,13 @@ class Users extends RM_Controller {
 					base_url('seatassets/js/users.js?ver=1.0.1'),
 				);
 
-				$this->data['title'] = 'All Users';
-
 				$this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
-				$this->load->view('admin/users/index',$this->data);
+				$this->load->view('admin/users/all-users',$this->data);
 				$this->load->view('templates/footer', $this->data);
 		}
 
-		function get_all()
+		function get_all($user_role = NULL)
 		{
 
 
@@ -60,8 +73,12 @@ class Users extends RM_Controller {
 				$condition .= ' AND t.email LIKE "%'.$_REQUEST['email'].'%"';
 			}
 
-			if( isset($_REQUEST['user_role']) && $_REQUEST['user_role'] ) {
-				$condition .= ' AND t.user_role LIKE "%'.$_REQUEST['user_role'].'%"';
+			if(($user_role != NULL)){
+				$condition .= ' AND t.user_role LIKE "%'.$user_role.'%"';
+			}else{
+				if( isset($_REQUEST['user_role']) && $_REQUEST['user_role'] ) {
+					$condition .= ' AND t.user_role LIKE "%'.$_REQUEST['user_role'].'%"';
+				}
 			}
 
 			if( isset($_REQUEST['is_active']) && $_REQUEST['is_active'] ) {
@@ -193,6 +210,7 @@ class Users extends RM_Controller {
 					$this->form_validation->set_rules('email', 'Email', 'trim|valid_email|callback_email_check',  array('is_unique' => 'This email is already being used by someone.'));
 					$this->form_validation->set_rules('password', 'Password', 'trim|required|htmlspecialchars|min_length[4]');
 					$this->form_validation->set_rules('conf_password', 'Re-Password', 'trim|required|htmlspecialchars|matches[password]');
+					$this->form_validation->set_rules('user_role', 'User Role', 'trim|required|htmlspecialchars');
 
 					$user_entered_password = md5( $this->config->item('encryption_key').trim($this->input->post('password')) );
 
@@ -210,7 +228,7 @@ class Users extends RM_Controller {
 						'web_url' => trim($this->input->post('web_url')),
 						'password'=> $user_entered_password,
 						'is_active' => 1,
-						'user_role' => 'subscriber',
+						'user_role' => trim($this->input->post('user_role')),
 						'updated_at' => date('Y-m-d H:i:s'),
 						'last_updated_by' => $this->session->userdata('user_id'),
 					);

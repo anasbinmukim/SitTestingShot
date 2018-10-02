@@ -16,11 +16,23 @@ require_once(FCPATH.'/application/views/breadcrumb.php');
 </h1>
 
 <?php
+$double_cabin_seats = array();
+//Double cabin pair number is important. Cabin will not display if pair number null or 0
+$double_cabin_pair_number = array();
+
   $cabin_types = array();
   foreach ($available_cabins as $cabins) {
       $cabin_types[] = $cabins->cabin_type;
+      if('Double' == $cabins->cabin_type){
+        $double_cabin_seats[] = $cabins;
+        if($cabins->pair_number != '')
+          $double_cabin_pair_number[] = $cabins->pair_number;
+      }
   }
   $cabin_types = array_unique($cabin_types);
+  if(is_array($double_cabin_pair_number))
+    $double_cabin_pair_number = array_unique($double_cabin_pair_number);
+
 ?>
 
 <div class="row">
@@ -29,6 +41,7 @@ require_once(FCPATH.'/application/views/breadcrumb.php');
   <?php
   //debug($already_proceed_cabins);
   ?>
+
 <div class="row">
 <?php foreach ($cabin_types as $cabin_type) { ?>
     <div class="col-md-12">
@@ -37,7 +50,7 @@ require_once(FCPATH.'/application/views/breadcrumb.php');
             <div class="portlet-title">
                 <div class="caption font-dark">
                     <i class="icon-settings font-dark"></i>
-                    <span class="caption-subject bold uppercase">Available Cabin: <?php echo $cabin_type; ?></span>
+                    <span class="caption-subject bold uppercase">Cabin: <?php echo $cabin_type; ?></span>
                 </div>
             </div>
             <div class="portlet-body book_launch_cabin">
@@ -58,8 +71,80 @@ require_once(FCPATH.'/application/views/breadcrumb.php');
               $cabin_columns = array_column($already_proceed_cabins, 'cabin_id');
               //debug($cabin_columns);
               ?>
+
+              <?php if(($cabin_type == 'Double')){ ?>
+                  <div class="row">
+                  <?php //debug($double_cabin_pair_number); ?>
+                  <?php foreach ($double_cabin_pair_number as $cabin_pair_number) { ?>
+                        <?php
+                          $both_seat_available = TRUE;
+                          $cabin_fare_total = 0;
+                          $cabin_ids = array();
+                          $cabin_numbers = array();
+                          $cabin_fares = array();
+
+                        ?>
+                        <div class="double_cabin_box col-md-3">
+                        <?php foreach ($double_cabin_seats as $cabins) { ?>
+                              <?php if(($cabin_pair_number == $cabins->pair_number)){ ?>
+                                <?php
+                                  $already_booked_key = '';
+                                  $already_booked_key = array_search($cabins->ID, $cabin_columns, true);
+                                  $launch_cabin_solt_id = encrypt($cabins->ID);
+                                  $cabin_fare_total += $cabins->cabin_fare;
+
+                                  $cabin_ids[] = $launch_cabin_solt_id;
+                                  $cabin_fares[] = $cabins->cabin_fare;
+                                  $cabin_numbers[] = $cabins->cabin_number;
+
+                                ?>
+                                <?php if( is_int($already_booked_key) && ($allow_pair_cabin_booked)){ ?>
+                                  <?php $exists_book_status = strtolower($already_proceed_cabins[$already_booked_key]['booking_status']); ?>
+                                  <span data-cabin_id = "<?php echo $launch_cabin_solt_id; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" class="icon-btn <?php echo 'booking_status_'.$exists_book_status; ?>">
+                                      <i class="fa fa-bed"></i>
+                                      <div> <?php echo $cabins->cabin_number; ?> </div>
+                                      <span class="badge badge-info"> &#x9f3;<?php echo $cabins->cabin_fare; ?> </span>
+                                  </span>
+                                <?php
+                                  $both_seat_available = FALSE;
+                                }elseif($allow_pair_cabin_booked){
+                                ?>
+                                  <a data-cabin_id = "<?php echo $launch_cabin_solt_id; ?>" data-cabin_number = "<?php echo $cabins->cabin_number; ?>" data-cabin_fare = "<?php echo $cabins->cabin_fare; ?>" href="javascript:void(0)" class="icon-btn launch_cabin">
+                                      <i class="fa fa-bed"></i>
+                                      <div> <?php echo $cabins->cabin_number; ?> </div>
+                                      <span class="badge badge-info"> &#x9f3;<?php echo $cabins->cabin_fare; ?> </span>
+                                  </a>
+                                <?php } ?>
+                                <?php $already_booked_key = ''; ?>
+                              <?php } ?>
+                        <?php } ?>
+                        <!-- process double cabin into single button click -->
+                        <?php if($both_seat_available && isset($cabin_ids) && (count($cabin_ids) == 2) && (!$allow_pair_cabin_booked)){ ?>
+                              <a  data-cabin_type = "double"
+                                data-cabin_id_a = "<?php echo $cabin_ids[0]; ?>"
+                                data-cabin_id_b = "<?php echo $cabin_ids[1]; ?>"
+                                data-cabin_number_a = "<?php echo $cabin_numbers[0]; ?>"
+                                data-cabin_number_b = "<?php echo $cabin_numbers[1]; ?>"
+                                data-cabin_fare = "<?php echo $cabin_fare_total; ?>"
+                                data-cabin_fare_a = "<?php echo $cabin_fares[0]; ?>"
+                                data-cabin_fare_b = "<?php echo $cabin_fares[1]; ?>"
+
+                                href="javascript:void(0)" class="icon-btn launch_cabin">
+                                  <i class="fa fa-bed"></i>
+                                  <i class="fa fa-bed"></i>
+                                  <div> <?php echo $cabins->pair_number; ?> </div>
+                                  <span class="badge badge-info"> &#x9f3;<?php echo $cabin_fare_total; ?> </span>
+                              </a>
+                        <?php } ?>
+
+                        </div> <!-- double_cabin_box -->
+                  <?php }//EOF foreach pair number ?>
+                </div><!--row-->
+              <?php }//EOF double cabin process ?>
+
+
               <?php foreach ($available_cabins as $cabins) { ?>
-                <?php if($cabin_type == $cabins->cabin_type){ ?>
+                <?php if(($cabin_type == $cabins->cabin_type) && ($cabins->cabin_type != 'Double')){ ?>
 
                       <?php
                         $already_booked_key = '';
@@ -82,7 +167,7 @@ require_once(FCPATH.'/application/views/breadcrumb.php');
                         </a>
                       <?php } ?>
                       <?php $already_booked_key = ''; ?>
-                  <?php } ?>
+                  <?php }//EOF Cabin type ?>
               <?php } ?>
             </div>
         </div>

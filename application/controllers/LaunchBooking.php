@@ -25,6 +25,9 @@ class LaunchBooking extends RM_Controller {
 
 		public function index()
 		{
+				// Start: Process to cleanup expired cabin booking data
+				$this->cleanup_expired_booking_data();
+				// End: Process to cleanup expired cabin booking data
 
 				// Start: Process launch schedule
 				$this->process_launch_schedule_search();
@@ -187,7 +190,7 @@ class LaunchBooking extends RM_Controller {
 
 		}//EOF launch booking
 
-		public function Cabin($schedule_solt_id = NULL, $request_cabin_solt_ids = NULL, $cabin_item_solt_id = NULL, $booking_ref_number = NULL)
+		public function Cabin($schedule_solt_id = NULL, $request_cabin_solt_ids = NULL, $cabin_item_solt_id = NULL, $booking_ref_number = NULL, $cabin_pair_number = NULL)
 		{
 				if(($this->input->post('submit_cabins_request') !== NULL) && ($this->input->post('cabin_ids') !== NULL)){
 						$cabin_ids = $this->input->post('cabin_ids');
@@ -195,9 +198,18 @@ class LaunchBooking extends RM_Controller {
 						$launch_id = $this->input->post('launch_id');
 						$travel_date = $this->input->post('travel_date');
 						$booking_ref_number = $this->session->userdata('user_id').'UT'.time().'TR'.mt_rand();
-						$this->session->set_userdata('booking_ref_number', $booking_ref_number);
 						$requested_cabin_cart_data = array();
 							if(is_array($cabin_ids) && (count($cabin_ids)> 0)){
+								//check cabin availability before booking assing
+								//$requested_check_cabin_ids = array();
+								foreach ($cabin_ids as $key => $cabin_solt_id) {
+									$cabin_id = decrypt($cabin_solt_id)*1;
+									if($this->already_booked_cabin($launch_id, $schedule_id, $cabin_id)){
+										$this->session->set_flashdata('error_msg', 'Selected one or more cabin is already being processed. Please try again.');
+										redirect('/LaunchBooking');
+										exit;
+									}
+								}
 								//add data to hold this cabins for next few minutes
 								foreach ($cabin_ids as $key => $cabin_solt_id) {
 									$cabin_id = decrypt($cabin_solt_id)*1;
@@ -218,6 +230,7 @@ class LaunchBooking extends RM_Controller {
 									$cabin_details = $this->common->get( 'launch_cabin', array( 'ID' => $cabin_id ), 'array' );
 									$requested_cabin_cart_data[$cabin_id] = $cabin_details;
 								}
+								$this->session->set_userdata('booking_ref_number', $booking_ref_number);
 								$this->session->set_userdata('cabin_booking_cart_items', $requested_cabin_cart_data);
 								$comma_cabin_ids = implode(",", $cabin_ids);
 								$cabins_solt_ids = encrypt($comma_cabin_ids);
@@ -324,6 +337,22 @@ class LaunchBooking extends RM_Controller {
 							if(is_array($request_cabin_ids) && (count($request_cabin_ids)> 0)){
 								$comma_cabin_ids = implode(",", $request_cabin_ids);
 								$cabins_solt_ids = encrypt($comma_cabin_ids);
+
+								//Remove double cabin pair seat for passenger level user
+								if(($cabin_pair_number != NULL) && ($booking_ref_number != NULL)){
+										$cabin_pair_number = decrypt($cabin_pair_number);
+										$cabin_booking_cart_items = $this->session->userdata('cabin_booking_cart_items');
+										foreach ($cabin_booking_cart_items as $cabin_id => $cabin_details) {
+											//get requested cabin data
+											if($cabin_pair_number  == $cabin_details['pair_number']){
+													$cabin_pair_id = $cabin_details['ID'];
+													$remove_pair_cabin_from_cart = '/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids.'/'.encrypt($cabin_pair_id).'/'.$booking_ref_number;
+													redirect($remove_pair_cabin_from_cart);
+													exit;
+											}
+										}
+								}
+
 								$cart_items_url = '/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
 								$this->session->set_userdata('cart_items_url', $cart_items_url);
 								redirect($cart_items_url);
@@ -336,16 +365,16 @@ class LaunchBooking extends RM_Controller {
 
 					if(is_array($request_cabin_ids) && (count($request_cabin_ids)> 0)){
 						$this->data['request_cabin_ids'] = $request_cabin_ids;
-						$cabin_condition = '1=1 ';
-						if(($launch_id != '') && ($launch_id > 0)){
-							$cabin_condition .= ' AND launch_id = "'.$launch_id.'"';
-						}
-
-						$cabin_condition .= " AND `ID` IN (".implode(',',$request_cabin_ids).")";
-
-						$result = $this->common->get_all('launch_cabin', $cabin_condition);
-
-						$this->data['requested_available_cabins'] = $result;
+						// $cabin_condition = '1=1 ';
+						// if(($launch_id != '') && ($launch_id > 0)){
+						// 	$cabin_condition .= ' AND launch_id = "'.$launch_id.'"';
+						// }
+						//
+						// $cabin_condition .= " AND `ID` IN (".implode(',',$request_cabin_ids).")";
+						//
+						// $result = $this->common->get_all('launch_cabin', $cabin_condition);
+						//$this->data['requested_available_cabins'] = $result;
+						$this->data['requested_available_cabins'] = $this->session->userdata('cabin_booking_cart_items');
 					}
 
 					$this->data['title'] = 'Request Cabins Booking';
@@ -490,6 +519,38 @@ class LaunchBooking extends RM_Controller {
 						}//eof if no error
 				}
 		}
+
+		//Delete Pending booked cabin when time expired
+		private function cleanup_expired_booking_data(){
+			$booking_condition = '1=1 ';
+			$booking_condition .= ' AND booking_status = "Pending"';
+			$booking_condition .= ' AND booking_id = 0';
+			$result_pending = $this->common->get_all('launch_cabin_booked', $booking_condition, 'ID, booking_time');
+			if(is_array($result_pending) && (count($result_pending) > 0)){
+				foreach ($result_pending as $pending_cabin) {
+					$current_time = date("Y-m-d H:i:s");
+					$booking_id = $pending_cabin->ID;
+					$booking_time = $pending_cabin->booking_time;
+					//get time difference
+					$time_diff = strtotime($current_time) - strtotime($booking_time);
+					if($time_diff > ALLOW_PENDING_CABIN_TIME){
+						$this->common->delete( 'launch_cabin_booked', array( 'ID' =>  $booking_id ) );
+					}
+				}
+			}
+		}
+
+		//Return true if cabin is available for that schedule.
+		public function already_booked_cabin($launch_id, $schedule_id, $cabin_id){
+			$booking_data = array( 'launch_id' => $launch_id, 'schedule_id' => $schedule_id, 'cabin_id' => $cabin_id );
+			$booked_cabin = $this->common->get( 'launch_cabin_booked', $booking_data );
+			if(!empty($booked_cabin)){
+					return TRUE;
+			}
+			else
+				return FALSE;
+		}
+
 
 		//Return all availalbe cabins of a launch that can be book or already booked
 		public function get_available_launch_cabin($launch_id){

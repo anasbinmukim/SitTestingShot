@@ -1,24 +1,13 @@
-<!-- BEGIN PAGE HEADER-->
-<h1 class="page-title"> Users</h1>
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="icon-home"></i>
-            <a href="<?php echo site_url();?>">Home</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>Users</span>
-        </li>
-    </ul>
-</div>
-<!-- END PAGE HEADER-->
-
 <?php
+require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
+
+if($user_role != ''){
+  $request_user_url = site_url('admin/users/get_all/'.$user_role);
+}else{
+  $request_user_url = site_url('admin/users/get_all/');
+}
 ?>
-
-
 <div class="row">
     <div class="col-md-12">
         <!-- Begin: User List Table -->
@@ -32,6 +21,18 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     <div class="btn-group btn-group-devided">
                         <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/admin/users/register'); ?>">Add New User</a>
                     </div>
+                </div>
+                <div class="user_role_switch actions">
+                  <select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);" class="form-control form-filter input-sm" name="user_role_switch">
+                      <option value="">Filter by User Role</option>
+                      <?php
+                        $all_user_role = get_user_role('all');
+                        foreach ($all_user_role as $role_key => $role_value) {
+                          $redirect_user_url = site_url('/admin/users/all/'.$role_key);
+                          echo '<option value="'.$redirect_user_url.'">'.$role_value.'</option>';
+                        }
+                      ?>
+                  </select>
                 </div>
             </div>
 
@@ -49,7 +50,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                             <i class="fa fa-check"></i> Submit</button>
                     </div>
 
-                    <table class="table table-striped table-bordered table-hover table-checkable" id="users-tbl" data-url="<?php echo site_url('admin/users/get_all');?>">
+                    <table class="table table-striped table-bordered table-hover table-checkable" id="users-tbl" data-url="<?php echo $request_user_url;?>">
                         <thead>
                             <tr>
                                 <th width="5%"></th>
@@ -67,12 +68,12 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                 <td class="filter-cw-td">
                                     <select class="form-control form-filter input-sm" name="user_role">
                                         <option value="">Select</option>
-                                        <option value="administrator">Administrator</option>
-                                        <option value="agent">Agent</option>
-                                        <option value="supervisor">Supervisor</option>
-                                        <option value="company_owner">Company Owner</option>
-                                        <option value="company_manager">Company Manager</option>
-                                        <option value="subscriber">Subscriber</option>
+                                        <?php
+                                          $all_user_role = get_user_role('all');
+                                          foreach ($all_user_role as $role_key => $role_value) {
+                                            echo '<option value="'.$role_key.'">'.$role_value.'</option>';
+                                          }
+                                        ?>
                                     </select>
                                 </td>
                                 <td class="filter-cw-td">

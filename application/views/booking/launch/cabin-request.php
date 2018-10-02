@@ -1,6 +1,9 @@
 <!-- BEGIN PAGE HEADER-->
 <?php
   $launch_id = $launch_schedule_data['launch_id'];
+  $start_from = $launch_schedule_data['start_from'];
+  $destination_to = $launch_schedule_data['destination_to'];
+
   $launch_name = $launch_arr[$launch_id]['launch_name'];
   $travel_date = $launch_schedule_data['date'];
   $travel_date = date('l F j, Y', strtotime($travel_date));
@@ -11,6 +14,9 @@
   if($dropping_place_time != ''){
     $dropping_place_time_data_arr = json_decode($dropping_place_time, TRUE);
   }
+
+  //$cart_items = $this->session->userdata('cabin_booking_cart_items');
+  //debug($cart_items);
 ?>
 <?php
 require_once(FCPATH.'/application/views/breadcrumb.php');
@@ -54,13 +60,17 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 ?>
                 <?php foreach ($requested_available_cabins as $key => $value) { ?>
                   <tr>
-                      <td><?php echo '<div class="center-block"><a onclick="return confirm(\'Are you sure you want to remove this?\');" href="'.site_url('/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$request_cabin_solt_ids.'/'.encrypt($value->ID).'/'.$booking_ref_number).'" title="Remove"><i class="fa fa-times text-danger"></i></a></div>'; ?></td>
-                      <td> <?php echo $value->cabin_number; ?> </td>
-                      <td style="text-align:right;"> <?php echo seat_taka_format($value->booking_charge); ?> </td>
-                      <td style="text-align:right;"> <?php echo seat_taka_format($value->cabin_fare); ?> </td>
+                      <?php if(($value['pair_number'] != '') && (!$allow_pair_cabin_booked)){ ?>
+                        <td><?php echo '<div class="center-block"><a onclick="return confirm(\'Are you sure you want to remove this?\');" href="'.site_url('/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$request_cabin_solt_ids.'/'.encrypt($value['ID']).'/'.$booking_ref_number.'/'.encrypt($value['pair_number'])).'" title="Remove"><i class="fa fa-times text-danger"></i></a></div>'; ?></td>
+                      <?php }else{ ?>
+                        <td><?php echo '<div class="center-block"><a onclick="return confirm(\'Are you sure you want to remove this?\');" href="'.site_url('/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$request_cabin_solt_ids.'/'.encrypt($value['ID']).'/'.$booking_ref_number).'" title="Remove"><i class="fa fa-times text-danger"></i></a></div>'; ?></td>
+                      <?php } ?>
+                      <td> <?php echo $value['cabin_number']; ?> </td>
+                      <td style="text-align:right;"> <?php echo seat_taka_format($value['booking_charge']); ?> </td>
+                      <td style="text-align:right;"> <?php echo seat_taka_format($value['cabin_fare']); ?> </td>
                       <?php
-                        $total_price += $value->cabin_fare;
-                        $total_charge += $value->booking_charge;
+                        $total_price += $value['cabin_fare'];
+                        $total_charge += $value['booking_charge'];
                         $total_counter += 1;
                       ?>
                   </tr>
@@ -119,7 +129,10 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     <select name="bording_from" id="bording_from" class="form-control select2me">
                     <?php
                       foreach($dropping_place_time_data_arr as $place => $time){
-                        echo '<option value="'.$place.' - '.$time.'">'.$place.' - '.$time.'</option>';
+                        $selected = '';
+                        if($place == $start_from)
+                          $selected = 'selected = "selected" ';
+                        echo '<option '.$selected.' value="'.$place.' - '.$time.'">'.$place.' - '.$time.'</option>';
                       }
                     ?>
                   </select>
@@ -129,7 +142,10 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     <select name="dropping_to" id="dropping_to" class="form-control select2me">
                     <?php
                       foreach($dropping_place_time_data_arr as $place => $time){
-                        echo '<option value="'.$place.' - '.$time.'">'.$place.' - '.$time.'</option>';
+                        $selected = '';
+                        if($place == $destination_to)
+                          $selected = 'selected = "selected" ';
+                        echo '<option '.$selected.' value="'.$place.' - '.$time.'">'.$place.' - '.$time.'</option>';
                       }
                     ?>
                   </select>

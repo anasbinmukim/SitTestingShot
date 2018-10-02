@@ -1,4 +1,4 @@
-<body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
+<body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid template-admin <?php echo $user_role; ?>">
     <!-- BEGIN HEADER -->
     <div class="page-header navbar navbar-fixed-top">
         <!-- BEGIN HEADER INNER -->

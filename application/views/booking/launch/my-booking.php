@@ -26,6 +26,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                             <th class="none">Passenger Name</th>
                             <th class="none">Passenger Mobile</th>
                             <th class="none">Boarding Place</th>
+                            <th class="none">Dropping Place</th>
                             <th class="none">Route</th>
                             <th class="none">Via Places</th>
                         </tr>
@@ -42,10 +43,11 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                               <td><?php echo $booking_row->launch_name; ?></td>
                               <td><?php echo $booking_row->start_from; ?></td>
                               <td><?php echo $booking_row->destination_to; ?></td>
-                              <td><?php echo  $booking_row->total_cabin_numbers; ?></td>
+                              <td><?php echo $booking_row->total_cabin_numbers; ?></td>
                               <td><?php echo $booking_row->passenger_name; ?></td>
                               <td><?php echo $booking_row->passenger_mobile; ?></td>
-                              <td><?php echo $booking_row->passenger_mobile; ?></td>
+                              <td><?php echo $booking_row->boarding; ?></td>
+                              <td><?php echo $booking_row->dropping; ?></td>
                               <td><?php echo $booking_row->route_name; ?></td>
                               <td><?php echo $booking_row->via_places; ?></td>
                           </tr>

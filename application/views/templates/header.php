@@ -50,6 +50,14 @@
         <script type="text/javascript">
             var csrf_value = '<?php echo $this->security->get_csrf_hash(); ?>';
         </script>
+        <script type="text/javascript">
+        var seat_options = seat_options || {};
+        <?php
+          foreach ($front_js_flag as $key => $value) {
+            echo 'seat_options.'.$key.' = '.$value . ';';
+          }
+        ?>
+        </script>
    </head>
     <!-- END HEAD -->
     <?php
