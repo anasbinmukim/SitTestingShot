@@ -38,7 +38,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                               <td><?php echo $schedule->route_path; ?></td>
                               <td><?php echo $schedule->start_time; ?></td>
                               <td><?php echo $schedule->destination_time; ?></td>
-                              <td><?php echo '<div class="center-block"><a class="btn green btn-outline btn-circle btn-sm" href="'.site_url('/LaunchBooking/Cabin/'.encrypt($schedule->sche_id)).'" title="Available Cabins">Cabins ('.$available_cabins.') </a>'; ?></td>
+                              <td><?php echo '<div class="center-block"><a class="btn green btn-outline btn-circle btn-sm" href="'.site_url('/admin/launchbooking/cabin/'.encrypt($schedule->sche_id)).'" title="Available Cabins">Cabins ('.$available_cabins.') </a>'; ?></td>
                           </tr>
                         <?php } ?>
                     </tbody>

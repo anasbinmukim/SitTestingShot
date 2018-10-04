@@ -700,7 +700,7 @@ class Launchbooking extends RM_Controller {
 		}
 
 
-		public function MyCabin($booking_type = 'launch', $user_solt_id = NULL){
+		public function mycabin($booking_type = 'launch', $user_solt_id = NULL){
 
 			$this->data['css_files'] = array(
 				base_url('assets/global/plugins/datatables/datatables.min.css'),
