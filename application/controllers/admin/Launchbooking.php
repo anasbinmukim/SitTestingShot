@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class LaunchBooking extends RM_Controller {
+class Launchbooking extends RM_Controller {
 
 		public $booking_date_time;
 		public $currently_logged_user;
