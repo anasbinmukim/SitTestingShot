@@ -167,7 +167,7 @@ class Launch extends RM_Controller {
 							$breadcrumb[] = array('name' => 'Cabin', 'url' => '');
 							$this->data['breadcrumb'] = $breadcrumb;
 							$this->data['current_page'] = 'cabin';
-							$result = $this->common->get_all( 'launch_cabin' );
+							$result = $this->common->get_all( 'launch_cabin', '', '', 0, 20 );
 							$this->data['launch_cabin_rows'] = $result;
 						}
 
@@ -260,6 +260,8 @@ class Launch extends RM_Controller {
 							$pair_number = $cabin_number;
 						}
 
+						$launch_id = trim($this->input->post('launch_id'));
+
             $data_arr = array(
               'launch_id'=> trim($this->input->post('launch_id')),
               'cabin_number'=> trim($this->input->post('cabin_number')),
@@ -276,7 +278,8 @@ class Launch extends RM_Controller {
                 $cabin_id = $this->input->post('update_cabin_id');
                 $this->common->update( 'launch_cabin', $data_arr, array( 'ID' =>  $cabin_id ) );
       					$this->session->set_flashdata('success_msg','Updated done!');
-                redirect('admin/launch/cabin');
+								$launch_id_encpt = encrypt($launch_id);
+	              redirect('admin/launch/cabin/all-cabins/'.$launch_id_encpt);
             }else{
 
 							//Process if double cabin
@@ -296,10 +299,9 @@ class Launch extends RM_Controller {
 								$cabin_id = $this->common->insert( 'launch_cabin', $data_arr );
 							}
 
-
-
               $this->session->set_flashdata('success_msg','Added done!');
-              redirect('admin/launch/cabin');
+							$launch_id_encpt = encrypt($launch_id);
+              redirect('admin/launch/cabin/all-cabins/'.$launch_id_encpt);
             }
 
 
