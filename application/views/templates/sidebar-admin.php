@@ -119,6 +119,22 @@ if(($current_page == 'counters') || ($current_page == 'counter_details') || ($cu
                     </li>
                 </ul>
             </li>
+			<li class="nav-item  <?php echo $current_company; ?>">
+                <a href="<?php echo site_url('admin/messages'); ?>" class="nav-link nav-toggle">
+                    <i class="icon-diamond"></i>
+                    <span class="title">Messages</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item  <?php echo $current_counters; ?>">
+                        <a href="<?php echo site_url('admin/messages/register'); ?>" class="nav-link nav-toggle">
+                            <i class="icon-diamond"></i>
+                            <span class="title">Add New</span>
+                            <span class="arrow"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             <li class="nav-item <?php echo $current_view_places; ?>">
                 <a href="<?php echo site_url('admin/places'); ?>" class="nav-link nav-toggle">
                     <i class="icon-diamond"></i>

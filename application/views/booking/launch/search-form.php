@@ -83,7 +83,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                       </div>
                       <div class="col-md-2">
                           <div class="form-group">
-                              <select name="destination_to" id="destination_to" class="form-control select2me">
+                             <select name="destination_to" id="destination_to" class="form-control select2me">
                                 <option value="to">Select To</option>
                                 <?php
                                   if(isset($launch_search_arr['places'])){
