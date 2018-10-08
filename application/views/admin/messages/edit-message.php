@@ -28,7 +28,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                               <div class="col-md-12">								
                                   <div class="form-group">
                                       <label class="control-label">Message Content</label>
-                                      <textarea class="form-control ckeditor" name="msg_content"><?php echo html_escape($message_data['msg_content']); ?></textarea></div>
+                                      <textarea class="form-control ckeditor" name="msg_content"><?php echo html_entity_decode($message_data['msg_content']); ?></textarea></div>
 									  <div class="form-group">
                                         <label class="control-label">Message Excerpt</label>
                                         <textarea class="form-control" name="msg_excerpt"> <?php echo html_escape($message_data['msg_excerpt']); ?> </textarea></div>

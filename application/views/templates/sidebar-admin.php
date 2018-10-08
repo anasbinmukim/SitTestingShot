@@ -1,7 +1,7 @@
 <?php
 $current_view_places = $current_home = $current_view_thana = $current_launch = $current_cabin = '';
 $current_schedule = $current_route = $current_search_cabins = $current_my_cabin_booking = $current_company = '';
-$current_counters = $current_asdfasdf = $current_sadfasf = $current_sadf = $current_asdfa = '';
+$current_counters = $current_messages = $current_sadfasf = $current_sadf = $current_asdfa = '';
 $current_dfsafsa = $current_asdfasdf = $current_sadfasf = $current_sadf = $current_asdfa = '';
 $current_dfsafsa = $current_asdfasdf = $current_sadfasf = $current_sadf = $current_asdfa = '';
 $current_dfsafsa = $current_asdfasdf = $current_sadfasf = $current_sadf = $current_asdfa = '';
@@ -43,6 +43,7 @@ if(($current_page == 'companies')
 || ($current_page == 'add_company')
 || ($current_page == 'edit_company')){ $current_company = ' active open'; }
 if(($current_page == 'counters') || ($current_page == 'counter_details') || ($current_page == 'counter_add') || ($current_page == 'counter_edit')){ $current_route = ' active open'; }
+if(($current_page == 'messages')||($current_page == 'add_message')||($current_page == 'message_details')){ $current_messages = ' active open'; }
 
 
 
@@ -119,14 +120,14 @@ if(($current_page == 'counters') || ($current_page == 'counter_details') || ($cu
                     </li>
                 </ul>
             </li>
-			<li class="nav-item  <?php echo $current_company; ?>">
+			<li class="nav-item  <?php echo $current_messages; ?>">
                 <a href="<?php echo site_url('admin/messages'); ?>" class="nav-link nav-toggle">
                     <i class="icon-diamond"></i>
                     <span class="title">Messages</span>
                     <span class="arrow"></span>
                 </a>
                 <ul class="sub-menu">
-                    <li class="nav-item  <?php echo $current_counters; ?>">
+                    <li class="nav-item  <?php echo $current_messages; ?>">
                         <a href="<?php echo site_url('admin/messages/register'); ?>" class="nav-link nav-toggle">
                             <i class="icon-diamond"></i>
                             <span class="title">Add New</span>

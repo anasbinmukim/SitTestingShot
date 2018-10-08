@@ -21,26 +21,37 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 <table class="table table-striped table-hover table-bordered" id="district_editable_view">
                     <thead>
                         <tr>
-                            <th> Message Subject </th>
-                            <th> Message Excerpt </th>
-                            <th> Message Content </th>
+                            <th> Date </th>
+                            <th> Subject </th>
+                            <th> Message</th>
                             <th width="50"> Action </th>
                         </tr>
                     </thead>
                     <tbody>
-						<?php foreach ($message_rows as $message) { ?>
-                          <tr>
+						<?php
+						$read_status = "";
+						foreach ($message_rows as $message) { 
+							if($message->read_status == 0){
+								$read_status = "unread";
+							}else{
+								$read_status = "read";
+							}
+						?>		
+						<tr class="<?php echo $read_status; ?>">
                               <?php
-                                //$company_slug = $company->company_slug;
+                                $message_slug = $message->msg_slug;	
+								$content = strip_tags(html_entity_decode($message->msg_content));
+								$content = substr($content,0,50);
                               ?>
-                              <td><?php echo $message->msg_subject; ?></td>
-                              <td><?php echo $message->msg_excerpt; ?></td>
-                              <td><?php echo $message->msg_content; ?> </td>
-                              <td><?php echo '<div class="center-block"><a href="'.site_url('admin/messages/edit/'.encrypt($message->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this message?\');" href="'.site_url('admin/messages/delete/'.encrypt($message->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
-                          </tr>
+                              <td><?php echo $message->msg_date; ?></td>
+                              <td><a href="<?php echo site_url('admin/messages/details/'.$message_slug); ?>"><?php echo $message->msg_subject; ?></a></td>
+							  <td><a href="<?php echo site_url('admin/messages/details/'.$message_slug); ?>"><?php echo $content; ?></a></td>
+                              <td><?php echo '<div class="center-block"><a href="'.site_url('admin/messages/details/'.$message_slug).'" title="View"><i class="fa fa-th-list"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this message?\');" href="'.site_url('admin/messages/delete/'.encrypt($message->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
+                        </tr>
+                          
                         <?php } ?>
                     </tbody>
-                </table>				
+                </table>
             </div>
         </div>
         <!-- END EXAMPLE TABLE PORTLET-->

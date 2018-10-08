@@ -19,6 +19,16 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                           <form action="" method="post" enctype="multipart/form-data">
                             <div class="row">
                                 <div class="col-md-6">
+									<div class="form-group">
+                                      <label class="control-label">Message To</label>
+                                        <select name="message_to" id="message_to" class="form-control select2me">
+                                        <?php
+                                          foreach($user_info as $rvalue){
+                                            echo '<option value="'.$rvalue->ID.'">'.$rvalue->display_name.'</option>';
+                                          }
+                                        ?>
+                                      </select>
+                                    </div>
                                     <div class="form-group">
                                         <label class="control-label">Message Subject</label>
                                         <input type="text" name="msg_subject" class="form-control" value="<?php echo set_value('company_name'); ?>" /> </div>                                                                     

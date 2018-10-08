@@ -91,7 +91,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                               <div class="col-md-12">
                                   <div class="form-group">
                                       <label class="control-label">About Company</label>
-                                      <textarea class="form-control ckeditor" name="company_description"><?php echo html_escape($company_data['company_description']); ?></textarea></div>
+                                      <textarea class="form-control ckeditor" name="company_description"><?php echo html_entity_decode($company_data['company_description']); ?></textarea></div>
                                   <div class="margin-top-10">
                                       <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                       <input type="hidden" name="update_company_id" value="<?php echo $company_data['ID']; ?>">
