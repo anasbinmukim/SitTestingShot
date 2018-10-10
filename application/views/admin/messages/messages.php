@@ -18,7 +18,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-hover table-bordered" id="district_editable_view">
+                <table class="table table-striped table-hover table-bordered" id="message_view">
                     <thead>
                         <tr>
                             <th> Date </th>
@@ -47,8 +47,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                               <td><a href="<?php echo site_url('admin/messages/details/'.$message_slug); ?>"><?php echo $message->msg_subject; ?></a></td>
 							  <td><a href="<?php echo site_url('admin/messages/details/'.$message_slug); ?>"><?php echo $content; ?></a></td>
                               <td><?php echo '<div class="center-block"><a href="'.site_url('admin/messages/details/'.$message_slug).'" title="View"><i class="fa fa-th-list"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this message?\');" href="'.site_url('admin/messages/delete/'.encrypt($message->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
-                        </tr>
-                          
+                        </tr>                          
                         <?php } ?>
                     </tbody>
                 </table>

@@ -30,7 +30,7 @@ class Messages extends RM_Controller {
           base_url('assets/global/plugins/datatables/datatables.min.js'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
           base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
-          base_url('seatassets/js/table-district-editable.js'),
+          base_url('seatassets/js/message-view.js'),
         );
 
         $this->data['title'] = 'Messages';
