@@ -34,36 +34,28 @@ class Messages_model extends CI_Model {
 			}
 			  return $this->db
 				   ->limit($length,$start)
-				   ->get("messages");
+				   ->get("messages_test");
 		 }
 		 
 		 public function get_total_books()
 		 {
-			  $query = $this->db->select("COUNT(*) as num")->get("messages");
+			  $query = $this->db->select("COUNT(*) as num")->get("messages_test");
 			  $result = $query->row();
 			  if(isset($result)) return $result->num;
 			  return 0;
 		 }
 		 
-		 function search_books($length, $start, $search)
+		 function search_books($start, $length, $order, $dir, $search)
 			{
-				$query = $this
-						->db
-						->like('ID',$search)
-						->or_like('msg_slug',$search)
-						->limit($length, $start)
-						->get('messages');
-				
-			   
-				if($query->num_rows()>0)
-				{
-					return $query;  
-				}
-				else
-				{
-					return null;
-				}
+				if($order !=null) {
+				$this->db->order_by($order, $dir);
 			}
-
+			  return $this->db
+					->like('ID', $search)
+					->or_like('msg_subject', $search)
+				    ->limit($length,$start)
+				    ->get("messages_test");
+			}
+		
 
 }
