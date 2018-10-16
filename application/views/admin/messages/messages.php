@@ -1,6 +1,8 @@
 <?php
 require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
+
+$request_message_url = site_url('admin/messages/get_all/');
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -18,7 +20,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-hover table-bordered" id="message_view">
+                <table class="table table-striped table-hover table-bordered" id="messages-tbl" data-url="<?php echo $request_message_url;?>">
                     <thead>
                         <tr>
                             <th> Date </th>
@@ -28,27 +30,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                         </tr>
                     </thead>
                     <tbody>
-						<?php
-						$read_status = "";
-						foreach ($message_rows as $message) { 
-							if($message->read_status == 0){
-								$read_status = "unread";
-							}else{
-								$read_status = "read";
-							}
-						?>		
-						<tr class="<?php echo $read_status; ?>">
-                              <?php
-                                $message_slug = $message->msg_slug;	
-								$content = strip_tags(html_entity_decode($message->msg_content));
-								$content = substr($content,0,50);
-                              ?>
-                              <td><?php echo $message->msg_date; ?></td>
-                              <td><a href="<?php echo site_url('admin/messages/details/'.$message_slug); ?>"><?php echo $message->msg_subject; ?></a></td>
-							  <td><a href="<?php echo site_url('admin/messages/details/'.$message_slug); ?>"><?php echo $content; ?></a></td>
-                              <td><?php echo '<div class="center-block"><a href="'.site_url('admin/messages/details/'.$message_slug).'" title="View"><i class="fa fa-th-list"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this message?\');" href="'.site_url('admin/messages/delete/'.encrypt($message->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
-                        </tr>                          
-                        <?php } ?>
+						
                     </tbody>
                 </table>
             </div>

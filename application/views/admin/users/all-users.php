@@ -101,10 +101,7 @@ if($user_role != ''){
                         <tbody>
 
                         </tbody>
-
                     </table>
-
-
                 </div>
             </div>
 

@@ -13,17 +13,8 @@ class Test extends RM_Controller {
     public function index()
     {
 		
-		/*for($count = 0; $count < 100; $count++){
-		
-		$data_arr = array(
-			  'msg_subject'=> 'Hello Messages '.$count,	
-              'msg_content'=> 'Lorem Ipsum '.$count.' is simply dummy text of the ' .$count. ' printing and typesetting industry '.$count.'. Lorem Ipsum has been the.',              
-              'msg_parent'=> 0,
-              'msg_author'=> 1,
-              'msg_date'=> '2018-10-10 00:00:00'
-            );
-			$message_id = $this->common->insert( 'messages_test', $data_arr );
-		}*/
+		$details_msg = $this->common->get_all('messages_test');
+		$this->data['message_data'] = $details_msg;
 		
 		
         $this->data['css_files'] = array(
@@ -36,94 +27,113 @@ class Test extends RM_Controller {
           base_url('assets/global/plugins/datatables/datatables.min.js'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
           base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
-          //base_url('seatassets/js/message-view.js'),
+          base_url('seatassets/js/test-message.js'),
         );
 		
-		//$this->books_page();
 
         $this->data['title'] = 'Test Page';
+		$breadcrumb[] = array('name' => 'All Messages', 'url' => '');
+		$this->data['breadcrumb'] = $breadcrumb;
+		$this->data['current_page'] = 'message';
+
+        $this->load->view('templates/header',$this->data);
+        $this->load->view('templates/sidebar', $this->data);
+        $this->load->view('admin/messages/page', $this->data);
+        $this->load->view('templates/footer', $this->data);
+    }
+	
+	
+	function get_all()
+		{
+
+
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
+
+			$join_arr_left = array();
+
+
+			$condition = '';
+			if( $keyword != '' ) {
+				$condition .= '(t.ID LIKE "%'.$keyword.'%" OR t.msg_subject LIKE "%'.$keyword.'%" OR t.msg_content LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'messages_test t', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'ID',
+				2 => 'msg_date',
+				3 => 'msg_subject',
+				4 => 'msg_content',
+			);
+
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'messages_test t', $condition, 't.*', $sort, $limit, $offset, $join_arr_left );
+
+			foreach( $result as $row ) {
+
+					$user_first_last_name = $row->ID;
+					$message_date = date('M d, Y', strtotime($row->msg_date));
+					$message_subject = $row->msg_subject; 
+					$user_role = $row->msg_content;
+
+				$records["data"][] = array(
+					$user_first_last_name,
+					$message_date,
+					$message_subject,
+					$user_role,									
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+
+			header('Content-type: application/json');
+			echo json_encode($records);
+		}
+
+
+	
+	public function test_search(){
+		$value = $this->input->post('search_msg');
+		//$query = $this->db->query("SELECT * FROM messages_test where ID = ".$value);
+		
+		$this->db->select('ID, msg_subject, msg_content');
+		$this->db->from('messages_test');
+		$this->db->like('ID', $value);
+		$this->db->or_like('msg_subject', $value);
+		$query = $this->db->get();
+		
+		$this->data['message_data'] = $query->result();
+		
+		
+		$this->data['title'] = 'Test Page';
         $breadcrumb[] = array('name' => 'Messages', 'url' => '');
         $this->data['breadcrumb'] = $breadcrumb;
         $this->data['current_page'] = 'messages';
 
         $this->load->view('templates/header',$this->data);
         $this->load->view('templates/sidebar', $this->data);
-        $this->load->view('admin/messages/page', array());
+        $this->load->view('admin/messages/test-page', $this->data);
         $this->load->view('templates/footer', $this->data);
-    }
-	
-	public function books_page()
-     {
-		 
-		    
-
-          // Datatables Variables
-          $draw = intval($this->input->get("draw"));
-          $start = intval($this->input->get("start"));
-          $length = intval($this->input->get("length"));
-		  $order = $this->input->get("order");
-
-		  
-		  $col = 0;
-        $dir = "";
-        if(!empty($order)) {
-            foreach($order as $o) {
-                $col = $o['column'];
-                $dir= $o['dir'];
-            }
-        }
-
-        if($dir != "asc" && $dir != "desc") {
-            $dir = "asc";
-        }
-
-        $columns_valid = array(
-            "messages_test.ID", 
-            "messages_test.msg_slug", 
-            "messages_test.msg_subject", 
-            "messages_test.msg_status"
-        );
-
-        if(!isset($columns_valid[$col])) {
-            $order = null;
-        } else {
-            $order = $columns_valid[$col];
-        }
-		
-		
-		if (!empty($this->input->post('search')['value']))
-        {            
-            $search = $this->input->get('search')['value'];
-			
-            $books = $this->messages_model->search_books($start, $length, $order, $dir, $search);
-        }
-        else {
-			$books = $this->messages_model->get_books($start, $length, $order, $dir);
-        }
-		
-
-          $data = array();
-
-          foreach($books->result() as $r) {
-
-               $data[] = array(
-                    $r->ID,
-                    $r->msg_slug,
-                    $r->msg_subject,
-                    $r->msg_status
-               );
-          }
-		  
-		  $total_books = $this->messages_model->get_total_books();
-
-          $output = array(
-				"draw" => $draw,
-                "recordsTotal" => $total_books,
-                "recordsFiltered" => $total_books,
-                "data" => $data
-            );
-          echo json_encode($output);
-          exit();
-     }
+	}
 
 }

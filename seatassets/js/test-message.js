@@ -1,11 +1,11 @@
 $(document).ready(function(){
 	var grid = new Datatable();
-	var messageDataToPost = {
+	var userDataToPost = {
 			csrf_bruite_check: csrf_value
 	};
 
 	grid.init({
-		src: $("#messages-tbl"),
+		src: $("#users-tbl"),
 		onSuccess: function (grid, response) {
 			// grid:        grid object
 			// response:    json object of server side ajax response
@@ -23,11 +23,11 @@ $(document).ready(function(){
 			"serverSide": true,
 			select: true,
 			"ajax": {
-				"url": $("#messages-tbl").data('url'),
-				"data":messageDataToPost
+				"url": $("#users-tbl").data('url'),
+				"data":userDataToPost
 			},
 			"order": [
-				[1, "desc"]
+				[1, "asc"]
 			],
 			"colReorder": {
                 reorderCallback: function () {
@@ -39,16 +39,16 @@ $(document).ready(function(){
 			"pagingType": "bootstrap_number",
 			"language": { // language settings
 				"info": "Found total _TOTAL_ records",
-				"search": "Search Messages: ",
+				"search": "Search Users: ",
 			},
-			"columnDefs": [
+			"columnDefs": [				
 				{ orderable: false, targets: 0 },
 			],
 			"lengthMenu": [
                 [5, 10, 15, 20, -1],
                 [5, 10, 15, 20, "All"] // change per page values here
             ],
-			"pageLength": 20,
+			"pageLength": 10,
 		}
 	});
 
@@ -61,15 +61,15 @@ $(document).ready(function(){
 		dateFormat: "yy-mm-dd"
 	});
 
-	$(document).on('click', '.message-delete', function() {
+	$(document).on('click', '.user-delete', function() {
 		var $this = $(this);
-		var choice = confirm('Do you really want to delete this message?');
+		var choice = confirm('Do you really want to delete this user?');
 		if(choice === true) {
 		   $.blockUI({ message: '<h1><img src="'+base_url+'/assets/global/img/loading-spinner-blue.gif" /> Just a moment...</h1>' });
 		   $.ajax({
 					type: 'POST',
 					url: $this.data('url'),
-					data:messageDataToPost,
+					data:userDataToPost,
 					success: function(data){
 						grid.getDataTable().ajax.reload();
 						$.unblockUI();
