@@ -26,6 +26,15 @@ $(document).ready(function(){
 				"url": $("#messages-tbl").data('url'),
 				"data":messageDataToPost
 			},
+			createdRow: function (row, data, index) {        
+				if (data[4] == 0) {
+					console.dir(row);
+					$(row).addClass('unread');
+				}else{
+					console.dir(row);
+					$(row).addClass('read');
+				}
+			},
 			"order": [
 				[1, "desc"]
 			],
@@ -56,28 +65,5 @@ $(document).ready(function(){
 	grid.setAjaxParam("customActionType", "group_action");
 	grid.getDataTable().ajax.reload();
 	grid.clearAjaxParams();
-
-	$('.date-picker_created').datepicker({
-		dateFormat: "yy-mm-dd"
-	});
-
-	$(document).on('click', '.message-delete', function() {
-		var $this = $(this);
-		var choice = confirm('Do you really want to delete this message?');
-		if(choice === true) {
-		   $.blockUI({ message: '<h1><img src="'+base_url+'/assets/global/img/loading-spinner-blue.gif" /> Just a moment...</h1>' });
-		   $.ajax({
-					type: 'POST',
-					url: $this.data('url'),
-					data:messageDataToPost,
-					success: function(data){
-						grid.getDataTable().ajax.reload();
-						$.unblockUI();
-					}
-				});
-
-		}
-		return false;
-	});
 
 });

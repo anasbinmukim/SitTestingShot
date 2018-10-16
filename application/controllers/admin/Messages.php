@@ -95,12 +95,14 @@ class Messages extends RM_Controller {
 					$message_date = date('M d, Y', strtotime($row->msg_date));
 					$message_subject = '<a href="'.site_url('admin/messages/details/'.$message_slug).'">'.$row->msg_subject.'</a>'; 
 					$message_content = '<a href="'.site_url('admin/messages/details/'.$message_slug).'">'.$content.'</a>';
+					$read_status = $row->read_status;
 
 				$records["data"][] = array(
 					$message_date,
 					$message_subject,
 					$message_content,
-					'<div class="center-block"><a href="'.site_url('admin/messages/details/'.$message_slug).'" title="Edit"><i class="fa fa-th-list"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this message?\');" href="'.site_url('admin/messages/delete/'.encrypt($row->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',
+					'<div class="center-block"><a href="'.site_url('admin/messages/details/'.$message_slug).'" title="View"><i class="fa fa-eye"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this message?\');" href="'.site_url('admin/messages/delete/'.encrypt($row->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',
+					$read_status,
 				);
 			}
 
