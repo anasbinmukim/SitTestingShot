@@ -20,11 +20,11 @@ class Messages extends RM_Controller {
     public function index()
     {
         $this->data['css_files'] = array(
+		  base_url('seatassets\css\message-view.css'),
           base_url('assets/global/plugins/datatables/datatables.min.css'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
         );
-        //$result = $this->common->get_all( 'messages', array('msg_parent' => 0), '*', 'msg_date DESC' );        
-        //$this->data['message_rows'] = $result;        
+        
         $this->data['js_files'] = array(
           base_url('assets/global/scripts/datatable.js'),
           base_url('assets/global/plugins/datatables/datatables.min.js'),
@@ -52,8 +52,7 @@ class Messages extends RM_Controller {
 			}
 
 			$join_arr_left = array();
-
-
+			
 			$condition = 't.msg_parent=0 ';
 			if( $keyword != '' ) {
 				$condition .= ' AND (t.ID LIKE "%'.$keyword.'%" OR t.msg_subject LIKE "%'.$keyword.'%" OR t.msg_content LIKE "%'.$keyword.'%")';
@@ -76,9 +75,7 @@ class Messages extends RM_Controller {
 				1 => 'msg_date',
 				2 => 'msg_subject',
 				3 => 'msg_content',
-				//4 => '',
 			);
-
 
 			$order_by = $columns[$_REQUEST['order'][0]['column']];
 			$order = $_REQUEST['order'][0]['dir'];
@@ -152,7 +149,10 @@ class Messages extends RM_Controller {
     }
 	
 	public function details($slug = NULL)
-    {			
+    {
+		$this->data['css_files'] = array(
+			base_url('seatassets\css\message-view.css'),
+		);	
         $message_details = $this->messages_model->get_messages($slug);
         $this->data['message_data'] = $message_details;
 
@@ -253,8 +253,8 @@ class Messages extends RM_Controller {
     private function process_register_new_message(){
       //Add New Message
       if(($this->input->post('register_new_message') !== NULL) || ($this->input->post('update_message') !== NULL)){
-          $this->form_validation->set_rules('msg_subject', 'Message Subject', 'trim|required|htmlspecialchars|min_length[2]');
-          $this->form_validation->set_rules('msg_excerpt', 'Message Excerpt', 'trim|required|htmlspecialchars|min_length[2]');
+          $this->form_validation->set_rules('message_to', 'Message To', 'required');
+          $this->form_validation->set_rules('msg_excerpt', 'Message Subject', 'trim|required|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('msg_content', 'Message Content', 'trim|required|htmlspecialchars|min_length[2]');
           
         

@@ -4,18 +4,19 @@ require_once(FCPATH.'/application/views/success-error-message.php');
 ?>
 
 <?php 
-	echo html_entity_decode($message_data['msg_content']);
+	echo '<div class="message_reply">';
+	echo '<div>'.html_entity_decode($message_data['msg_content']).'</div>';
  ?>
- <p style="text-align: right;"><?php echo $message_data['msg_date']; ?></p>
-
+	<div class="date_time"><?php echo date('d M y h:i:sa', strtotime($message_data['msg_date'])); ?></div>
+	</div>
 <?php
-	$count = 1;
-	foreach($message_reply as $reply){		
-		echo '<p>Reply '.$count.':<br>'.$reply->msg_content.'</p>';
-		$count++;
+	foreach($message_reply as $reply){
+		echo '<div class="message_reply">';
+		echo '<div class="reply_text">Reply from '.$reply->msg_author.':</div><div>'.$reply->msg_content.'</div>';
 	?>
-	<p style="text-align: right;"><?php echo $reply->msg_date; ?></p>
-	<?php	
+		<div class="date_time"><?php echo date('d M y h:i:sa', strtotime($reply->msg_date)); ?></div>			
+	<?php
+		echo '</div>';
 	}
 ?> 
  
@@ -25,7 +26,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
 		  <div class="form-group">
 			  <label class="control-label">Reply:</label>
 			  <textarea class="form-control" name="msg_content"></textarea></div>		  
-		  <div class="margin-top-10">
+		  <div class="reply_btn">
 			  <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
 			  <input type="hidden" name="message_id" value="<?php echo $message_data['ID']; ?>">
 			  <input type="submit" class="btn green" name="message_reply" value="REPLY">
