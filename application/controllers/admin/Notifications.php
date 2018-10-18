@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Notification extends RM_Controller {
+class Notifications extends RM_Controller {
 	public $booking_date_time;
 	public $currently_logged_user;
 
