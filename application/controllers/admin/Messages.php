@@ -169,7 +169,7 @@ class Messages extends RM_Controller {
 		$message_id = $message_details['ID'];
 		
 		//Start: Reply process start
-		$this->process_reply_message($message_id);
+		$this->process_reply_message($message_id, $slug);
 		//End: Reply proecss end
 		
 		//For read status		
@@ -294,7 +294,7 @@ class Messages extends RM_Controller {
     }//EOF process message register info
 	
 	
-	private function process_reply_message($message_id){
+	private function process_reply_message($message_id, $slug){
       if($this->input->post('message_reply') !== NULL){          
           $this->form_validation->set_rules('msg_content', 'Message Content', 'trim|required|htmlspecialchars|min_length[2]');
           
@@ -315,7 +315,7 @@ class Messages extends RM_Controller {
             
 			  $message_id = $this->common->insert( 'messages', $data_arr );
 			  $this->session->set_flashdata('success_msg','Reply done!');
-			  //redirect('admin/messages/message-details');          
+			  redirect('admin/messages/details/'.$slug);          
 
   		}
       }
