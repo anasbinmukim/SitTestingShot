@@ -94,12 +94,12 @@ if($current_page == 'notifications'){ $current_notifications = ' active open'; }
                         </a>
                     </li>
                     <li class="nav-item  <?php echo $current_search_cabins; ?>">
-                        <a href="<?php echo site_url('LaunchBooking'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/launchbooking'); ?>" class="nav-link ">
                             <span class="title">Booking</span>
                         </a>
                     </li>
                     <li class="nav-item <?php echo $current_my_cabin_booking; ?>">
-                        <a href="<?php echo site_url('LaunchBooking/MyCabin'); ?>" class="nav-link ">
+                        <a href="<?php echo site_url('admin/launchbooking/mycabin'); ?>" class="nav-link ">
                             <span class="title">My Cabin</span>
                         </a>
                     </li>

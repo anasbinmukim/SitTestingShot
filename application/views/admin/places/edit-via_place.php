@@ -23,7 +23,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                               ?>
                               <div class="form-group">
                                   <label class="control-label">Place name</label>
-                                  <input type="text" name="place_name" disabled="disabled" class="form-control" value="<?php echo html_escape($result_place->place_name); ?>" />
+                                  <input type="text" name="place_name" class="form-control" value="<?php echo html_escape($result_place->place_name); ?>" />
                               </div>
                               <div class="form-group">
                                   <label class="control-label">Place address</label>

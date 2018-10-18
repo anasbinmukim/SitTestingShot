@@ -568,6 +568,7 @@ class Places extends RM_Controller {
           $this->form_validation->set_rules('address', 'Place Address', 'trim|required|htmlspecialchars|min_length[2]');
 
           $data_arr = array(
+            'place_name'=> trim($this->input->post('place_name')),
             'address'=> trim($this->input->post('address')),
             'thana_id'=> trim($this->input->post('thana_id')),
             'type'=> trim($this->input->post('type')),
