@@ -1,1 +1,1 @@
-This is about page content
+Home page dashboard goes here
