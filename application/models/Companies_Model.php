@@ -25,7 +25,7 @@ class Companies_Model extends CI_Model {
 
 				        $query = $this->db->get_where('company', array('ID' => $company_id));
 				        return $query->row_array();
-				}
+				}		
 
 
         public function get_counters($slug = FALSE)

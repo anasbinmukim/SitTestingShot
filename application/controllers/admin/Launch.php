@@ -52,7 +52,7 @@ class Launch extends RM_Controller {
         $this->load->view('templates/footer', $this->data);
 		}
 
-		public function SettingLaunch($launch_solt_id = NULL)
+		public function settinglaunch($launch_solt_id = NULL)
 		{
 			$launch_id = decrypt($launch_solt_id)*1;
 			if( !is_int($launch_id) || !$launch_id ) {
@@ -102,9 +102,11 @@ class Launch extends RM_Controller {
 			if(($this->input->post('update_launch_settings') !== NULL)){
 					$this->form_validation->set_rules('launch_supervisor', 'Supervisor', 'trim|required');
 					$this->form_validation->set_rules('launch_booking_manager', 'Booking Manager', 'trim');
+					$this->form_validation->set_rules('launch_status', 'Launch status', 'trim|required');
 
 					$launch_id = $this->input->post('settings_launch_id');
 					$launch_supervisor = $this->input->post('launch_supervisor');
+					$launch_status = $this->input->post('launch_status');
 
 					$route_path = '';
 					$route_search = '';
@@ -115,8 +117,12 @@ class Launch extends RM_Controller {
 					}else{
 							//Supervisor updated
 							$meta_id = $this->common->update_launch_meta($launch_id, 'launch_supervisor', $launch_supervisor);
+							$status_data_arr = array(
+						    'status' => $launch_status,
+						  );
+							$this->common->update( 'launch', $status_data_arr, array( 'ID' =>  $launch_id ) );
 							$this->session->set_flashdata('success_msg','Update done!');
-							redirect('admin/launch/SettingLaunch/'.encrypt($launch_id));
+							redirect('admin/launch/settinglaunch/'.encrypt($launch_id));
 					}
 			}
 		}
@@ -161,7 +167,7 @@ class Launch extends RM_Controller {
 							$breadcrumb[] = array('name' => 'Cabin', 'url' => '');
 							$this->data['breadcrumb'] = $breadcrumb;
 							$this->data['current_page'] = 'cabin';
-							$result = $this->common->get_all( 'launch_cabin' );
+							$result = $this->common->get_all( 'launch_cabin', '', '', 0, 20 );
 							$this->data['launch_cabin_rows'] = $result;
 						}
 
@@ -254,6 +260,8 @@ class Launch extends RM_Controller {
 							$pair_number = $cabin_number;
 						}
 
+						$launch_id = trim($this->input->post('launch_id'));
+
             $data_arr = array(
               'launch_id'=> trim($this->input->post('launch_id')),
               'cabin_number'=> trim($this->input->post('cabin_number')),
@@ -270,7 +278,8 @@ class Launch extends RM_Controller {
                 $cabin_id = $this->input->post('update_cabin_id');
                 $this->common->update( 'launch_cabin', $data_arr, array( 'ID' =>  $cabin_id ) );
       					$this->session->set_flashdata('success_msg','Updated done!');
-                redirect('admin/launch/cabin');
+								$launch_id_encpt = encrypt($launch_id);
+	              redirect('admin/launch/cabin/all-cabins/'.$launch_id_encpt);
             }else{
 
 							//Process if double cabin
@@ -290,10 +299,9 @@ class Launch extends RM_Controller {
 								$cabin_id = $this->common->insert( 'launch_cabin', $data_arr );
 							}
 
-
-
               $this->session->set_flashdata('success_msg','Added done!');
-              redirect('admin/launch/cabin');
+							$launch_id_encpt = encrypt($launch_id);
+              redirect('admin/launch/cabin/all-cabins/'.$launch_id_encpt);
             }
 
 

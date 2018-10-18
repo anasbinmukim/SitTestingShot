@@ -39,7 +39,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                               <td><?php echo $launch->place_1; ?></td>
                               <td><?php echo $launch->place_2; ?></td>
                               <td><?php echo $launch->route_path; ?></td>
-                              <td><?php echo '<div class="center-block"><a href="'.site_url('admin/launch/edit/'.encrypt($launch->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a href="'.site_url('admin/launch/SettingLaunch/'.encrypt($launch->ID)).'" title="Settings"><i class="fa fa-cog font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this launch?\');" href="'.site_url('admin/launch/delete/'.encrypt($launch->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
+                              <td><?php echo '<div class="center-block"><a href="'.site_url('admin/launch/edit/'.encrypt($launch->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a href="'.site_url('admin/launch/settinglaunch/'.encrypt($launch->ID)).'" title="Settings"><i class="fa fa-cog font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this launch?\');" href="'.site_url('admin/launch/delete/'.encrypt($launch->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
                           </tr>
                         <?php } ?>
                     </tbody>

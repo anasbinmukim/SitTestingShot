@@ -171,7 +171,7 @@ class Common extends CI_Model{
 
 	function check_user_exists(){
 		$user = $this->get('users', array('id' => $this->session->userdata('user_id')) );
-		if( count($user) == 0 ) {
+		if( @count($user) == 0 ) {
 			$this->session->sess_destroy();
        		redirect('/');
 		}

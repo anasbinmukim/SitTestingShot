@@ -27,10 +27,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                         $supervisor_id = $this->common->get_launch_meta($launch_data['ID'], 'launch_supervisor');
                                         $supervisor_arr = get_users_by_role('supervisor');
                                         foreach($supervisor_arr as $sID => $svalue){
-                                          $selected = 0;
-                                          if($supervisor_id == $sID)
-                                            $selected = 'selected = "selected" ';
-                                          echo '<option '.$selected.' value="'.$sID.'">'.$svalue['first_name'].' '.$svalue['last_name'].'-'.$svalue['mobile'].'</option>';
+                                          echo '<option '.selected($supervisor_id, $sID, false).' value="'.$sID.'">'.$svalue['first_name'].' '.$svalue['last_name'].'-'.$svalue['mobile'].'</option>';
                                         }
                                       ?>
                                     </select>
@@ -44,12 +41,19 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                         $supervisor_id = 0;
                                         $supervisor_arr = get_users_by_role('booking_manager');
                                         foreach($supervisor_arr as $sID => $svalue){
-                                          $selected = 0;
-                                          if($supervisor_id == $sID)
-                                            $selected = 'selected = "selected" ';
-                                          echo '<option '.$selected.' value="'.$sID.'">'.$svalue['first_name'].' '.$svalue['last_name'].'-'.$svalue['mobile'].'</option>';
+                                          echo '<option '.selected($supervisor_id, $sID, false).' value="'.$sID.'">'.$svalue['first_name'].' '.$svalue['last_name'].'-'.$svalue['mobile'].'</option>';
                                         }
                                       ?>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label class="control-label">Status</label>
+                                    <select name="launch_status" id="launch_status" class="form-control select2me">
+                                      <option value="">Status</option>
+                                      <option <?php selected($launch_data['status'], 0, TRUE); ?> value="0">Inactive</option>
+                                      <option <?php selected($launch_data['status'], 1, TRUE); ?> value="1">Active</option>
                                     </select>
                                   </div>
                                 </div>

@@ -28,7 +28,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                     <tbody>
                       <?php foreach ($launch_schedule_rows as $schedule) { ?>
                         <?php
-                            $available_cabins = 10;
+                            $available_cabins = 0;
                           ?>
                           <tr>
                               <td><?php echo $schedule->launch_name; ?></td>

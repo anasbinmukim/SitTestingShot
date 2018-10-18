@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class LaunchBooking extends RM_Controller {
+class Launchbooking extends RM_Controller {
 
 		public $booking_date_time;
 		public $currently_logged_user;
@@ -81,8 +81,8 @@ class LaunchBooking extends RM_Controller {
 
 				$this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
-				$this->load->view('booking/launch/search-form', $this->data);
-				$this->load->view('booking/launch/launch', $this->data);
+				$this->load->view('admin/booking/launch/search-form', $this->data);
+				$this->load->view('admin/booking/launch/launch', $this->data);
 				$this->load->view('templates/footer', $this->data);
 
 
@@ -183,14 +183,14 @@ class LaunchBooking extends RM_Controller {
 
 				$this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
-				$this->load->view('booking/launch/search-form', $this->data);
-				$this->load->view('booking/launch/launch', $this->data);
+				$this->load->view('admin/booking/launch/search-form', $this->data);
+				$this->load->view('admin/booking/launch/launch', $this->data);
 				$this->load->view('templates/footer', $this->data);
 
 
 		}//EOF launch booking
 
-		public function Cabin($schedule_solt_id = NULL, $request_cabin_solt_ids = NULL, $cabin_item_solt_id = NULL, $booking_ref_number = NULL, $cabin_pair_number = NULL)
+		public function cabin($schedule_solt_id = NULL, $request_cabin_solt_ids = NULL, $cabin_item_solt_id = NULL, $booking_ref_number = NULL, $cabin_pair_number = NULL)
 		{
 				if(($this->input->post('submit_cabins_request') !== NULL) && ($this->input->post('cabin_ids') !== NULL)){
 						$cabin_ids = $this->input->post('cabin_ids');
@@ -206,7 +206,7 @@ class LaunchBooking extends RM_Controller {
 									$cabin_id = decrypt($cabin_solt_id)*1;
 									if($this->already_booked_cabin($launch_id, $schedule_id, $cabin_id)){
 										$this->session->set_flashdata('error_msg', 'Selected one or more cabin is already being processed. Please try again.');
-										redirect('/LaunchBooking');
+										redirect('/admin/launchbooking');
 										exit;
 									}
 								}
@@ -234,7 +234,7 @@ class LaunchBooking extends RM_Controller {
 								$this->session->set_userdata('cabin_booking_cart_items', $requested_cabin_cart_data);
 								$comma_cabin_ids = implode(",", $cabin_ids);
 								$cabins_solt_ids = encrypt($comma_cabin_ids);
-								$cart_items_url = '/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
+								$cart_items_url = '/admin/launchbooking/cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
 								$this->session->set_userdata('cart_items_url', $cart_items_url);
 								redirect($cart_items_url);
 								exit;
@@ -259,7 +259,7 @@ class LaunchBooking extends RM_Controller {
 						$this->session->unset_userdata('cabin_booking_cart_items');
 						$this->session->unset_userdata('cart_items_url');
 
-						redirect('/LaunchBooking');
+						redirect('/admin/launchbooking');
 						exit;
 				}
 
@@ -281,7 +281,7 @@ class LaunchBooking extends RM_Controller {
 	      $schedule_id = decrypt($schedule_solt_id)*1;
 				if( !is_int($schedule_id) || !$schedule_id ) {
 		        $this->session->set_flashdata('delete_msg','Can not be booked');
-						redirect('/LaunchBooking');
+						redirect('/admin/launchbooking');
 				}else{
 		        $launch_schedule_data_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
 		        $this->data['launch_schedule_data'] = $launch_schedule_data_details;
@@ -303,7 +303,7 @@ class LaunchBooking extends RM_Controller {
 
 					//Redirect for unauthorized access
 					if(!$this->session->userdata('booking_ref_number')){
-						redirect('/LaunchBooking');
+						redirect('/admin/launchbooking');
 						exit;
 					}
 
@@ -346,19 +346,19 @@ class LaunchBooking extends RM_Controller {
 											//get requested cabin data
 											if($cabin_pair_number  == $cabin_details['pair_number']){
 													$cabin_pair_id = $cabin_details['ID'];
-													$remove_pair_cabin_from_cart = '/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids.'/'.encrypt($cabin_pair_id).'/'.$booking_ref_number;
+													$remove_pair_cabin_from_cart = '/admin/launchbooking/cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids.'/'.encrypt($cabin_pair_id).'/'.$booking_ref_number;
 													redirect($remove_pair_cabin_from_cart);
 													exit;
 											}
 										}
 								}
 
-								$cart_items_url = '/LaunchBooking/Cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
+								$cart_items_url = '/admin/launchbooking/cabin/'.$schedule_solt_id.'/'.$cabins_solt_ids;
 								$this->session->set_userdata('cart_items_url', $cart_items_url);
 								redirect($cart_items_url);
 								exit;
 							}else{
-								redirect('/LaunchBooking/Cabin/'.$schedule_solt_id);
+								redirect('/admin/launchbooking/cabin/'.$schedule_solt_id);
 								exit;
 							}
 					}
@@ -385,7 +385,7 @@ class LaunchBooking extends RM_Controller {
 					$this->data['current_page'] = 'request_cabins';
 					$this->load->view('templates/header', $this->data);
 					$this->load->view('templates/sidebar', $this->data);
-					$this->load->view('booking/launch/cabin-request', $this->data);
+					$this->load->view('admin/booking/launch/cabin-request', $this->data);
 					$this->load->view('templates/footer', $this->data);
 				}else{
 					//If already have pending booking it redirect to cart page
@@ -402,7 +402,7 @@ class LaunchBooking extends RM_Controller {
 
 					$this->load->view('templates/header', $this->data);
 					$this->load->view('templates/sidebar', $this->data);
-					$this->load->view('booking/launch/cabin', $this->data);
+					$this->load->view('admin/booking/launch/cabin', $this->data);
 					$this->load->view('templates/footer', $this->data);
 				}
 		}
@@ -514,7 +514,7 @@ class LaunchBooking extends RM_Controller {
 							$this->session->unset_userdata('cart_items_url');
 
 							$this->session->set_flashdata('success_msg','Booking Complete');
-							redirect('/LaunchBooking');
+							redirect('/admin/launchbooking');
 							exit;
 						}//eof if no error
 				}
@@ -611,7 +611,7 @@ class LaunchBooking extends RM_Controller {
 						}else{
 								$destination_to = 'to';
 						}
-						redirect('/LaunchBooking/Search/'.$launch_id.'/'.$travel_date.'/'.$start_from.'/'.$destination_to);
+						redirect('/admin/launchbooking/search/'.$launch_id.'/'.$travel_date.'/'.$start_from.'/'.$destination_to);
 						exit;
 
 				}
@@ -700,7 +700,7 @@ class LaunchBooking extends RM_Controller {
 		}
 
 
-		public function MyCabin($booking_type = 'launch', $user_solt_id = NULL){
+		public function mycabin($booking_type = 'launch', $user_solt_id = NULL){
 
 			$this->data['css_files'] = array(
 				base_url('assets/global/plugins/datatables/datatables.min.css'),
@@ -753,7 +753,7 @@ class LaunchBooking extends RM_Controller {
 
 			$this->load->view('templates/header', $this->data);
 			$this->load->view('templates/sidebar', $this->data);
-			$this->load->view('booking/launch/my-booking', $this->data);
+			$this->load->view('admin/booking/launch/my-booking', $this->data);
 			$this->load->view('templates/footer', $this->data);
 
 		}//EOF mybooking

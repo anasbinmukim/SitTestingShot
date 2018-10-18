@@ -12,6 +12,44 @@ if( !function_exists('debug') ) {
     }
 }
 
+if( !function_exists('checked') ) {
+  function checked( $checked, $current = true, $echo = true ) {
+  	return __checked_selected_helper( $checked, $current, $echo, 'checked' );
+  }
+}
+
+if( !function_exists('selected') ) {
+  function selected( $selected, $current = true, $echo = true ) {
+  	return __checked_selected_helper( $selected, $current, $echo, 'selected' );
+  }
+}
+
+if( !function_exists('disabled') ) {
+  function disabled( $disabled, $current = true, $echo = true ) {
+  	return __checked_selected_helper( $disabled, $current, $echo, 'disabled' );
+  }
+}
+
+if( !function_exists('readonly') ) {
+  function readonly( $readonly, $current = true, $echo = true ) {
+  	return __checked_selected_helper( $readonly, $current, $echo, 'readonly' );
+  }
+}
+
+if( !function_exists('__checked_selected_helper') ) {
+    function __checked_selected_helper( $helper, $current, $echo, $type ) {
+    	if ( (string) $helper === (string) $current )
+    		$result = " $type='$type'";
+    	else
+    		$result = '';
+
+    	if ( $echo )
+    		echo $result;
+
+    	return $result;
+    }
+}
+
 if( !function_exists('create_slug') ) {
 
 	function create_slug( $title = '' ) {
