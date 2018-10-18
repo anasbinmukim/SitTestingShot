@@ -30,19 +30,19 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       </select>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Message Subject</label>
-                                        <input type="text" name="msg_subject" class="form-control" value="<?php echo set_value('company_name'); ?>" /> </div>                                                                     
+                                        <label class="control-label ">Message Subject</label>
+                                        <input type="text" name="msg_subject" class="form-control forcs_background" value="" /> </div>                                                                     
                               </div>                              
                               <div class="col-md-12">
                                   <div class="form-group">
                                       <label class="control-label">Message Content</label>
-                                      <textarea class="form-control ckeditor" name="msg_content"><?php echo set_value('company_description'); ?></textarea></div>
+                                      <textarea class="form-control ckeditor" name="msg_content"></textarea></div>
 									  <div class="form-group">
                                         <label class="control-label">Message Excerpt</label>
-                                        <textarea class="form-control" name="msg_excerpt"> <?php echo set_value('company_address'); ?> </textarea></div>
+                                        <textarea class="form-control forcs_background" name="msg_excerpt"></textarea></div>
                                   <div class="margin-top-10">
                                       <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
-                                      <input type="submit" class="btn green" name="register_new_message" value="Register Now">
+                                      <input type="submit" class="btn green" name="register_new_message" value="Add Message">
                                   </div>
                               </div>
                             </div>

@@ -116,6 +116,7 @@ class Messages extends RM_Controller {
     {
 
       $this->data['css_files'] = array(
+	    base_url('seatassets\css\message-view.css'),
         base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
 		base_url('assets/global/plugins/select2/css/select2.min.css'),
 		base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
@@ -155,6 +156,13 @@ class Messages extends RM_Controller {
 		);	
         $message_details = $this->messages_model->get_messages($slug);
         $this->data['message_data'] = $message_details;
+		$message_id = $message_details['ID'];
+		
+		$join_arr_left = array(
+			'users ur' => 'ur.ID = ms.msg_author',
+		);
+		$result1 = $this->common->get_all( 'messages ms', array('ms.ID' => $message_id), 'ms.*, ur.last_name', '', '', '', $join_arr_left);
+		$this->data['message_info'] = $result1; 
 
         if (empty($this->data['message_data']))
         {
@@ -176,7 +184,10 @@ class Messages extends RM_Controller {
 		$this->common->update( 'messages', array('read_status' => 1), array( 'ID' =>  $message_id ) );
 		
 		//For reply message
-		$result = $this->common->get_all( 'messages', array('msg_parent' => $message_id) );
+			/* $join_arr_left = array(
+				'users ur' => 'ur.ID = ms.msg_author',
+			); */
+		$result = $this->common->get_all( 'messages ms', array('ms.msg_parent' => $message_id), 'ms.*, ur.last_name', '', '', '', $join_arr_left);
 		$this->data['message_reply'] = $result;
 
         $this->load->view('templates/header',$this->data);
@@ -254,7 +265,7 @@ class Messages extends RM_Controller {
       //Add New Message
       if(($this->input->post('register_new_message') !== NULL) || ($this->input->post('update_message') !== NULL)){
           $this->form_validation->set_rules('message_to', 'Message To', 'required');
-          $this->form_validation->set_rules('msg_excerpt', 'Message Subject', 'trim|required|htmlspecialchars|min_length[2]');
+          $this->form_validation->set_rules('msg_subject', 'Message Subject', 'trim|required|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('msg_content', 'Message Content', 'trim|required|htmlspecialchars|min_length[2]');
           
         

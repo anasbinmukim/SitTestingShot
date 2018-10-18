@@ -2,7 +2,7 @@
 require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
 
-$request_message_url = site_url('admin/messages/get_all/');
+//$request_message_url = site_url('admin/messages/get_all/');
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -11,16 +11,16 @@ $request_message_url = site_url('admin/messages/get_all/');
             <div class="portlet-title">
                 <div class="caption font-dark">
                     <i class="icon-settings font-dark"></i>
-                    <span class="caption-subject bold uppercase">Messages</span>
+                    <span class="caption-subject bold uppercase">Notifications</span>
                 </div>
                 <div class="actions">
                     <div class="btn-group btn-group-devided">
-                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('admin/messages/register'); ?>">Add New</a>
+                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('admin/messages/register'); ?>">Register New</a>
                     </div>
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-hover table-bordered" id="messages-tbl" data-url="<?php echo $request_message_url;?>">
+                <table class="table table-striped table-hover table-bordered" id="" data-url="<?php //echo $request_message_url;?>">
                     <thead>
                         <tr>
                             <th> Date </th>
