@@ -24,6 +24,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                             <th> Compan Name </th>
                             <th> Company Type </th>
                             <th> Company Counter </th>
+                            <th> Company Description </th>
                             <th width="50"> Action </th>
                         </tr>
                     </thead>
@@ -36,6 +37,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                               <td><a href="<?php echo site_url('admin/companies/details/'.$company_slug); ?>" title=""><?php echo $company->company_name; ?></a></td>
                               <td><?php echo $company->company_type; ?></td>
                               <td><?php echo '<a href="'.site_url('/admin/counters/company/'.encrypt($company->ID)).'" title="View Cabin">View Counters</a>'; ?> </td>
+                              <td><?php echo html_entity_decode($company->company_description); ?> </td>
                               <td><?php echo '<div class="center-block"><a href="'.site_url('admin/companies/edit/'.encrypt($company->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this district?\');" href="'.site_url('admin/companies/delete/'.encrypt($company->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
                           </tr>
                         <?php } ?>

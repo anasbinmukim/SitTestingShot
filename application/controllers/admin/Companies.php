@@ -225,7 +225,7 @@ class Companies extends RM_Controller {
 
 
 
-  				}
+  		}
       }
 
     }//EOF process company register info
