@@ -6,18 +6,18 @@ class Profile extends RM_Controller {
 		{
 						parent::__construct();
 						$this->load->helper('file');
+						if ( ! $this->session->userdata('logged_in') ) {
+							redirect('/login');
+						}
 		}
 		public function index($page = 'personal-info')
 		{
-				redirect('/profile/manage/');
+				redirect('/profile/manage');
 		}
 
 
 		public function manage($page = 'personal-info')
 		{
-						if ( ! $this->session->userdata('logged_in') ) {
-							redirect('/login/');
-						}
 
 						if ( ! file_exists(APPPATH.'views/profile/'.$page.'.php'))
 						{
@@ -61,6 +61,7 @@ class Profile extends RM_Controller {
 						$this->load->view('templates/sidebar', $this->data);
 						$this->load->view('profile/'.$page, $this->data);
 						$this->load->view('templates/footer',$this->data);
+
 		}
 
 

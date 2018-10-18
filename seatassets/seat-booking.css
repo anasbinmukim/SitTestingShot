@@ -1,9 +1,30 @@
 /* here app related custom css */
 .page-footer .page-footer-inner{ float:none; text-align: center; display: inherit;}
-.page-header.navbar .page-logo .logo-default {
+.page-header.navbar .page-logo .logo-default{
     max-width: 130px;
+    margin: 12px 0 0;
+}
+
+.page-header .page-header-top .page-logo .logo-default{
+    max-width: 200px;
     margin: 12px 0 0;
 }
 .form-control {
     background-color: #E9EDEF;
 }
+.page-bar .page-breadcrumb{ background-color: #FFFFFF; }
+.page-bar .page-breadcrumb.breadcrumb>li+li:before{ content: " "; }
+.book_launch_cabin .icon-btn{ background: #26C281; color: #FFFFFF !important;}
+.book_launch_cabin .icon-btn>div{color: #FFFFFF !important;}
+.book_launch_cabin .launch_cabin.selected{ background: #F3C200; }
+.book_launch_cabin .icon-btn.booking_status_confirm{ background: #E43A45; }
+.book_launch_cabin .icon-btn.booking_status_pending{ background: #8775A7; }
+.book_launch_cabin .icon-btn.booking_status_hold{ background: #67809F; }
+/*.book_launch_cabin .icon-btn.booking_status_confirm, .book_launch_cabin .icon-btn.booking_status_pending, .book_launch_cabin .icon-btn.booking_status_hold{
+  color: #FFFFFF !important;
+}*/
+
+.double_cabin_box{ margin-bottom: 20px; }
+.double_cabin_box .icon-btn{ min-width: 60px; }
+
+.user_role_switch{ margin-right: 20px; }

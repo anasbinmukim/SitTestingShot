@@ -52,8 +52,26 @@ class Common extends CI_Model{
       return $option_value;
   }
 
+  function update_launch_meta($launch_id, $meta_key, $meta_value){
+      $already_exist_opt = $this->get( 'launch_meta', array( 'meta_key' => trim($meta_key), 'launch_id' => trim($launch_id) ) );
+      if(empty($already_exist_opt)){
+        $option_id = $this->insert( 'launch_meta', array( 'meta_key' => trim($meta_key), 'meta_value' => trim($meta_value), 'launch_id' => trim($launch_id) ) );
+      }else{
+        $this->update('launch_meta', array( 'meta_value' => trim($meta_value) ), array( 'meta_key' => trim($meta_key), 'launch_id' => trim($launch_id) ) );
+      }
+  }
+
+  function get_launch_meta($launch_id, $meta_key){
+      $option_value = FALSE;
+      $options_obj = $this->get( 'launch_meta', array( 'meta_key' => trim($meta_key), 'launch_id' => trim($launch_id) ) );
+      if(!empty($options_obj)){
+        $option_value = $options_obj->meta_value;
+      }
+      return $option_value;
+  }
 
 
+  //Working with table name.
   function update_metadata($option_name, $option_value){
       $already_exist_opt = $this->get( 'app_options', array( 'option_name' => trim($option_name), 'option_value' => trim($option_value) ) );
       if(empty($already_exist_opt)){
@@ -153,7 +171,7 @@ class Common extends CI_Model{
 
 	function check_user_exists(){
 		$user = $this->get('users', array('id' => $this->session->userdata('user_id')) );
-		if( count($user) == 0 ) {
+		if( @count($user) == 0 ) {
 			$this->session->sess_destroy();
        		redirect('/');
 		}

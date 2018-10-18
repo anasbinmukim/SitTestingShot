@@ -12,6 +12,44 @@ if( !function_exists('debug') ) {
     }
 }
 
+if( !function_exists('checked') ) {
+  function checked( $checked, $current = true, $echo = true ) {
+  	return __checked_selected_helper( $checked, $current, $echo, 'checked' );
+  }
+}
+
+if( !function_exists('selected') ) {
+  function selected( $selected, $current = true, $echo = true ) {
+  	return __checked_selected_helper( $selected, $current, $echo, 'selected' );
+  }
+}
+
+if( !function_exists('disabled') ) {
+  function disabled( $disabled, $current = true, $echo = true ) {
+  	return __checked_selected_helper( $disabled, $current, $echo, 'disabled' );
+  }
+}
+
+if( !function_exists('readonly') ) {
+  function readonly( $readonly, $current = true, $echo = true ) {
+  	return __checked_selected_helper( $readonly, $current, $echo, 'readonly' );
+  }
+}
+
+if( !function_exists('__checked_selected_helper') ) {
+    function __checked_selected_helper( $helper, $current, $echo, $type ) {
+    	if ( (string) $helper === (string) $current )
+    		$result = " $type='$type'";
+    	else
+    		$result = '';
+
+    	if ( $echo )
+    		echo $result;
+
+    	return $result;
+    }
+}
+
 if( !function_exists('create_slug') ) {
 
 	function create_slug( $title = '' ) {
@@ -77,6 +115,27 @@ if ( !function_exists('username') ) {
 	}
 }
 
+if ( !function_exists('get_users_by_role') ) {
+	function get_users_by_role($role_name = 'subscriber') {
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->where( 'user_role' , $role_name );
+    //$CI->db->where( 'deleted' , 0 );
+    $CI->db->order_by('display_name');
+    $query = $CI->db->get('users');
+    $users = $query->result_array();
+
+    $result_users = array();
+    foreach ($users as $user) {
+      if(($user['user_name'] != '') && ($user['ID'] > 0)){
+          $user_id = $user['ID'];
+          $result_users[$user_id] = $user;
+      }
+    }
+		return $result_users;
+	}
+}
+
 if ( !function_exists('get_thana_arr') ) {
 	function get_thana_arr() {
     $CI =& get_instance();
@@ -99,7 +158,6 @@ if ( !function_exists('get_thana_arr') ) {
 if ( !function_exists('get_via_places_arr') ) {
 	function get_via_places_arr($type = 'launch') {
 
-    $district_arr = get_district_arr();
     $thana_arr = get_thana_arr();
     $condition = array('type'=> $type);
     $CI =& get_instance();
@@ -113,7 +171,7 @@ if ( !function_exists('get_via_places_arr') ) {
     foreach ($via_places as $via_place) {
       if(($via_place['place_name'] != '') && ($via_place['ID'] > 0)){
           $place_id = $via_place['ID'];
-          $place_name_detail = $via_place['place_name'].', '.$via_place['address'].', '.$thana_arr[$via_place['thana_id']].', '.$district_arr[$via_place['district_id']];
+          $place_name_detail = $via_place['place_name'].', '.$via_place['address'].', '.$thana_arr[$via_place['thana_id']];
           $result_via_places[$place_id] = array(
               'place_name' => $via_place['place_name'],
               'detail' => $place_name_detail
@@ -140,7 +198,7 @@ if ( !function_exists('get_thana_under_dist_arr') ) {
     foreach ($thanas as $thana) {
       if(($thana['thana_name'] != '') && ($thana['ID'] > 0)){
           $thana_id = $thana['ID'];
-          $thana_name = $thana['thana_name'].'->'.$district_arr[$thana['district_id']];
+          $thana_name = $thana['thana_name'].' -> '.$district_arr[$thana['district_id']];
           $result_thanas[$thana_id] = $thana_name;
       }
     }
@@ -318,7 +376,7 @@ if ( !function_exists('get_launch_cabin_floor') ) {
 
 if ( !function_exists('seat_taka_format') ) {
 	function seat_taka_format($amount) {
-      $amount = 'TK '.number_format($amount, 2, '.', '').' /=';
+      $amount = '&#x9f3;'.number_format($amount, 2, '.', '');
 		return $amount;
 	}
 }
@@ -346,12 +404,18 @@ if ( !function_exists('get_launch_cabin_type') ) {
 if ( !function_exists('get_user_role') ) {
 	function get_user_role( $key  = 'all') {
 		$st_arr = array(
-			'administrator' => 'Administrator',
+      'subscriber' => 'Subscriber',
 			'agent' => 'Agent',
+      'booking_manager' => 'Booking Manager',
       'supervisor' => 'Supervisor',
+      'company_accountant' => 'Company Accountant',
+      'company_manager' => 'Company Manager',
 			'company_owner' => 'Company Owner',
-			'company_manager' => 'Company Manager',
-			'subscriber' => 'Subscriber',
+      'doctor' => 'Doctor',
+      'doctor_assistant' => 'Doctor Assistant',
+      'app_support' => 'App Support',
+      'app_accountant' => 'App Accountant',
+      'administrator' => 'Administrator',
 		);
 		if ( $key  == 'all' ) {
 			return $st_arr;
