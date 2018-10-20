@@ -1,5 +1,4 @@
 <?php
-
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
@@ -10,6 +9,20 @@ if( !function_exists('debug') ) {
     	echo "</pre>";
     	if($die) die();
     }
+}
+
+if( !function_exists('notification_add_new') ) {
+  function notification_add_new( $user_id = null, $title, $description ) {
+	$data_arr = array(
+	  'title'=> trim($title),
+	  'description'=> trim($description),          
+	  'user_id'=> $user_id,
+	  'create_date'=> date('Y-m-d H:i:s'),
+	  'mark_status'=> 0
+	);
+	$CI = &get_instance();
+	$CI->db->insert( 'notification', $data_arr );
+  }
 }
 
 if( !function_exists('checked') ) {

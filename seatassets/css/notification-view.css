@@ -1,0 +1,7 @@
+/* here app related notifications css */
+.dataTable > thead > tr > th[class*="sort"]::after{display: none;}
+.input-xs:focus{background: #ffffff;}
+.forcs_background:focus{background: #ffffff;}
+.notification_details{background-color: #ffffff; padding: 15px 20px; margin-bottom: 10px;}
+.notif_text{font-weight: bold; margin-bottom: 7px;}
+.date_time{text-align: right;}
