@@ -1,11 +1,11 @@
 $(document).ready(function(){
 	var grid = new Datatable();
-	var userDataToPost = {
+	var notificationDataToPost = {
 			csrf_bruite_check: csrf_value
 	};
 
 	grid.init({
-		src: $("#users-tbl"),
+		src: $("#notification-tbl"),
 		onSuccess: function (grid, response) {
 			// grid:        grid object
 			// response:    json object of server side ajax response
@@ -23,32 +23,44 @@ $(document).ready(function(){
 			"serverSide": true,
 			select: true,
 			"ajax": {
-				"url": $("#users-tbl").data('url'),
-				"data":userDataToPost
+				"url": $("#notification-tbl").data('url'),
+				"data":notificationDataToPost
+			},
+			createdRow: function (row, data, index) {        
+				if (data[4] == 0) {
+					console.dir(row);
+					$(row).addClass('unread');
+				}else{
+					console.dir(row);
+					$(row).addClass('read');
+				}
 			},
 			"order": [
-				[1, "asc"]
+				[1, "desc"]
 			],
 			"colReorder": {
                 reorderCallback: function () {
                     console.log( 'callback' );
                 }
             },
+			oLanguage: {          
+				sProcessing: "<img src='"+base_url+"assets/global/img/loading-spinner-blue.gif' />",
+			},
 			buttons: [],
 			"dom": "<'row cw-listactions'<'col-xs-12'f><'col-xs-12'B>><'table-scrollable'rt><'row cw-listnav'<'col-xs-6'il><'col-xs-6'p>>",
 			"pagingType": "bootstrap_number",
 			"language": { // language settings
 				"info": "Found total _TOTAL_ records",
-				"search": "Search Users: ",
+				"search": "Search Messages: ",
 			},
-			"columnDefs": [				
+			"columnDefs": [
 				{ orderable: false, targets: 0 },
 			],
 			"lengthMenu": [
                 [5, 10, 15, 20, -1],
                 [5, 10, 15, 20, "All"] // change per page values here
             ],
-			"pageLength": 10,
+			"pageLength": 20,
 		}
 	});
 
@@ -56,28 +68,5 @@ $(document).ready(function(){
 	grid.setAjaxParam("customActionType", "group_action");
 	grid.getDataTable().ajax.reload();
 	grid.clearAjaxParams();
-
-	$('.date-picker_created').datepicker({
-		dateFormat: "yy-mm-dd"
-	});
-
-	$(document).on('click', '.user-delete', function() {
-		var $this = $(this);
-		var choice = confirm('Do you really want to delete this user?');
-		if(choice === true) {
-		   $.blockUI({ message: '<h1><img src="'+base_url+'/assets/global/img/loading-spinner-blue.gif" /> Just a moment...</h1>' });
-		   $.ajax({
-					type: 'POST',
-					url: $this.data('url'),
-					data:userDataToPost,
-					success: function(data){
-						grid.getDataTable().ajax.reload();
-						$.unblockUI();
-					}
-				});
-
-		}
-		return false;
-	});
 
 });

@@ -22,7 +22,6 @@ class Messages_model extends CI_Model {
 				
 		public function get_message_details($message_id)
 			{
-
 					$query = $this->db->get_where('messages', array('ID' => $message_id));
 					return $query->row_array();
 			}				 
