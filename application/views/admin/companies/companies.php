@@ -20,7 +20,7 @@ $request_company_url = site_url('admin/companies/get_all/');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-hover table-bordered" id="companies-tb1" data-url="<?php echo $request_company_url; ?>">
+                <table class="table table-striped table-hover table-bordered dt-responsive" id="companies-tb1" data-url="<?php echo $request_company_url; ?>">
                     <thead>
                         <tr>
                             <th> Compan Name </th>

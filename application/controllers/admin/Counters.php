@@ -5,27 +5,29 @@ class Counters extends RM_Controller {
 
     public function __construct()
     {
-            parent::__construct();
-            $this->load->model('companies_model');
-            $this->load->helper('url');
-            if ( ! $this->session->userdata('logged_in') ) {
-							redirect('/login');
-						}
+		parent::__construct();
+		$this->load->model('companies_model');
+		$this->load->helper('url');
+		if ( ! $this->session->userdata('logged_in') ) {
+			redirect('/login');
+		}
     }
 
     public function index($company_id = NULL)
     {
         $this->data['css_files'] = array(
+		  base_url('seatassets\css\counters-view.css'),
           base_url('assets/global/plugins/datatables/datatables.min.css'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
         );
-        $result = $this->common->get_all( 'company_counter' );
-        $this->data['counter_rows'] = $result;
+        //$result = $this->common->get_all( 'company_counter' );
+        //$this->data['counter_rows'] = $result;
         $this->data['js_files'] = array(
           base_url('assets/global/scripts/datatable.js'),
           base_url('assets/global/plugins/datatables/datatables.min.js'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
           base_url('seatassets/js/table-datatables-responsive.js'),
+		  base_url('seatassets/js/counters-view.js'),
         );
 
         $this->data['title'] = 'Company Counters';
@@ -39,6 +41,77 @@ class Counters extends RM_Controller {
         $this->load->view('admin/counters/counters', $this->data);
         $this->load->view('templates/footer', $this->data);
     }
+	
+	function get_all()
+		{
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
+
+			$join_arr_left = array();
+			
+			$condition = '';
+			if( $keyword != '' ) {
+				$condition .= '(c.ID LIKE "%'.$keyword.'%" OR c.counter_name LIKE "%'.$keyword.'%" OR c.address LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'company_counter c', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'ID',
+				2 => 'counter_name',
+				3 => 'address',
+			);
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'company_counter c', $condition, 'c.*', $sort, $limit, $offset, $join_arr_left );
+
+			foreach( $result as $row ) {
+					
+					$counter_slug = $row->counter_slug;
+					$counter_name = $row->counter_name;
+					$content = strip_tags(html_entity_decode($row->address));
+					$address = substr($content,0,50);
+					$incharge = $row->incharge_name;
+					$mobile = $row->incharge_mobile;
+					$thana = $row->thana_id;
+					$zone = $row->zone_id;
+
+				$records["data"][] = array(
+					$counter_name,
+					$address,
+					'<a href="'.site_url('admin/counters/details/'.$counter_slug).'" title="">Details</a>',
+					$counter_name,
+					$incharge,
+					$mobile,
+					$thana,
+					$zone,
+					'<div class="center-block"><a href="'.site_url('admin/counters/edit/'.encrypt($row->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this counter?\');" href="'.site_url('admin/counters/delete/'.encrypt($row->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',	
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+
+			header('Content-type: application/json');
+			echo json_encode($records);
+		}
 
     public function company($company_salt_id)
     {
@@ -256,7 +329,7 @@ class Counters extends RM_Controller {
 
 
 
-  				}
+  		}
       }
 
     }//EOF process company register info

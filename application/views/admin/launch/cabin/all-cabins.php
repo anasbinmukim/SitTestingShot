@@ -18,7 +18,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="table_area">
+                <table class="table table-striped table-bordered table-hover dt-responsive" id="table_area">
                     <thead>
                         <tr>
                             <th class="all">Cabin Number</th>
