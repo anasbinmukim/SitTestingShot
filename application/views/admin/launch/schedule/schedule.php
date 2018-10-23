@@ -2,7 +2,7 @@
 require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
 
-$request_schedule_url = site_url('admin/launch/get_all_schedule/');
+$request_schedule_url = site_url('admin/launch/get_all_schedule');
 ?>
 <div class="row">
     <div class="col-md-12">

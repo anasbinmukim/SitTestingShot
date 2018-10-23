@@ -457,6 +457,7 @@ class Launch extends RM_Controller {
 		{
 
 			$this->data['css_files'] = array(
+				base_url('seatassets/css/route-view.css'),
 				base_url('assets/global/plugins/datatables/datatables.min.css'),
 				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
 				base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
@@ -472,9 +473,10 @@ class Launch extends RM_Controller {
 				base_url('seatassets/js/table-datatables-responsive.js'),
 				base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
 				base_url('assets/global/plugins/select2/js/select2.full.min.js'),
-				base_url('assets/global/plugins/jquery-nestable/jquery.nestable.js'),
-				base_url('assets/pages/scripts/ui-nestable.min.js'),
+				//base_url('assets/global/plugins/jquery-nestable/jquery.nestable.js'),
+				//base_url('assets/pages/scripts/ui-nestable.min.js'),
 				base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
+				base_url('seatassets/js/route-view.js'),
 			);
 
 				if($display == 'route'){
@@ -482,17 +484,7 @@ class Launch extends RM_Controller {
 						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
 						$breadcrumb[] = array('name' => 'Route', 'url' => '');
 						$this->data['breadcrumb'] = $breadcrumb;
-						$this->data['current_page'] = 'route';
-						$join_arr_left = array(
-							'via_place vp_1' => 'vp_1.ID = lr.place_1',
-							'via_place vp_2' => 'vp_2.ID = lr.place_2',
-						);
-						$order_by = 'route ';
-						$order = 'ASC ';
-						$sort = $order_by.' '.$order;
-						$result = $this->common->get_all( 'launch_route lr', '', 'lr.*, vp_1.place_name as place_1, vp_2.place_name as place_2', $sort, '', '', $join_arr_left );
-						$this->data['launch_rows'] = $result;
-						$this->data['launch_route_rows'] = $result;
+						$this->data['current_page'] = 'route';						
 				}
 
 				if($display == 'edit'){
@@ -504,7 +496,7 @@ class Launch extends RM_Controller {
 					}else{
 							$route_details = $this->common->get( 'launch_route', array( 'route_id' => $row_id ), 'array' );
 							$this->data['route_data'] = $route_details;
-			        $this->data['title'] = 'Edit Route';
+							$this->data['title'] = 'Edit Route';
 							$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
 							$breadcrumb[] = array('name' => 'Route', 'url' => 'admin/launch/route');
 							$breadcrumb[] = array('name' => 'Edit Route', 'url' => '');
@@ -543,6 +535,72 @@ class Launch extends RM_Controller {
 				$this->load->view('templates/sidebar', $this->data);
         $this->load->view('admin/launch/route/'.$display, $this->data);
         $this->load->view('templates/footer', $this->data);
+		}
+		
+	function get_all_route()
+		{
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
+
+			$join_arr_left = array(
+				'via_place vp_1' => 'vp_1.ID = lr.place_1',
+				'via_place vp_2' => 'vp_2.ID = lr.place_2',
+			);
+			
+			$condition = '';
+			if( $keyword != '' ) {
+				$condition .= '(lr.route LIKE "%'.$keyword.'%" OR lr.place_1 LIKE "%'.$keyword.'%" OR lr.place_2 LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'launch_route lr', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'route',
+				2 => 'route_path',
+				4 => 'route_path',
+			);
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'launch_route lr', $condition, 'lr.*, vp_1.place_name as place_1, vp_2.place_name as place_2', $sort, $limit, $offset, $join_arr_left );
+
+			foreach( $result as $row ) {
+					
+					$route = $row->route;
+					$place_1 = $row->place_1;
+					$place_2 = $row->place_2;
+					$route_path = $row->route_path;
+					
+				$records["data"][] = array(
+					$route,
+					$place_1,
+					$place_2,
+					$route_path,
+					'<div class="center-block"><a href="'.site_url('admin/launch/route/edit/'.encrypt($row->route_id)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this route?\');" href="'.site_url('admin/launch/route/delete/'.encrypt($row->route_id)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+
+			header('Content-type: application/json');
+			echo json_encode($records);
 		}
 
 		//Process Route Info
