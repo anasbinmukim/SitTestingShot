@@ -624,6 +624,7 @@ class Launch extends RM_Controller {
 		{
 
 			$this->data['css_files'] = array(
+				base_url('seatassets/css/schedule-view.css'),
 				base_url('assets/global/plugins/datatables/datatables.min.css'),
 				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
 				base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
@@ -644,79 +645,143 @@ class Launch extends RM_Controller {
 				base_url('assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'),
 				base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
 				base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
+				base_url('seatassets/js/schedule-view.js'),
 	      );
 
 				$this->data['launch_arr'] = $this->get_launch_arr();
 				$this->data['launch_route_arr'] = $this->get_launch_route_arr();
 
 				if($display == 'schedule'){
-						$this->data['title'] = 'Launch schedule';
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
-						$breadcrumb[] = array('name' => 'Schedule', 'url' => '');
-						$this->data['breadcrumb'] = $breadcrumb;
-						$this->data['current_page'] = 'schedule';
-
-						$join_arr_left = array(
-							'launch_route lr' => 'ls.route_id = lr.route_id',
-							'launch l' => 'ls.launch_id = l.ID',
-						);
-						$order_by = 'sche_id ';
-						$order = 'DESC ';
-						$sort = $order_by.' '.$order;
-						$result = $this->common->get_all( 'launch_schedule ls', '', 'ls.*, l.launch_name, lr.route_path', $sort, '', '', $join_arr_left );
-						$this->data['launch_schedule_rows'] = $result;
+					$this->data['title'] = 'Launch schedule';
+					$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+					$breadcrumb[] = array('name' => 'Schedule', 'url' => '');
+					$this->data['breadcrumb'] = $breadcrumb;
+					$this->data['current_page'] = 'schedule';
 				}
 
 				if($display == 'register'){
-						$this->data['title'] = 'Add schedule';
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
-						$breadcrumb[] = array('name' => 'Schedule', 'url' => 'admin/launch/schedule');
-						$breadcrumb[] = array('name' => 'Add Schedule', 'url' => '');
-						$this->data['breadcrumb'] = $breadcrumb;
-						$this->data['current_page'] = 'schedule_add';
+					$this->data['title'] = 'Add schedule';
+					$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+					$breadcrumb[] = array('name' => 'Schedule', 'url' => 'admin/launch/schedule');
+					$breadcrumb[] = array('name' => 'Add Schedule', 'url' => '');
+					$this->data['breadcrumb'] = $breadcrumb;
+					$this->data['current_page'] = 'schedule_add';
 				}
 
 				if($display == 'edit'){
 					//Get route ID of this Entry
-		      $schedule_id = decrypt($schedule_solt_id)*1;
+					$schedule_id = decrypt($schedule_solt_id)*1;
 					if( !is_int($schedule_id) || !$schedule_id ) {
-		        $this->session->set_flashdata('delete_msg','Can not be edited');
+					$this->session->set_flashdata('delete_msg','Can not be edited');
 						redirect('admin/launch/schedule');
 					}else{
-							$schedule_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
-							$this->data['schedule_data'] = $schedule_details;
-							$schedule_launch_details = $this->common->get( 'launch', array( 'ID' => $schedule_details['launch_id'] ), 'array' );
-							$this->data['schedule_launch_data'] = $schedule_launch_details;
-			        $this->data['title'] = 'Edit Schedule';
-							$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
-							$breadcrumb[] = array('name' => 'Schedule', 'url' => 'admin/launch/schedule');
-							$breadcrumb[] = array('name' => 'Edit Schedule', 'url' => '');
-							$this->data['breadcrumb'] = $breadcrumb;
-							$this->data['current_page'] = 'schedule_edit';
-						}
+						$schedule_details = $this->common->get( 'launch_schedule', array( 'sche_id' => $schedule_id ), 'array' );
+						$this->data['schedule_data'] = $schedule_details;
+						$schedule_launch_details = $this->common->get( 'launch', array( 'ID' => $schedule_details['launch_id'] ), 'array' );
+						$this->data['schedule_launch_data'] = $schedule_launch_details;
+						$this->data['title'] = 'Edit Schedule';
+						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+						$breadcrumb[] = array('name' => 'Schedule', 'url' => 'admin/launch/schedule');
+						$breadcrumb[] = array('name' => 'Edit Schedule', 'url' => '');
+						$this->data['breadcrumb'] = $breadcrumb;
+						$this->data['current_page'] = 'schedule_edit';
+					}
 				}
 
 				if($display == 'delete'){
 					//Get route ID of this Entry
-		      $schedule_id = decrypt($schedule_solt_id)*1;
+					$schedule_id = decrypt($schedule_solt_id)*1;
 					if( !is_int($schedule_id) || !$schedule_id ) {
-		        $this->session->set_flashdata('delete_msg','Can not be deleted!');
+					$this->session->set_flashdata('delete_msg','Can not be deleted!');
 						redirect('admin/launch/schedule');
 					}else{
 						$this->common->delete( 'launch_schedule', array( 'sche_id' =>  $schedule_id ) );
 						$this->session->set_flashdata('delete_msg','Schedule has been deleted!');
 						redirect('admin/launch/schedule');
-						}
+					}
 				}
 
-				// Start: Process launch schedule
-				$this->process_launch_schedule();
-				// End: Process launch schedule
+			// Start: Process launch schedule
+			$this->process_launch_schedule();
+			// End: Process launch schedule
 
-        $this->load->view('templates/header', $this->data);
-				$this->load->view('templates/sidebar', $this->data);
-        $this->load->view('admin/launch/schedule/'.$display, $this->data);
-        $this->load->view('templates/footer', $this->data);
+			$this->load->view('templates/header', $this->data);
+			$this->load->view('templates/sidebar', $this->data);
+			$this->load->view('admin/launch/schedule/'.$display, $this->data);
+			$this->load->view('templates/footer', $this->data);
+		}
+		
+	function get_all_schedule()
+		{
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
+
+			$join_arr_left = array(
+				'launch_route lr' => 'ls.route_id = lr.route_id',
+				'launch l' => 'ls.launch_id = l.ID',
+			);
+			
+			$condition = '';
+			if( $keyword != '' ) {
+				$condition .= '(l.launch_name LIKE "%'.$keyword.'%" OR ls.date LIKE "%'.$keyword.'%" OR ls.start_from LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'launch_schedule ls', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'launch_name',
+				2 => 'date',
+				3 => 'start_from',
+				7 => 'destination_to',
+			);
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'launch_schedule ls', $condition, 'ls.*, l.launch_name, lr.route_path', $sort, $limit, $offset, $join_arr_left );
+
+			foreach( $result as $row ) {
+					
+					$launch_name = $row->launch_name;
+					$schedule_date = $row->date;
+					$start_from = $row->start_from;
+					$destination_to = $row->destination_to;
+					$route_path = $row->route_path;
+					$start_time = $row->start_time;
+					$destination_time = $row->destination_time;
+					
+				$records["data"][] = array(
+					$launch_name,
+					$schedule_date,
+					$start_from,
+					$destination_to,
+					$route_path,
+					$start_time,
+					$destination_time,
+					'<div class="center-block"><a href="'.site_url('admin/launch/schedule/edit/'.encrypt($row->sche_id)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this schedule?\');" href="'.site_url('admin/launch/schedule/delete/'.encrypt($row->sche_id)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+
+			header('Content-type: application/json');
+			echo json_encode($records);
 		}
 
 		//Process schedule Info

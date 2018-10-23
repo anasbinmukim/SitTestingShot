@@ -16,7 +16,7 @@ class Companies extends RM_Controller {
     public function index()
     {
         $this->data['css_files'] = array(
-		  base_url('seatassets\css\companies-view.css'),
+		  base_url('seatassets/css/companies-view.css'),
           base_url('assets/global/plugins/datatables/datatables.min.css'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
         );
