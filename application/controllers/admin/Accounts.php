@@ -73,8 +73,10 @@ class Accounts extends RM_Controller {
 			$columns = array(
 				1 => 'ID',
 				2 => 'transaction_date',
-				3 => 'transaction_type',
-				4 => 'transaction_for'
+				3 => 'gross_amount',
+				4 => 'transaction_type',
+				5 => 'balance',
+				6 => 'transaction_for',
 			);
 
 			$order_by = $columns[$_REQUEST['order'][0]['column']];

@@ -70,7 +70,8 @@ class Companies extends RM_Controller {
 			$columns = array(
 				1 => 'ID',
 				2 => 'company_name',
-				3 => 'company_description',
+				3 => 'company_type',
+				4 => 'company_description',
 			);
 
 			$order_by = $columns[$_REQUEST['order'][0]['column']];

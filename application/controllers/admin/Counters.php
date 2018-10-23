@@ -20,8 +20,6 @@ class Counters extends RM_Controller {
           base_url('assets/global/plugins/datatables/datatables.min.css'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
         );
-        //$result = $this->common->get_all( 'company_counter' );
-        //$this->data['counter_rows'] = $result;
         $this->data['js_files'] = array(
           base_url('assets/global/scripts/datatable.js'),
           base_url('assets/global/plugins/datatables/datatables.min.js'),
@@ -72,7 +70,7 @@ class Counters extends RM_Controller {
 			$columns = array(
 				1 => 'ID',
 				2 => 'counter_name',
-				3 => 'address',
+				8 => 'address',
 			);
 
 			$order_by = $columns[$_REQUEST['order'][0]['column']];

@@ -88,7 +88,7 @@ class Launch extends RM_Controller {
 			$columns = array(
 				1 => 'ID',
 				2 => 'launch_name',
-				3 => 'route',
+				6 => 'route',
 			);
 
 			$order_by = $columns[$_REQUEST['order'][0]['column']];
@@ -198,11 +198,12 @@ class Launch extends RM_Controller {
 					redirect('admin/launch/settinglaunch/'.encrypt($launch_id));
 				}
 			}
-		}
+		}		
 
 		public function cabin($display = 'all-cabins', $cabin_solt_id = NULL)
 		{
 			$this->data['css_files'] = array(
+				base_url('seatassets/css/cabin-view.css'),
 				base_url('assets/global/plugins/datatables/datatables.min.css'),
 				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
 				base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
@@ -216,33 +217,18 @@ class Launch extends RM_Controller {
 				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
 				base_url('seatassets/js/table-datatables-responsive.js'),
 				base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
-				base_url('assets/global/plugins/select2/js/select2.full.min.js'),
+				base_url('assets/global/plugins/select2/js/select2.full.min.js'),				
 				base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
+				base_url('seatassets/js/cabin-view.js'),
 			);
 
-			$this->data['launch_arr'] = $this->get_launch_arr();
-
 			if($display == 'all-cabins'){
-					//$cabin_solt_id parameter will work as launch ID for this display mode
-					$launch_id = decrypt($cabin_solt_id)*1;
-					if(($launch_id > 0) && ($cabin_solt_id != NULL)){
-						$this->data['title'] = 'Launch Cabin';
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
-						$breadcrumb[] = array('name' => 'Cabin', 'url' => '');
-						$this->data['breadcrumb'] = $breadcrumb;
-						$this->data['current_page'] = 'cabin';
-						$result = $this->common->get_all( 'launch_cabin', array('launch_id' => $launch_id ) );
-						$this->data['launch_cabin_rows'] = $result;
-					}else{
-						$this->data['title'] = 'Launch Cabin';
-						$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
-						$breadcrumb[] = array('name' => 'Cabin', 'url' => '');
-						$this->data['breadcrumb'] = $breadcrumb;
-						$this->data['current_page'] = 'cabin';
-						$result = $this->common->get_all( 'launch_cabin', '', '', 0, 20 );
-						$this->data['launch_cabin_rows'] = $result;
-					}
-
+				
+				$this->data['title'] = 'Launch Cabin';
+				$breadcrumb[] = array('name' => 'Launch', 'url' => 'admin/launch');
+				$breadcrumb[] = array('name' => 'Cabin', 'url' => '');
+				$this->data['breadcrumb'] = $breadcrumb;
+				$this->data['current_page'] = 'cabin';
 			}
 
 			if($display == 'register'){
@@ -294,6 +280,78 @@ class Launch extends RM_Controller {
 			$this->load->view('admin/launch/cabin/'.$display, $this->data);
 			$this->load->view('templates/footer', $this->data);
 		}
+		
+	function get_all_cabin($launch_id = NULL)
+		{
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
+
+			$join_arr_left = array(
+				'launch l' => 'lc.launch_id = l.ID',
+			);
+			$condition = '1=1 ';
+			if($launch_id != NULL){
+				$launch_id = decrypt($launch_id)*1;
+				$condition .= ' AND lc.launch_id ='.$launch_id;
+			}
+			if( $keyword != '' ) {
+				$condition .= ' AND(lc.cabin_number LIKE "%'.$keyword.'%" OR lc.cabin_type LIKE "%'.$keyword.'%" OR l.launch_name LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'launch_cabin lc', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'cabin_number',
+				2 => 'cabin_type',
+				6 => 'launch_name',
+			);
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+			
+			$result = $this->common->get_all( 'launch_cabin lc', $condition, 'lc.*, l.launch_name', $sort, $limit, $offset, $join_arr_left );
+				
+			foreach( $result as $row ) {
+					
+					$launch_name = $row->launch_name;
+					$cabin_type = $row->cabin_type;
+					$cabin_number = $row->cabin_number;
+					$floor = $row->floor;
+					$cabin_fare = $row->cabin_fare;					
+					$allow_person = $row->allow_person;					
+
+				$records["data"][] = array(
+					$cabin_number,
+					$cabin_type,
+					$launch_name,					
+					$floor,
+					$cabin_fare,
+					$allow_person,
+					'<div class="center-block"><a href="'.site_url('admin/launch/cabin/edit/'.encrypt($row->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this cabin?\');" href="'.site_url('admin/launch/cabin/delete/'.encrypt($row->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',					
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+
+			header('Content-type: application/json');
+			echo json_encode($records);
+		}	
 
 		//Process Cabin Info
     private function process_launch_cabin(){
@@ -565,27 +623,27 @@ class Launch extends RM_Controller {
 		public function schedule($display = 'schedule', $schedule_solt_id = 0)
 		{
 
-				$this->data['css_files'] = array(
-					base_url('assets/global/plugins/datatables/datatables.min.css'),
-					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
-	        base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
-	        base_url('assets/global/plugins/select2/css/select2.min.css'),
-	        base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
-					base_url('assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css'),
-					base_url('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css'),
+			$this->data['css_files'] = array(
+				base_url('assets/global/plugins/datatables/datatables.min.css'),
+				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
+				base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css'),
+				base_url('assets/global/plugins/select2/css/select2.min.css'),
+				base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
+				base_url('assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css'),
+				base_url('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css'),
 	      );
 
 	      $this->data['js_files'] = array(
-					base_url('assets/global/scripts/datatable.js'),
-					base_url('assets/global/plugins/datatables/datatables.min.js'),
-					base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
-					base_url('seatassets/js/table-datatables-responsive.js'),
-	        base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
-	        base_url('assets/global/plugins/select2/js/select2.full.min.js'),
-	        base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
-					base_url('assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'),
-					base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
-					base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
+				base_url('assets/global/scripts/datatable.js'),
+				base_url('assets/global/plugins/datatables/datatables.min.js'),
+				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+				base_url('seatassets/js/table-datatables-responsive.js'),
+				base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
+				base_url('assets/global/plugins/select2/js/select2.full.min.js'),
+				base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
+				base_url('assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'),
+				base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
+				base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
 	      );
 
 				$this->data['launch_arr'] = $this->get_launch_arr();
