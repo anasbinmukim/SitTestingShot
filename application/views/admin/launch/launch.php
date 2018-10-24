@@ -1,6 +1,8 @@
 <?php
 require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
+
+$request_launch_url = site_url('admin/launch/get_all/');
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -18,7 +20,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="table_area">
+                <table class="table table-striped table-bordered table-hover dt-responsive" id="launch-tb1" data-url="<?php echo $request_launch_url; ?>">
                     <thead>
                         <tr>
                             <th class="all">Name</th>
@@ -31,17 +33,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                         </tr>
                     </thead>
                     <tbody>
-                      <?php foreach ($launch_rows as $launch) { ?>
-                          <tr>
-                              <td><?php echo $launch->launch_name; ?></td>
-                              <td><?php echo $launch->route; ?></td>
-                              <td><?php echo '<a href="'.site_url('admin/launch/cabin/all-cabins/'.encrypt($launch->ID)).'" title="View Cabin">View Cabin</a>'; ?> </td>
-                              <td><?php echo $launch->place_1; ?></td>
-                              <td><?php echo $launch->place_2; ?></td>
-                              <td><?php echo $launch->route_path; ?></td>
-                              <td><?php echo '<div class="center-block"><a href="'.site_url('admin/launch/edit/'.encrypt($launch->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a href="'.site_url('admin/launch/settinglaunch/'.encrypt($launch->ID)).'" title="Settings"><i class="fa fa-cog font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this launch?\');" href="'.site_url('admin/launch/delete/'.encrypt($launch->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
-                          </tr>
-                        <?php } ?>
+                      
                     </tbody>
                 </table>
             </div>

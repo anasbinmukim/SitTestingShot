@@ -1,0 +1,10 @@
+/* here app related messages css */
+.dataTable > thead > tr > th[class*="sort"]::after{display: none;}
+
+/*
+.message_reply{background-color: #ffffff; padding: 15px 20px; margin-bottom: 10px;}
+.reply_text{font-weight: bold; margin-bottom: 7px;}
+.date_time{text-align: right;}
+.reply_btn{text-align: right;}
+.input-xs:focus{background: #ffffff;}
+.forcs_background:focus{background: #ffffff;}*/
