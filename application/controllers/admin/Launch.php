@@ -473,8 +473,6 @@ class Launch extends RM_Controller {
 				base_url('seatassets/js/table-datatables-responsive.js'),
 				base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
 				base_url('assets/global/plugins/select2/js/select2.full.min.js'),
-				//base_url('assets/global/plugins/jquery-nestable/jquery.nestable.js'),
-				//base_url('assets/pages/scripts/ui-nestable.min.js'),
 				base_url('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'),
 				base_url('seatassets/js/route-view.js'),
 			);
