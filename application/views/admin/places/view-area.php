@@ -1,6 +1,8 @@
 <?php
 require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
+
+$request_area_url = site_url('admin/places/get_all_area');
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -18,7 +20,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="table_area">
+                <table class="table table-striped table-bordered table-hover dt-responsive" id="area-tb1" data-url="<?php echo $request_area_url; ?>">
                     <thead>
                         <tr>
                             <th class="all">Area name</th>
@@ -28,15 +30,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                         </tr>
                     </thead>
                     <tbody>
-                      <?php //debug($area_rows); ?>
-                      <?php foreach ($area_rows as $area) { ?>
-                          <tr>
-                              <td><?php echo $area->area_name; ?></td>
-                              <td><?php echo $area->thana_name; ?></td>
-                              <td><?php echo $area->district_name; ?></td>
-                              <td><?php echo '<div class="center-block"><a href="'.site_url('admin/places/edit/area/'.encrypt($area->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this district?\');" href="'.site_url('admin/places/delete/area/'.encrypt($area->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
-                          </tr>
-                        <?php } ?>
+                      
                     </tbody>
                 </table>
             </div>

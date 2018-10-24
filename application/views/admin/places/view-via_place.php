@@ -1,6 +1,8 @@
 <?php
 require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
+
+$request_via_place_url = site_url('admin/places/get_all_via_place');
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -18,7 +20,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="table_area">
+                <table class="table table-striped table-bordered table-hover dt-responsive" id="via-place-tb1" data-url="<?php echo $request_via_place_url; ?>">
                     <thead>
                         <tr>
                             <th class="all">Place name</th>
@@ -30,16 +32,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                         </tr>
                     </thead>
                     <tbody>
-                      <?php foreach ($via_place_rows as $places) { ?>
-                          <tr>
-                              <td><?php echo $places->place_name; ?></td>
-                              <td><?php echo $places->address; ?>, <?php echo $places->thana_name; ?></td>
-                              <td><?php echo $places->thana_name; ?></td>
-                              <td><?php echo $places->district_name; ?></td>
-                              <td><?php echo $places->type; ?></td>
-                              <td><?php echo '<div class="center-block"><a href="'.site_url('admin/places/edit/via_place/'.encrypt($places->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this place?\');" href="'.site_url('admin/places/delete/via_place/'.encrypt($places->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
-                          </tr>
-                        <?php } ?>
+                      
                     </tbody>
                 </table>
             </div>

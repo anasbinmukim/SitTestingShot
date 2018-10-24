@@ -84,11 +84,11 @@ class Places extends RM_Controller {
                 $result = $this->common->get_all( 'place_district' );
                 $this->data['district_rows'] = $result;
                 $this->data['js_files'] = array(
-    						  base_url('assets/global/scripts/datatable.js'),
-    						  base_url('assets/global/plugins/datatables/datatables.min.js'),
-    						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
-                  base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
-                  base_url('seatassets/js/table-district-editable.js'),
+					  base_url('assets/global/scripts/datatable.js'),
+					  base_url('assets/global/plugins/datatables/datatables.min.js'),
+					  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+					  base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
+                      base_url('seatassets/js/table-district-editable.js'),
     						);
             }elseif($page == 'thana'){
                 $this->data['title'] = 'Thana/Upazilla of Bangladesh';
@@ -111,21 +111,13 @@ class Places extends RM_Controller {
                 $breadcrumb[] = array('name' => 'Area', 'url' => '');
                 $this->data['breadcrumb'] = $breadcrumb;
                 $this->data['current_page'] = 'view_area';
-
-                $join_arr_left = array(
-          				'place_thana pt' => 'pt.ID = pa.thana_id',
-                  'place_district pd' => 'pd.ID = pt.district_id',
-          			);
-                $order_by = 'area_name ';
-          			$order = 'ASC ';
-          			$sort = $order_by.' '.$order;
-                $result = $this->common->get_all( 'place_area pa', '', 'pa.*, pt.thana_name, pd.district_name', $sort, '', '', $join_arr_left );
-                $this->data['area_rows'] = $result;
+               
                 $this->data['js_files'] = array(
-    						  base_url('assets/global/scripts/datatable.js'),
-    						  base_url('assets/global/plugins/datatables/datatables.min.js'),
-    						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
-                  base_url('seatassets/js/table-datatables-responsive.js'),
+					  base_url('assets/global/scripts/datatable.js'),
+					  base_url('assets/global/plugins/datatables/datatables.min.js'),
+					  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+					  base_url('seatassets/js/table-datatables-responsive.js'),
+					  base_url('seatassets/js/area-view.js'),
     						);
             }elseif($page == 'via_place'){
                 $this->data['title'] = 'Via places of Bangladesh';
@@ -133,22 +125,14 @@ class Places extends RM_Controller {
                 $breadcrumb[] = array('name' => 'Via places', 'url' => '');
                 $this->data['breadcrumb'] = $breadcrumb;
                 $this->data['current_page'] = 'view_via_place';
-
-                $join_arr_left = array(
-          				'place_thana pt' => 'pt.ID = vp.thana_id',
-                  'place_district pd' => 'pd.ID = pt.district_id',
-          			);
-                $order_by = 'place_name ';
-          			$order = 'ASC ';
-          			$sort = $order_by.' '.$order;
-                $result = $this->common->get_all( 'via_place vp', '', 'vp.*, pt.thana_name, pd.district_name', $sort, '', '', $join_arr_left );
-                $this->data['via_place_rows'] = $result;
+              
                 $this->data['js_files'] = array(
-    						  base_url('assets/global/scripts/datatable.js'),
-    						  base_url('assets/global/plugins/datatables/datatables.min.js'),
-    						  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
-                  base_url('seatassets/js/table-datatables-responsive.js'),
-    						);
+					  base_url('assets/global/scripts/datatable.js'),
+					  base_url('assets/global/plugins/datatables/datatables.min.js'),
+					  base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+					  base_url('seatassets/js/table-datatables-responsive.js'),
+					  base_url('seatassets/js/via-place-view.js'),
+    			);
                 $this->data['title'] = 'Via places';
             }else{
               $this->data['js_files'] = array(
@@ -158,15 +142,145 @@ class Places extends RM_Controller {
                 base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
               );
 
-            }
-
-            //$this->data['title'] = ucfirst($page); // Capitalize the first letter
+            } 
 
             $this->load->view('templates/header', $this->data);
             $this->load->view('templates/sidebar', $this->data);
             $this->load->view('admin/places/view-'.$page, $this->data);
             $this->load->view('templates/footer', $this->data);
     }
+	
+	function get_all_area()
+		{
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
+
+			$join_arr_left = array(
+				'place_thana pt' => 'pt.ID = pa.thana_id',
+				'place_district pd' => 'pd.ID = pt.district_id',
+          	);
+			
+			$condition = '';
+			if( $keyword != '' ) {
+				$condition .= '(pa.area_name LIKE "%'.$keyword.'%" OR pt.thana_name LIKE "%'.$keyword.'%" OR pd.district_name LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'place_area pa', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'area_name',
+				2 => 'thana_name',
+				3 => 'district_name',
+			);
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'place_area pa', $condition, 'pa.*, pt.thana_name, pd.district_name', $sort, $limit, $offset, $join_arr_left );
+
+			foreach( $result as $row ) {
+					
+					$area_name = $row->area_name;
+					$thana_name = $row->thana_name;
+					$district_name = $row->district_name;
+					
+				$records["data"][] = array(
+					$area_name,
+					$thana_name,
+					$district_name,
+					'<div class="center-block"><a href="'.site_url('admin/places/edit/area/'.encrypt($row->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this area?\');" href="'.site_url('admin/places/delete/area/'.encrypt($row->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+
+			header('Content-type: application/json');
+			echo json_encode($records);
+		}
+		
+	function get_all_via_place()
+		{
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
+
+			$join_arr_left = array(
+          		'place_thana pt' => 'pt.ID = vp.thana_id',
+                'place_district pd' => 'pd.ID = pt.district_id',
+          	);
+			
+			$condition = '';
+			if( $keyword != '' ) {
+				$condition .= '(vp.ID LIKE "%'.$keyword.'%" OR vp.address LIKE "%'.$keyword.'%" OR vp.place_name LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'via_place vp', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'place_name',
+				2 => 'address',
+				5 => 'thana_name',
+			);
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'via_place vp', $condition, 'vp.*, pt.thana_name, pd.district_name', $sort, $limit, $offset, $join_arr_left );
+
+			foreach( $result as $row ) {
+					
+					$place_name = $row->place_name;
+					$address = $row->address;
+					$thana_name = $row->thana_name;
+					$district_name = $row->district_name;
+					$type = $row->type;
+					
+				$records["data"][] = array(
+					$place_name,
+					$address.', '.$thana_name,
+					$thana_name,
+					$district_name,
+					$type,
+					'<div class="center-block"><a href="'.site_url('admin/places/edit/via_place/'.encrypt($row->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this place?\');" href="'.site_url('admin/places/delete/via_place/'.encrypt($row->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+
+			header('Content-type: application/json');
+			echo json_encode($records);
+		}	
 
     public function add($page = 'area')
     {

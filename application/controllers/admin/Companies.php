@@ -16,17 +16,17 @@ class Companies extends RM_Controller {
     public function index()
     {
         $this->data['css_files'] = array(
+		  base_url('seatassets/css/companies-view.css'),
           base_url('assets/global/plugins/datatables/datatables.min.css'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
         );
-        $result = $this->common->get_all( 'company' );
-        $this->data['company_rows'] = $result;
+
         $this->data['js_files'] = array(
           base_url('assets/global/scripts/datatable.js'),
           base_url('assets/global/plugins/datatables/datatables.min.js'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
           base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
-          base_url('seatassets/js/table-district-editable.js'),
+		  base_url('seatassets/js/companies-view.js'),
         );
 
         $this->data['title'] = 'Companies';
@@ -39,6 +39,71 @@ class Companies extends RM_Controller {
         $this->load->view('admin/companies/companies', $this->data);
         $this->load->view('templates/footer', $this->data);
     }
+	
+	function get_all()
+		{
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
+
+			$join_arr_left = array();
+			
+			$condition = '';
+			if( $keyword != '' ) {
+				$condition .= '(c.ID LIKE "%'.$keyword.'%" OR c.company_name LIKE "%'.$keyword.'%" OR c.company_description LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'company c', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'ID',
+				2 => 'company_name',
+				3 => 'company_type',
+				4 => 'company_description',
+			);
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'company c', $condition, 'c.*', $sort, $limit, $offset, $join_arr_left );
+
+			foreach( $result as $row ) {
+					
+					$company_slug = $row->company_slug;
+					$company_name = $row->company_name;
+					$company_type = $row->company_type;
+					$content = html_entity_decode($row->company_description);
+					$description = substr($content,0,50);
+					
+				$records["data"][] = array(
+					$company_name,
+					$company_type,
+					'<a href="'.site_url('/admin/counters/company/'.encrypt($row->ID)).'" title="View Cabin">View Counters</a>',
+					$description,
+					'<div class="center-block"><a href="'.site_url('admin/companies/edit/'.encrypt($row->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this company?\');" href="'.site_url('admin/companies/delete/'.encrypt($row->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+
+			header('Content-type: application/json');
+			echo json_encode($records);
+		}
 
     public function details($slug = NULL)
     {

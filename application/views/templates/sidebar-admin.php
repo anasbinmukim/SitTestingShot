@@ -1,7 +1,7 @@
 <?php
 $current_view_places = $current_home = $current_view_thana = $current_launch = $current_cabin = '';
 $current_schedule = $current_route = $current_search_cabins = $current_my_cabin_booking = $current_company = '';
-$current_counters = $current_messages = $current_notifications = $current_sadf = $current_asdfa = '';
+$current_counters = $current_messages = $current_notifications = $current_accounts = $current_asdfa = '';
 $current_dfsafsa = $current_asdfasdf = $current_sadfasf = $current_sadf = $current_asdfa = '';
 $current_dfsafsa = $current_asdfasdf = $current_sadfasf = $current_sadf = $current_asdfa = '';
 $current_dfsafsa = $current_asdfasdf = $current_sadfasf = $current_sadf = $current_asdfa = '';
@@ -44,7 +44,8 @@ if(($current_page == 'companies')
 || ($current_page == 'edit_company')){ $current_company = ' active open'; }
 if(($current_page == 'counters') || ($current_page == 'counter_details') || ($current_page == 'counter_add') || ($current_page == 'counter_edit')){ $current_route = ' active open'; }
 if(($current_page == 'messages')||($current_page == 'add_message')||($current_page == 'message_details')){ $current_messages = ' active open'; }
-if($current_page == 'notifications'){ $current_notifications = ' active open'; }
+if(($current_page == 'notifications')||($current_page == 'add_notification')||($current_page == 'notification_details')){ $current_notifications = ' active open'; }
+if(($current_page == 'accounts')||($current_page == 'deposit_account')||($current_page == 'notification_details')){ $current_accounts = ' active open'; }
 
 
 
@@ -66,7 +67,7 @@ if($current_page == 'notifications'){ $current_notifications = ' active open'; }
             <li class="nav-item start <?php echo $current_home; ?>">
                 <a href="<?php echo site_url(); ?>" class="nav-link nav-toggle">
                     <i class="icon-home"></i>
-                    <span class="title">Dashboard <?php echo $current_page; ?></span>
+                    <span class="title">Dashboard</span>
                     <span class="arrow"></span>
                 </a>
 
@@ -143,6 +144,15 @@ if($current_page == 'notifications'){ $current_notifications = ' active open'; }
                     <span class="title">Notifications</span>
                     <span class="arrow"></span>
                 </a>
+				<ul class="sub-menu">
+                    <li class="nav-item  <?php echo $current_notifications; ?>">
+                        <a href="<?php echo site_url('admin/notifications/register'); ?>" class="nav-link nav-toggle">
+                            <i class="icon-diamond"></i>
+                            <span class="title">Add New</span>
+                            <span class="arrow"></span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li class="nav-item <?php echo $current_view_places; ?>">
                 <a href="<?php echo site_url('admin/places'); ?>" class="nav-link nav-toggle">
@@ -224,20 +234,19 @@ if($current_page == 'notifications'){ $current_notifications = ' active open'; }
                     </li>
                 </ul>
             </li>
-            <li class="nav-item  ">
-                <a href="<?php echo site_url('/accounts'); ?>" class="nav-link nav-toggle">
+            <li class="nav-item <?php echo $current_accounts; ?>">
+                <a href="<?php echo site_url('admin/accounts'); ?>" class="nav-link nav-toggle">
                     <i class="icon-user"></i>
                     <span class="title">Accounts</span>
                     <span class="arrow"></span>
                 </a>
                 <ul class="sub-menu">
-                    <li class="nav-item  ">
-                        <a href="<?php echo site_url('/accounts/deposit'); ?>" class="nav-link ">
+                    <li class="nav-item <?php echo $current_accounts; ?>">
+                        <a href="<?php echo site_url('admin/accounts/deposit'); ?>" class="nav-link ">
                             <i class="icon-user"></i>
                             <span class="title">Deposit</span>
                         </a>
                     </li>
-
                 </ul>
             </li>
             <li class="nav-item  ">

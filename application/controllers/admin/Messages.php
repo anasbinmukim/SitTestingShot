@@ -230,7 +230,6 @@ class Messages extends RM_Controller {
 
       }
 
-
       // Start: Process register message
       $this->process_register_new_message();
       // End: Process register message
@@ -244,7 +243,6 @@ class Messages extends RM_Controller {
 
     public function delete($row_salt_id = 0)
     {
-
       //Get row ID of this Entry
       $row_id = decrypt($row_salt_id)*1;
       if( !is_int($row_id) || !$row_id ) {
@@ -255,8 +253,6 @@ class Messages extends RM_Controller {
         //$this->session->set_flashdata('delete_msg','Message have been successfully deleted!');
         redirect('admin/messages');
       }
-
-
     }
 
 

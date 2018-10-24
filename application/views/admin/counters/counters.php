@@ -1,6 +1,8 @@
 <?php
 require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
+
+$request_counter_url = site_url('admin/counters/get_all/');
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -18,7 +20,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="table_area">
+                <table class="table table-striped table-bordered table-hover dt-responsive" id="counters-tb1" data-url="<?php echo $request_counter_url; ?>">
                     <thead>
                         <tr>
                             <th class="all">Counter name</th>
@@ -33,22 +35,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                         </tr>
                     </thead>
                     <tbody>
-                      <?php foreach ($counter_rows as $counter) { ?>
-                          <tr>
-                            <?php
-                              $counter_slug = $counter->counter_slug;
-                            ?>
-                              <td><?php echo $counter->counter_name; ?></td>
-                              <td><?php echo $counter->address; ?></td>
-                              <td><a href="<?php echo site_url('admin/counters/details/'.$counter_slug); ?>" title="">Details</a></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td><?php echo '<div class="center-block"><a href="'.site_url('admin/counters/edit/'.encrypt($counter->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this counter?\');" href="'.site_url('admin/counters/delete/'.encrypt($counter->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>'; ?></td>
-                          </tr>
-                        <?php } ?>
+                      
                     </tbody>
                 </table>
             </div>
