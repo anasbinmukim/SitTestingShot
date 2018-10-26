@@ -67,7 +67,7 @@ if(($current_page == 'accounts')||($current_page == 'deposit_account')||($curren
             <li class="nav-item start <?php echo $current_home; ?>">
                 <a href="<?php echo site_url(); ?>" class="nav-link nav-toggle">
                     <i class="icon-home"></i>
-                    <span class="title">Dashboard <?php echo $current_page; ?></span>
+                    <span class="title">Dashboard</span>
                     <span class="arrow"></span>
                 </a>
 
