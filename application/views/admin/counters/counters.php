@@ -2,7 +2,12 @@
 require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
 
-$request_counter_url = site_url('admin/counters/get_all/');
+$company_id = $this->uri->segment(5);
+if($company_id != null){
+	$request_counter_url = site_url('admin/counters/get_all/'.$company_id);
+}else{
+	$request_counter_url = site_url('admin/counters/get_all');
+}
 ?>
 <div class="row">
     <div class="col-md-12">

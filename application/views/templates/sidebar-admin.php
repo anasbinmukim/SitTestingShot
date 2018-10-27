@@ -114,7 +114,7 @@ if(($current_page == 'accounts')||($current_page == 'deposit_account')||($curren
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item  <?php echo $current_counters; ?>">
-                        <a href="<?php echo site_url('admin/counters'); ?>" class="nav-link nav-toggle">
+                        <a href="<?php echo site_url('admin/counters/counters'); ?>" class="nav-link nav-toggle">
                             <i class="icon-diamond"></i>
                             <span class="title">Counters</span>
                             <span class="arrow"></span>

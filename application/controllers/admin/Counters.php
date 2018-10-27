@@ -13,10 +13,15 @@ class Counters extends RM_Controller {
 		}
     }
 
-    public function index($company_id = NULL)
+    public function index()
     {
-        $this->data['css_files'] = array(
-		  base_url('seatassets\css\counters-view.css'),
+        
+    }
+	
+	public function counters($company = 'company', $company_solt_id = NULL)
+	{
+		$this->data['css_files'] = array(
+		  base_url('seatassets/css/counters-view.css'),
           base_url('assets/global/plugins/datatables/datatables.min.css'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
         );
@@ -38,20 +43,26 @@ class Counters extends RM_Controller {
         $this->load->view('templates/sidebar', $this->data);
         $this->load->view('admin/counters/counters', $this->data);
         $this->load->view('templates/footer', $this->data);
-    }
+	}
 	
-	function get_all()
+	function get_all($company_id = NULL)
 		{
 			$keyword = '';
 			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
 				$keyword = $_REQUEST['search']['value'];
 			}
 
-			$join_arr_left = array();
+			$join_arr_left = array(
+				'company co' => 'co.ID = c.company_id',
+			);
 			
-			$condition = '';
+			$condition = '1=1 ';
+			if($company_id != NULL){
+				$company_id = decrypt($company_id)*1;
+				$condition .= ' AND c.company_id ='.$company_id;
+			}
 			if( $keyword != '' ) {
-				$condition .= '(c.ID LIKE "%'.$keyword.'%" OR c.counter_name LIKE "%'.$keyword.'%" OR c.address LIKE "%'.$keyword.'%")';
+				$condition .= ' AND(c.ID LIKE "%'.$keyword.'%" OR c.counter_name LIKE "%'.$keyword.'%" OR c.address LIKE "%'.$keyword.'%")';
 			}
 
 			$iTotalRecords = $this->common->get_total_count( 'company_counter c', $condition, $join_arr_left );
@@ -110,43 +121,7 @@ class Counters extends RM_Controller {
 			header('Content-type: application/json');
 			echo json_encode($records);
 		}
-
-    public function company($company_salt_id)
-    {
-
-      $company_id = decrypt($company_salt_id)*1;
-			if( !is_int($company_id) || !$company_id ) {
-        $this->session->set_flashdata('delete_msg','No company found');
-				redirect('admin/counters');
-			}else{
-
-        $this->data['css_files'] = array(
-          base_url('assets/global/plugins/datatables/datatables.min.css'),
-          base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
-        );
-
-        $result = $this->common->get_all( 'company_counter', array('company_id' => $company_id ) );
-        $this->data['counter_rows'] = $result;
-        $this->data['js_files'] = array(
-          base_url('assets/global/scripts/datatable.js'),
-          base_url('assets/global/plugins/datatables/datatables.min.js'),
-          base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
-          base_url('seatassets/js/table-datatables-responsive.js'),
-        );
-
-        $this->data['title'] = 'Company Counters';
-        $breadcrumb[] = array('name' => 'Companies', 'url' => 'admin/companies');
-        $breadcrumb[] = array('name' => 'Counters', 'url' => '');
-        $this->data['breadcrumb'] = $breadcrumb;
-        $this->data['current_page'] = 'counters';
-
-        $this->load->view('templates/header',$this->data);
-        $this->load->view('templates/sidebar', $this->data);
-        $this->load->view('admin/counters/counters', $this->data);
-        $this->load->view('templates/footer', $this->data);
-      }
-    }
-
+	
     public function details($slug = NULL)
     {
         $counter_details = $this->companies_model->get_counters($slug);
@@ -290,7 +265,7 @@ class Counters extends RM_Controller {
           $this->form_validation->set_rules('contact_info', 'Contact Info', 'trim|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('address', 'Address', 'trim|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('thana_id', 'Thana', 'trim|htmlspecialchars');
-          $this->form_validation->set_rules('district_id', 'District', 'trim|htmlspecialchars');
+          $this->form_validation->set_rules('zone_id', 'Zone', 'trim|htmlspecialchars');
 
           if( !$this->form_validation->run() ) {
   					$error_message_array = $this->form_validation->error_array();
@@ -306,7 +281,7 @@ class Counters extends RM_Controller {
               'contact_info'=> trim($this->input->post('contact_info')),
               'address'=> trim($this->input->post('address')),
               'thana_id'=> trim($this->input->post('thana_id')),
-              'district_id'=> trim($this->input->post('district_id')),
+              'zone_id'=> trim($this->input->post('zone_id')),
               'updated_at'=> date('Y-m-d H:i:s'),
               'updated_by'=> $this->session->userdata('user_id'),
             );
@@ -322,7 +297,7 @@ class Counters extends RM_Controller {
               $counter_slug = url_title($generate_counter_slug, 'dash', TRUE);
               $this->common->update( 'company_counter', array('counter_slug' => $counter_slug), array( 'ID' =>  $counter_id ) );
               $this->session->set_flashdata('success_msg','Added done!');
-              redirect('admin/counters');
+              redirect('admin/counters/counters');
             }
 
 

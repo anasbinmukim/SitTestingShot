@@ -91,7 +91,7 @@ class Companies extends RM_Controller {
 				$records["data"][] = array(
 					$company_name,
 					$company_type,
-					'<a href="'.site_url('/admin/counters/company/'.encrypt($row->ID)).'" title="View Cabin">View Counters</a>',
+					'<a href="'.site_url('/admin/counters/counters/company/'.encrypt($row->ID)).'" title="View Cabin">View Counters</a>',
 					$description,
 					'<div class="center-block"><a href="'.site_url('admin/companies/edit/'.encrypt($row->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this company?\');" href="'.site_url('admin/companies/delete/'.encrypt($row->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></div>',
 				);
