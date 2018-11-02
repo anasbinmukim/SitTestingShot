@@ -1,6 +1,8 @@
 <?php
 require_once(FCPATH.'/application/views/breadcrumb.php');
 require_once(FCPATH.'/application/views/success-error-message.php');
+
+$request_mycabin_url = site_url('admin/launchbooking/get_all_mycabin');
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -13,7 +15,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="table_area">
+                <table class="table table-striped table-bordered table-hover dt-responsive" id="mycabin-tb1" data-url="<?php echo $request_mycabin_url; ?>">
                     <thead>
                         <tr>
                             <th class="all">ID</th>
@@ -32,26 +34,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                         </tr>
                     </thead>
                     <tbody>
-                      <?php foreach ($launch_booking_rows as $booking_row) { ?>
-                          <?php
-                            $booking_id = sprintf("%08d", $booking_row->ID);
-                          ?>
-                          <tr>
-                              <td><?php echo $booking_id; ?></td>
-                              <td><?php echo date('d-m-Y', strtotime($booking_row->booking_date)); ?></td>
-                              <td><?php echo date('d-m-Y', strtotime($booking_row->travel_date)); ?></td>
-                              <td><?php echo $booking_row->launch_name; ?></td>
-                              <td><?php echo $booking_row->start_from; ?></td>
-                              <td><?php echo $booking_row->destination_to; ?></td>
-                              <td><?php echo $booking_row->total_cabin_numbers; ?></td>
-                              <td><?php echo $booking_row->passenger_name; ?></td>
-                              <td><?php echo $booking_row->passenger_mobile; ?></td>
-                              <td><?php echo $booking_row->boarding; ?></td>
-                              <td><?php echo $booking_row->dropping; ?></td>
-                              <td><?php echo $booking_row->route_name; ?></td>
-                              <td><?php echo $booking_row->via_places; ?></td>
-                          </tr>
-                        <?php } ?>
+                      
                     </tbody>
                 </table>
             </div>

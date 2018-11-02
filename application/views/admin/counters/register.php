@@ -65,7 +65,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                   </div>
                                   <div class="form-group">
                                     <label class="control-label">Select District</label>
-                                      <select name="district_id" id="district_id" class="form-control select2me">
+                                      <select name="zone_id" id="district_id" class="form-control select2me">
                                       <?php
                                       	$district_arr = get_district_arr();
                                       	foreach($district_arr as $dkey => $dvalue){

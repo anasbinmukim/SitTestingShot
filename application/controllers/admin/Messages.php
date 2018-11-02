@@ -20,11 +20,11 @@ class Messages extends RM_Controller {
     public function index()
     {
         $this->data['css_files'] = array(
-		  base_url('seatassets\css\message-view.css'),
+		  base_url('seatassets/css/message-view.css'),
           base_url('assets/global/plugins/datatables/datatables.min.css'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
         );
-        
+
         $this->data['js_files'] = array(
           base_url('assets/global/scripts/datatable.js'),
           base_url('assets/global/plugins/datatables/datatables.min.js'),
@@ -43,7 +43,7 @@ class Messages extends RM_Controller {
         $this->load->view('admin/messages/messages', $this->data);
         $this->load->view('templates/footer', $this->data);
     }
-	
+
 	function get_all()
 		{
 			$keyword = '';
@@ -52,7 +52,7 @@ class Messages extends RM_Controller {
 			}
 
 			$join_arr_left = array();
-			
+
 			$condition = 't.msg_parent=0 ';
 			if( $keyword != '' ) {
 				$condition .= ' AND (t.ID LIKE "%'.$keyword.'%" OR t.msg_subject LIKE "%'.$keyword.'%" OR t.msg_content LIKE "%'.$keyword.'%")';
@@ -84,13 +84,13 @@ class Messages extends RM_Controller {
 			$result = $this->common->get_all( 'messages t', $condition, 't.*', $sort, $limit, $offset, $join_arr_left );
 
 			foreach( $result as $row ) {
-					
+
 					$message_slug = $row->msg_slug;
 					$content = strip_tags(html_entity_decode($row->msg_content));
 					$content = substr($content,0,50);
 
 					$message_date = date('M d, Y', strtotime($row->msg_date));
-					$message_subject = '<a href="'.site_url('admin/messages/details/'.$message_slug).'">'.$row->msg_subject.'</a>'; 
+					$message_subject = '<a href="'.site_url('admin/messages/details/'.$message_slug).'">'.$row->msg_subject.'</a>';
 					$message_content = '<a href="'.site_url('admin/messages/details/'.$message_slug).'">'.$content.'</a>';
 					$read_status = $row->read_status;
 
@@ -126,7 +126,7 @@ class Messages extends RM_Controller {
         base_url('assets/global/plugins/ckeditor/ckeditor.js'),
         base_url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js'),
 		base_url('assets/global/plugins/select2/js/select2.full.min.js'),
-        base_url('seatassets/js/seat-editor.js')		
+        base_url('seatassets/js/seat-editor.js')
       );
 
       // Start: Process register message
@@ -148,21 +148,21 @@ class Messages extends RM_Controller {
       $this->load->view('templates/footer', $this->data);
 
     }
-	
+
 	public function details($slug = NULL)
     {
 		$this->data['css_files'] = array(
 			base_url('seatassets\css\message-view.css'),
-		);	
+		);
         $message_details = $this->messages_model->get_messages($slug);
         $this->data['message_data'] = $message_details;
 		$message_id = $message_details['ID'];
-		
+
 		$join_arr_left = array(
 			'users ur' => 'ur.ID = ms.msg_author',
 		);
 		$result1 = $this->common->get_all( 'messages ms', array('ms.ID' => $message_id), 'ms.*, ur.last_name', '', '', '', $join_arr_left);
-		$this->data['message_info'] = $result1; 
+		$this->data['message_info'] = $result1;
 
         if (empty($this->data['message_data']))
         {
@@ -175,14 +175,14 @@ class Messages extends RM_Controller {
         $this->data['breadcrumb'] = $breadcrumb;
         $this->data['current_page'] = 'message_details';
 		$message_id = $message_details['ID'];
-		
+
 		//Start: Reply process start
 		$this->process_reply_message($message_id, $slug);
 		//End: Reply proecss end
-		
-		//For read status		
+
+		//For read status
 		$this->common->update( 'messages', array('read_status' => 1), array( 'ID' =>  $message_id ) );
-		
+
 		//For reply message
 			/* $join_arr_left = array(
 				'users ur' => 'ur.ID = ms.msg_author',
@@ -263,8 +263,8 @@ class Messages extends RM_Controller {
           $this->form_validation->set_rules('message_to', 'Message To', 'required');
           $this->form_validation->set_rules('msg_subject', 'Message Subject', 'trim|required|htmlspecialchars|min_length[2]');
           $this->form_validation->set_rules('msg_content', 'Message Content', 'trim|required|htmlspecialchars|min_length[2]');
-          
-        
+
+
 
           if( !$this->form_validation->run() ) {
   					$error_message_array = $this->form_validation->error_array();
@@ -274,8 +274,8 @@ class Messages extends RM_Controller {
             $data_arr = array(
               'msg_subject'=> trim($this->input->post('msg_subject')),
               'msg_excerpt'=> trim($this->input->post('msg_excerpt')),
-              'msg_content'=> trim($this->input->post('msg_content')),              
-              'msg_to'=> trim($this->input->post('message_to')),              
+              'msg_content'=> trim($this->input->post('msg_content')),
+              'msg_to'=> trim($this->input->post('message_to')),
               'msg_author'=> $this->currently_logged_user,
               'msg_date'=> $this->booking_date_time
             );
@@ -299,13 +299,13 @@ class Messages extends RM_Controller {
       }
 
     }//EOF process message register info
-	
-	
+
+
 	private function process_reply_message($message_id, $slug){
-      if($this->input->post('message_reply') !== NULL){          
+      if($this->input->post('message_reply') !== NULL){
           $this->form_validation->set_rules('msg_content', 'Message Content', 'trim|required|htmlspecialchars|min_length[2]');
-          
-        
+
+
 
           if( !$this->form_validation->run() ) {
   					$error_message_array = $this->form_validation->error_array();
@@ -313,16 +313,16 @@ class Messages extends RM_Controller {
   				}else{
 
             $data_arr = array(
-              'msg_content'=> trim($this->input->post('msg_content')),              
+              'msg_content'=> trim($this->input->post('msg_content')),
               'msg_parent'=> $message_id,
               'msg_author'=> $this->currently_logged_user,
               'msg_date'=> $this->booking_date_time
             );
 
-            
+
 			  $message_id = $this->common->insert( 'messages', $data_arr );
 			  $this->session->set_flashdata('success_msg','Reply done!');
-			  redirect('admin/messages/details/'.$slug);          
+			  redirect('admin/messages/details/'.$slug);
 
   		}
       }

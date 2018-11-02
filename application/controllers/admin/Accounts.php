@@ -25,11 +25,11 @@ class Accounts extends RM_Controller {
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'),
         );
         $this->data['js_files'] = array(
-          base_url('assets/global/scripts/datatable.js'),
-          base_url('assets/global/plugins/datatables/datatables.min.js'),
-          base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
-          base_url('seatassets/js/table-datatables-responsive.js'),
-		  base_url('seatassets/js/accounts-view.js'),
+            base_url('assets/global/scripts/datatable.js'),
+            base_url('assets/global/plugins/datatables/datatables.min.js'),
+            base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
+            base_url('seatassets/js/table-datatables-responsive.js'),
+		        base_url('seatassets/js/accounts-view.js'),
         );
 
         $this->data['title'] = 'Accounts';
@@ -42,7 +42,7 @@ class Accounts extends RM_Controller {
         $this->load->view('admin/accounts/accounts', $this->data);
         $this->load->view('templates/footer', $this->data);
     }
-	
+
 	function get_all()
 		{
 			$keyword = '';
@@ -51,7 +51,7 @@ class Accounts extends RM_Controller {
 			}
 
 			$join_arr_left = array();
-			
+
 			$condition = 't.user_id >= 0 ';
 			if( $keyword != '' ) {
 				$condition .= ' AND (t.ID LIKE "%'.$keyword.'%" OR t.booking_amount LIKE "%'.$keyword.'%" OR t.balance LIKE "%'.$keyword.'%")';
@@ -86,14 +86,14 @@ class Accounts extends RM_Controller {
 			$result = $this->common->get_all( 'user_transactions t', $condition, 't.*', $sort, $limit, $offset, $join_arr_left );
 
 			foreach( $result as $row ) {
-					
+
 					$formatted_id = sprintf("%08d", $row->ID);
 					$transaction_id = $formatted_id;
 					$message_date = date('M d, Y', strtotime($row->transaction_date));
 					$transaction_type = $row->transaction_type;
 					$transaction_name = $row->transaction_for;
 					$gross_amount = $row->gross_amount;
-					$balance = $row->balance;			
+					$balance = $row->balance;
 
 				$records["data"][] = array(
 					$transaction_id,
@@ -113,7 +113,7 @@ class Accounts extends RM_Controller {
 			header('Content-type: application/json');
 			echo json_encode($records);
 		}
-		
+
 	public function delete($row_salt_id = 0)
     {
       //Get row ID of this Entry
@@ -122,10 +122,10 @@ class Accounts extends RM_Controller {
         redirect('admin/accounts');
       }else{
         $this->data['row_id'] = $row_id;
-        $this->common->delete( 'user_transactions', array( 'ID' =>  $row_id ) );      
+        $this->common->delete( 'user_transactions', array( 'ID' =>  $row_id ) );
         redirect('admin/accounts');
       }
-    }	
+    }
 
 
     public function deposit($user_solt_id = NULL){

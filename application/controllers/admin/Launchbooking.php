@@ -46,6 +46,7 @@ class Launchbooking extends RM_Controller {
 					base_url('seatassets/js/table-datatables-responsive.js'),
 					base_url('assets/pages/scripts/components-date-time-pickers.min.js'),
 					base_url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'),
+					base_url('seatassets/js/booking-schedule.js'),
 				);
 
 				$this->data['launch_search_arr'] = $this->get_schedule_launch_search_arr();
@@ -55,23 +56,6 @@ class Launchbooking extends RM_Controller {
 				$this->data['search_start_from'] = '';
 				$this->data['search_destination_to'] = '';
 
-				$schedule_condition = '1=1 ';
-
-				$today = date('Y-m-d');
-				$schedule_condition .= ' AND date >= "'.$today.'"';
-
-
-				$join_arr_left = array(
-					'launch_route lr' => 'ls.route_id = lr.route_id',
-					'launch l' => 'ls.launch_id = l.ID',
-				);
-				$order_by = 'sche_id ';
-				$order = 'DESC ';
-				$sort = $order_by.' '.$order;
-				$result = $this->common->get_all( 'launch_schedule ls', $schedule_condition, 'ls.*, l.launch_name, lr.route_path', $sort, '', '', $join_arr_left );
-
-
-				$this->data['launch_schedule_rows'] = $result;
 				$this->data['title'] = 'Cabin Booking';
 				$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
 				$breadcrumb[] = array('name' => 'Search Cabin', 'url' => '');
@@ -87,6 +71,81 @@ class Launchbooking extends RM_Controller {
 
 
 		}//EOF launch booking
+		
+	function get_all()
+		{
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
+
+			$join_arr_left = array(
+				'launch_route lr' => 'ls.route_id = lr.route_id',
+				'launch l' => 'ls.launch_id = l.ID',
+			);
+			
+			$condition = '1=1 ';
+			$today = date('Y-m-d');
+			$condition .= ' AND date >= "'.$today.'"';
+			
+			if( $keyword != '' ) {
+				$condition .= ' AND(l.launch_name LIKE "%'.$keyword.'%" OR ls.date LIKE "%'.$keyword.'%" OR ls.start_from LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'launch_schedule ls', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'launch_name',
+				2 => 'date',
+				3 => 'start_from',
+				7 => 'destination_to',
+			);
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'launch_schedule ls', $condition, 'ls.*, l.launch_name, lr.route_path', $sort, $limit, $offset, $join_arr_left );
+
+			foreach( $result as $row ) {
+					$launch_name = $row->launch_name;
+					$date = date('d-m-Y', strtotime($row->date));					
+					$start_from = $row->start_from;
+					$destination_to = $row->destination_to;
+					$route_path = $row->route_path;
+					$start_time = $row->start_time;
+					$destination_time = $row->destination_time;					
+
+				$records["data"][] = array(
+					$launch_name,
+					$date,
+					$start_from,
+					$destination_to,
+					$route_path,
+					$start_time,
+					$destination_time,
+					'<div class="center-block"><a class="btn green btn-outline btn-circle btn-sm" href="'.site_url('/admin/launchbooking/cabin/'.encrypt($row->sche_id)).'" title="Available Cabins">Cabins</a></div>',	
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+			
+			header('Content-type: application/json');
+			echo json_encode($records);
+		}
 
 
 		public function search($launch_id = 'id', $travel_date = 'MM-DD-YYYY', $start_from = 'from', $destination_to = 'to', $schedule_id = NULL)
@@ -138,13 +197,6 @@ class Launchbooking extends RM_Controller {
 					$this->data['search_travel_date'] = 'MM-DD-YYYY';
 				}
 
-
-				// if(($start_from != 'from') && ($start_from !='')){
-				// 	$schedule_condition .= ' AND ls.start_from LIKE "'.$start_from.'"';
-				// 	$this->data['search_start_from'] = $start_from;
-				// }
-
-				//route path search combination
 				if(($start_from != 'from') && ($start_from !='') && ($destination_to != 'to') && ($destination_to != '')){
 						$schedule_condition .= ' AND ls.dropping_place_time LIKE "%'.$start_from.'%"';
 						$this->data['search_start_from'] = $start_from;
@@ -155,14 +207,6 @@ class Launchbooking extends RM_Controller {
 						$schedule_condition .= ' OR ls.destination_to LIKE "%'.$destination_to.'%" ) ';
 				}
 
-				//
-				// if(($destination_to != 'to') && ($destination_to != '')){
-				// 	$schedule_condition .= ' AND ls.destination_to LIKE "'.$destination_to.'"';
-				// 	$this->data['search_destination_to'] = $destination_to;
-				// }
-
-				// echo $schedule_condition;
-				// exit;
 
 				$join_arr_left = array(
 					'launch_route lr' => 'ls.route_id = lr.route_id',
@@ -184,11 +228,11 @@ class Launchbooking extends RM_Controller {
 				$this->load->view('templates/header', $this->data);
 				$this->load->view('templates/sidebar', $this->data);
 				$this->load->view('admin/booking/launch/search-form', $this->data);
-				$this->load->view('admin/booking/launch/launch', $this->data);
+				$this->load->view('admin/booking/launch/search-launch', $this->data);
 				$this->load->view('templates/footer', $this->data);
 
 
-		}//EOF launch booking
+		}//EOF launch booking	
 
 		public function cabin($schedule_solt_id = NULL, $request_cabin_solt_ids = NULL, $cabin_item_solt_id = NULL, $booking_ref_number = NULL, $cabin_pair_number = NULL)
 		{
@@ -712,36 +756,14 @@ class Launchbooking extends RM_Controller {
 				base_url('assets/global/plugins/datatables/datatables.min.js'),
 				base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
 				base_url('seatassets/js/table-datatables-responsive.js'),
+				base_url('seatassets/js/mycabin-view.js'),
 			);
 
 			if($user_solt_id != NULL){
-					$user_id = decrypt($user_solt_id)*1;
+				$user_id = decrypt($user_solt_id)*1;
 			}else{
-					$user_id = $this->currently_logged_user;
+				$user_id = $this->currently_logged_user;
 			}
-
-			$condition = '1=1 ';
-			$condition .= ' AND booking_by = "'.$user_id.'"';
-
-			$join_arr_left = array(
-				'launch_cabin_booked lcb' => 'lcb.booking_id = lb.ID',
-				'launch l' => 'lcb.launch_id = l.ID',
-				'launch_schedule ls' => 'lcb.schedule_id = ls.sche_id',
-				'launch_route lr' => 'ls.route_id = lr.route_id',
-			);
-
-
-			$limit = 1000;
-			$offset = 0;
-			$group_by = ' lcb.booking_id ';
-			$order_by = 'ID ';
-			$order = 'DESC ';
-			$sort = $order_by.' '.$order;
-
-			$result = $this->booking_model->get_all( 'launch_booking lb', $condition, 'lb.*, lcb.booking_id, lcb.schedule_id, lcb.launch_id, lcb.cabin_id, lcb.cabin_number, lcb.travel_date, lcb.booking_status, l.launch_name, ls.start_from, ls.destination_to, lr.route as route_name, lr.route_path as via_places, GROUP_CONCAT(lcb.cabin_number SEPARATOR \' & \') total_cabin_numbers', $group_by, $sort, $limit, $offset, $join_arr_left );
-
-			$this->data['launch_booking_rows'] = $result;
-
 
 			$this->data['title'] = 'My Launch Cabin';
 			$breadcrumb[] = array('name' => 'Launch', 'url' => 'launch');
@@ -757,5 +779,95 @@ class Launchbooking extends RM_Controller {
 			$this->load->view('templates/footer', $this->data);
 
 		}//EOF mybooking
+		
+	function get_all_mycabin()
+		{
+			$keyword = '';
+			if( isset( $_REQUEST['search']['value'] ) && $_REQUEST['search']['value'] != '' ) {
+				$keyword = $_REQUEST['search']['value'];
+			}
 
+			$join_arr_left = array(
+				'launch_cabin_booked lcb' => 'lcb.booking_id = lb.ID',
+				'launch l' => 'lcb.launch_id = l.ID',
+				'launch_schedule ls' => 'lcb.schedule_id = ls.sche_id',
+				'launch_route lr' => 'ls.route_id = lr.route_id',
+			);
+			$user_id = $this->currently_logged_user;
+			
+			$condition = '1=1 ';
+			$condition .= ' AND booking_by = "'.$user_id.'"';
+			
+			if( $keyword != '' ) {
+				$condition .= ' AND(l.launch_name LIKE "%'.$keyword.'%" OR ls.start_from LIKE "%'.$keyword.'%" OR ls.destination_to LIKE "%'.$keyword.'%")';
+			}
+
+			$iTotalRecords = $this->common->get_total_count( 'launch_booking lb', $condition, $join_arr_left );
+
+			$iDisplayLength = intval($_REQUEST['length']);
+			$iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+			$iDisplayStart = intval($_REQUEST['start']);
+			$sEcho = intval($_REQUEST['draw']);
+
+			$records = array();
+			$records["data"] = array();
+
+			$limit = $iDisplayLength;
+			$offset = $iDisplayStart;
+
+			$columns = array(
+				1 => 'ID',
+				2 => 'booking_date',
+				3 => 'travel_date',
+				4 => 'launch_name',
+				5 => 'start_from',
+				6 => 'destination_to',
+			);
+
+			$order_by = $columns[$_REQUEST['order'][0]['column']];
+			$order = $_REQUEST['order'][0]['dir'];
+			$sort = $order_by.' '.$order;
+
+			$result = $this->common->get_all( 'launch_booking lb', $condition, 'lb.*, lcb.booking_id, lcb.schedule_id, lcb.launch_id, lcb.cabin_id, lcb.cabin_number, lcb.travel_date, lcb.booking_status, l.launch_name, ls.start_from, ls.destination_to, lr.route as route_name, lr.route_path as via_places, lcb.cabin_number', $sort, $limit, $offset, $join_arr_left );
+
+			foreach( $result as $row ) {
+					
+					$booking_id = sprintf("%08d", $row->ID);
+					$booking_date = date('d-m-Y', strtotime($row->booking_date));
+					$travel_date = date('d-m-Y', strtotime($row->travel_date));
+					$launch_name = $row->launch_name;					
+					$start_from = $row->start_from;
+					$destination_to = $row->destination_to;
+					$total_cabin_numbers = $row->cabin_number;
+					$passenger_name = $row->passenger_name;
+					$passenger_mobile = $row->passenger_mobile;
+					$boarding = $row->boarding;
+					$dropping = $row->dropping;
+					$route_name = $row->route_name;
+					$via_places = $row->via_places;
+
+				$records["data"][] = array(
+					$booking_id,
+					$booking_date,
+					$travel_date,
+					$launch_name,
+					$start_from,
+					$destination_to,
+					$total_cabin_numbers,
+					$passenger_name,
+					$passenger_mobile,
+					$boarding,
+					$dropping,
+					$route_name,
+					$via_places,	
+				);
+			}
+
+			$records["draw"] = $sEcho;
+			$records["recordsTotal"] = $iTotalRecords;
+			$records["recordsFiltered"] = $iTotalRecords;
+
+			header('Content-type: application/json');
+			echo json_encode($records);
+		}	
 }

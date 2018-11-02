@@ -1,18 +1,3 @@
-<!-- BEGIN PAGE HEADER-->
-<!-- <h1 class="page-title">Launch Booking</h1>
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="icon-home"></i>
-            <a href="<?php echo site_url(); ?>">Home</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>Cabin booking</span>
-        </li>
-    </ul>
-</div> -->
-<!-- END PAGE HEADER-->
 <?php
 require_once(FCPATH.'/application/views/success-error-message.php');
 ?>
@@ -26,7 +11,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 </div>
                 <div class="actions">
                     <div class="btn-group btn-group-devided">
-                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('/LaunchBooking'); ?>">Reload</a>
+                        <a class="btn btn-transparent grey-salsa btn-outline btn-circle btn-sm" href="<?php echo site_url('admin/LaunchBooking'); ?>">Reload</a>
                     </div>
                 </div>
             </div>
