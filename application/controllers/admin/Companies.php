@@ -26,7 +26,7 @@ class Companies extends RM_Controller {
           base_url('assets/global/plugins/datatables/datatables.min.js'),
           base_url('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'),
           base_url('assets/pages/scripts/table-datatables-responsive.min.js'),
-		  base_url('seatassets/js/companies-view.js'),
+		        base_url('seatassets/js/companies-view.js'),
         );
 
         $this->data['title'] = 'Companies';
@@ -39,7 +39,7 @@ class Companies extends RM_Controller {
         $this->load->view('admin/companies/companies', $this->data);
         $this->load->view('templates/footer', $this->data);
     }
-	
+
 	function get_all()
 		{
 			$keyword = '';
@@ -48,7 +48,7 @@ class Companies extends RM_Controller {
 			}
 
 			$join_arr_left = array();
-			
+
 			$condition = '';
 			if( $keyword != '' ) {
 				$condition .= '(c.ID LIKE "%'.$keyword.'%" OR c.company_name LIKE "%'.$keyword.'%" OR c.company_description LIKE "%'.$keyword.'%")';
@@ -81,13 +81,13 @@ class Companies extends RM_Controller {
 			$result = $this->common->get_all( 'company c', $condition, 'c.*', $sort, $limit, $offset, $join_arr_left );
 
 			foreach( $result as $row ) {
-					
+
 					$company_slug = $row->company_slug;
 					$company_name = $row->company_name;
 					$company_type = $row->company_type;
 					$content = html_entity_decode($row->company_description);
 					$description = substr($content,0,50);
-					
+
 				$records["data"][] = array(
 					$company_name,
 					$company_type,

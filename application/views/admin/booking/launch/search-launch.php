@@ -1,8 +1,6 @@
 <?php
 require_once(FCPATH.'/application/views/success-error-message.php');
 
-$request_booking_url = site_url('admin/launchbooking/get_all');
-
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -15,7 +13,7 @@ $request_booking_url = site_url('admin/launchbooking/get_all');
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover dt-responsive" id="schedule-tb1" data-url="<?php echo $request_booking_url; ?>">
+                <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="table_area">
                     <thead>
                         <tr>
                             <th class="all">Launch Name</th>
@@ -29,7 +27,18 @@ $request_booking_url = site_url('admin/launchbooking/get_all');
                         </tr>
                     </thead>
                     <tbody>
-                      
+						<?php foreach ($launch_schedule_rows as $schedule) { ?>							
+							  <tr>
+								  <td><?php echo $schedule->launch_name; ?></td>
+								  <td><?php echo $schedule->date; ?></td>
+								  <td><?php echo $schedule->start_from; ?></td>
+								  <td><?php echo $schedule->destination_to; ?></td>
+								  <td><?php echo $schedule->route_path; ?></td>
+								  <td><?php echo $schedule->start_time; ?></td>
+								  <td><?php echo $schedule->destination_time; ?></td>
+								  <td><?php echo '<div class="center-block"><a class="btn green btn-outline btn-circle btn-sm" href="'.site_url('/admin/launchbooking/cabin/'.encrypt($schedule->sche_id)).'" title="Available Cabins">Cabins</a></div>'; ?></td>
+							  </tr>
+							<?php } ?>
                     </tbody>
                 </table>
               </div>
