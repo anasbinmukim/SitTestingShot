@@ -31,7 +31,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                         <tr>
                             <td><?php echo $zone->zone_name; ?></td>
                             <td><?php echo $zone->district_name; ?></td>
-                            <td><a href="<?php echo site_url('admin/places/edit/zone/'.encrypt($zone->ID))?>" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this area?\');" href="<?php echo site_url('admin/places/delete/zone/'.encrypt($zone->ID))?>" title="Delete"><i class="fa fa-trash-o text-danger"></i></a></td>                            
+                            <td><?php echo '<a href="'.site_url('admin/places/edit/zone/'.encrypt($zone->ID)).'" title="Edit"><i class="fa fa-edit font-blue-ebonyclay"></i></a>&nbsp;&nbsp;<a onclick="return confirm(\'Are you sure you want to delete this zone?\');" href="'. site_url('admin/places/delete/zone/'.encrypt($zone->ID)).'" title="Delete"><i class="fa fa-trash-o text-danger"></i></a>'; ?></td>                            
                         </tr>
                       <?php } ?>
                   </tbody>

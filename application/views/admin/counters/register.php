@@ -64,11 +64,11 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                     </select>
                                   </div>
                                   <div class="form-group">
-                                    <label class="control-label">Select District</label>
-                                      <select name="zone_id" id="district_id" class="form-control select2me">
+                                    <label class="control-label">Select Zone</label>
+                                      <select name="zone_id" id="zone_id" class="form-control select2me">
                                       <?php
-                                      	$district_arr = get_district_arr();
-                                      	foreach($district_arr as $dkey => $dvalue){
+                                      	$zone_arr = get_zone_arr();
+                                      	foreach($zone_arr as $dkey => $dvalue){
                                       		echo '<option value="'.$dkey.'">'.$dvalue.'</option>';
                                       	}
                                       ?>

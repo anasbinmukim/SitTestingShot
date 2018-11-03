@@ -35,7 +35,7 @@ if($company_id != null){
                             <th class="none">Incharge</th>
                             <th class="none">Mobile</th>
                             <th class="none">Thana</th>
-                            <th class="none">District</th>
+                            <th class="none">Zone</th>
                             <th width="20" class="all">Action</th>
                         </tr>
                     </thead>

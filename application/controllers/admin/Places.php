@@ -524,6 +524,13 @@ class Places extends RM_Controller {
           $this->session->set_flashdata('delete_msg','Item has been deleted!');
           redirect('/admin/places/view/via_place');
       }
+	  
+	  //Delete Zone info
+      if($page == 'zone'){
+          $this->common->delete( 'place_zone', array( 'ID' =>  $row_id ) );
+          $this->session->set_flashdata('delete_msg','Item has been deleted!');
+          redirect('/admin/places/view/zone');
+      }
 
     }
 

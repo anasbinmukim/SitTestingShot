@@ -168,6 +168,25 @@ if ( !function_exists('get_thana_arr') ) {
 	}
 }
 
+if ( !function_exists('get_zone_arr') ) {
+	function get_zone_arr() {
+    $CI =& get_instance();
+    $CI->load->database();
+    $CI->db->order_by('zone_name');
+    $query = $CI->db->get('place_zone');
+    $zones = $query->result_array();
+
+    $result_zones = array();
+    foreach ($zones as $zone) {
+      if(($zone['zone_name'] != '') && ($zone['ID'] > 0)){
+          $zone_id = $zone['ID'];
+          $result_zones[$zone_id] = $zone['zone_name'];
+      }
+    }
+		return $result_zones;
+	}
+}
+
 if ( !function_exists('get_via_places_arr') ) {
 	function get_via_places_arr($type = 'launch') {
 
