@@ -12,15 +12,20 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                       <div class="portlet-title tabbable-line">
                           <div class="caption caption-md">
                               <i class="icon-globe theme-font hide"></i>
-                              <span class="caption-subject font-blue-madison bold uppercase">Add New Zone</span>
+                              <span class="caption-subject font-blue-madison bold uppercase">Edit Zone</span>
                           </div>
                       </div>
                       <div class="portlet-body">
+                      <!-- CHANGE PASSWORD TAB -->
                           <form action="" method="post">
+                              <?php
+                              $result_zone = $this->common->get( 'place_zone', array( 'ID' => $row_id ) );
+                              ?>
                               <div class="form-group">
-                                  <label class="control-label">Zone name</label>
-                                  <input type="text" name="zone_name" class="form-control" /> </div>
-          										<div class="form-group">
+                                  <label class="control-label">Area name</label>
+                                  <input type="text" name="zone_name" class="form-control" value="<?php echo html_escape($result_zone->zone_name); ?>" /> </div>
+
+              									<div class="form-group">
           										  <label class="control-label">Select District</label>
             										<select name="district_id" id="district_id" class="form-control select2me">
             										<?php
@@ -31,11 +36,14 @@ require_once(FCPATH.'/application/views/success-error-message.php');
             										?>
             										</select>
             										</div>
+                                  <input type="hidden" name="zone_id" value="<?php echo $row_id; ?>">
+
                               <div class="margin-top-10">
                                   <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
-                                  <input type="submit" class="btn green" name="add_zone" value="Add">
+                                  <input type="submit" class="btn green" name="update_zone" value="Update">
                               </div>
                           </form>
+                      <!-- END CHANGE PASSWORD TAB -->
                       </div>
                   </div>
               </div>

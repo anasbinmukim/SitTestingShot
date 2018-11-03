@@ -65,7 +65,12 @@ class Places extends RM_Controller {
                 $breadcrumb[] = array('name' => 'Zone', 'url' => '');
                 $this->data['breadcrumb'] = $breadcrumb;
                 $this->data['current_page'] = 'view_zone';
-                $result = $this->common->get_all( 'place_zone' );
+				
+				$join_arr_left = array(
+					'place_district pd' => 'pd.ID = pz.district_id',
+				);
+				
+                $result = $this->common->get_all( 'place_zone pz','','pz.*, pd.district_name','', 0, 0, $join_arr_left );
                 $this->data['zone_rows'] = $result;
 
                 $this->data['js_files'] = array(
@@ -285,7 +290,7 @@ class Places extends RM_Controller {
     public function add($page = 'area')
     {
 
-      if(($page == 'area') || ($page == 'via_place')){
+      if(($page == 'area') || ($page == 'via_place') || ($page == 'zone')){
           $this->data['css_files'] = array(
             base_url('assets/global/plugins/select2/css/select2.min.css'),
             base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
@@ -365,6 +370,10 @@ class Places extends RM_Controller {
       //Start: Process area info
       $this->process_via_place_info();
       //End: Process area info
+	  
+	  //Start: Process area info
+      $this->process_zone_info();
+      //End: Process area info
 
 
       $this->load->view('templates/header', $this->data);
@@ -379,7 +388,7 @@ class Places extends RM_Controller {
     {
 
 
-      if(($page == 'area') || ($page == 'via_place')){
+      if(($page == 'area') || ($page == 'via_place') || ($page == 'zone')){
           $this->data['css_files'] = array(
             base_url('assets/global/plugins/select2/css/select2.min.css'),
             base_url('assets/global/plugins/select2/css/select2-bootstrap.min.css'),
@@ -460,6 +469,10 @@ class Places extends RM_Controller {
 
       //Start: Process area info
       $this->process_area_info();
+      //End: Process area info
+	  
+	  //Start: Process area info
+      $this->process_zone_info();
       //End: Process area info
 
       //Start: Process area info
@@ -650,7 +663,52 @@ class Places extends RM_Controller {
           }
       }
 
-    }//EOF process thana info
+    }//EOF process area info
+	
+	
+	//Process Zone Info
+    private function process_zone_info(){
+      //Add New Zone
+      if(isset($_POST['add_zone'])){
+          $this->form_validation->set_rules('zone_name', 'Zone name', 'trim|required|htmlspecialchars|min_length[2]');
+
+          $data_arr = array(
+            'zone_name'=> trim($this->input->post('zone_name')),
+            'district_id'=> trim($this->input->post('district_id')),
+          );
+
+          if( !$this->form_validation->run() ) {
+            $error_message_array = $this->form_validation->error_array();
+            $this->session->set_flashdata('error_msg_arr', $error_message_array);
+          }else{
+            $this->common->insert( 'place_zone', $data_arr );
+            $this->session->set_flashdata('success_msg','Added done!');
+            redirect('/admin/places/view/zone');
+          }
+      }
+
+      //Update Zone
+      if(isset($_POST['update_zone'])){
+          $this->form_validation->set_rules('zone_name', 'Zone name', 'trim|required|htmlspecialchars|min_length[2]');
+
+          $data_arr = array(
+            'zone_name'=> trim($this->input->post('zone_name')),
+            'district_id'=> trim($this->input->post('district_id')),
+          );
+
+          $zone_id = $this->input->post('zone_id');
+
+          if( !$this->form_validation->run() ) {
+            $error_message_array = $this->form_validation->error_array();
+            $this->session->set_flashdata('error_msg_arr', $error_message_array);
+          }else{
+            $this->common->update( 'place_zone', $data_arr, array( 'ID' =>  $zone_id ) );
+            $this->session->set_flashdata('success_msg','Updated done!');
+            redirect('/admin/places/view/zone');
+          }
+      }
+
+    }//EOF process zone info
 
 
     //Process Via Places Info

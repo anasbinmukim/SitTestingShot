@@ -191,6 +191,11 @@ if(($current_page == 'accounts')||($current_page == 'deposit_account')||($curren
                             <span class="title">Area</span>
                         </a>
                     </li>
+					<li class="nav-item  ">
+                        <a href="<?php echo site_url('admin/places/view/zone'); ?>" class="nav-link ">
+                            <span class="title">Zone</span>
+                        </a>
+                    </li>
                     <li class="nav-item  ">
                         <a href="<?php echo site_url('admin/places/view/via_place'); ?>" class="nav-link ">
                             <span class="title">Via Places</span>
