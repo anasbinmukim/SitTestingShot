@@ -31,11 +31,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 										<?php
                 											$thana_arr = get_thana_under_dist_arr();
                 											foreach($thana_arr as $tkey => $tvalue){
-                                        $selected = 0;
-                                        if($tkey == $result_area->thana_id)
-                                          $selected = 'selected = "selected" ';
-
-                												echo '<option '.$selected.' value="'.$tkey.'">'.$tvalue.'</option>';
+                												echo '<option '.selected($result_area->thana_id, $tkey, false).' value="'.$tkey.'">'.$tvalue.'</option>';
                 											}
                 										?>
                 										</select>

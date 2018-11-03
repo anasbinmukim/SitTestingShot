@@ -26,10 +26,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                         $companies_arr = get_companies_arr();
                                         $company_id = $counter_data['company_id'];
                                         foreach($companies_arr as $ckey => $cvalue){
-                                          $selected = 0;
-                                          if($ckey == $company_id)
-                                            $selected = 'selected = "selected" ';
-                                          echo '<option '.$selected.' value="'.$ckey.'">'.$cvalue.'</option>';
+                                          echo '<option '.selected($company_id, $ckey, false).' value="'.$ckey.'">'.$cvalue.'</option>';
                                         }
                                       ?>
                                     </select>
@@ -63,25 +60,19 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                       	$thana_arr = get_thana_under_dist_arr();
                                         $thana_id = $counter_data['thana_id'];
                                       	foreach($thana_arr as $tkey => $tvalue){
-                                          $selected = 0;
-                                          if($tkey == $thana_id)
-                                            $selected = 'selected = "selected" ';
-                                          echo '<option '.$selected.' value="'.$tkey.'">'.$tvalue.'</option>';
+                                          echo '<option '.selected($thana_id, $tkey, false).' value="'.$tkey.'">'.$tvalue.'</option>';
                                       	}
                                       ?>
                                     </select>
                                   </div>
                                   <div class="form-group">
-                                    <label class="control-label">Select District</label>
-                                      <select name="district_id" id="district_id" class="form-control select2me">
+                                    <label class="control-label">Select Zone</label>
+                                      <select name="zone_id" id="zone_id" class="form-control select2me">
                                       <?php
-                                        $district_id = $counter_data['district_id'];
-                                      	$district_arr = get_district_arr();
-                                      	foreach($district_arr as $dkey => $dvalue){
-                                          $selected = 0;
-                                          if($dkey == $district_id)
-                                            $selected = 'selected = "selected" ';
-                                          echo '<option '.$selected.' value="'.$dkey.'">'.$dvalue.'</option>';
+                                        $zone_id = $counter_data['zone_id'];
+                                      	$zone_arr = get_zone_arr();
+                                      	foreach($zone_arr as $zkey => $zvalue){
+                                          echo '<option '.selected($zone_id, $zkey, false).' value="'.$zkey.'">'.$zvalue.'</option>';
                                       	}
                                       ?>
                                     </select>

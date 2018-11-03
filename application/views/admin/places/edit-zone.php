@@ -20,6 +20,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                           <form action="" method="post">
                               <?php
                               $result_zone = $this->common->get( 'place_zone', array( 'ID' => $row_id ) );
+							  $district_id = $result_zone->district_id;
                               ?>
                               <div class="form-group">
                                   <label class="control-label">Area name</label>
@@ -31,7 +32,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
             										<?php
             											$district_arr = get_district_arr();
             											foreach($district_arr as $tkey => $tvalue){
-            												echo '<option value="'.$tkey.'">'.$tvalue.'</option>';
+            												echo '<option '.selected($district_id, $tkey, false).' value="'.$tkey.'">'.$tvalue.'</option>';
             											}
             										?>
             										</select>

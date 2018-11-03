@@ -31,11 +31,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                 										<?php
                 											$district_arr = get_district_arr();
                 											foreach($district_arr as $dkey => $dvalue){
-                                        $selected = 0;
-                                        if($dkey == $result_thana->district_id)
-                                          $selected = 'selected = "selected" ';
-
-                												echo '<option '.$selected.' value="'.$dkey.'">'.$dvalue.'</option>';
+                												echo '<option '.selected($result_thana->district_id, $dkey, false).' value="'.$dkey.'">'.$dvalue.'</option>';
                 											}
                 										?>
                 										</select>

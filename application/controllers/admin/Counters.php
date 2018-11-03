@@ -290,7 +290,7 @@ class Counters extends RM_Controller {
                 $counter_id = $this->input->post('update_counter_id');
                 $this->common->update( 'company_counter', $data_arr, array( 'ID' =>  $counter_id ) );
       					$this->session->set_flashdata('success_msg','Updated done!');
-                redirect('admin/counters');
+                redirect('admin/counters/counters');
             }else{
               $counter_id = $this->common->insert( 'company_counter', $data_arr );
               $generate_counter_slug = $this->input->post('counter_name').'-'.$counter_id;

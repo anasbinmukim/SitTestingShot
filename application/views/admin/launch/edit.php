@@ -36,10 +36,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                           $companies_arr = get_companies_arr();
                                           $company_id = $launch_data->company_id;
                                           foreach($companies_arr as $ckey => $cvalue){
-                                            $selected = 0;
-                                            if($ckey == $company_id)
-                                              $selected = 'selected = "selected" ';
-                                            echo '<option '.$selected.' value="'.$ckey.'">'.$cvalue.'</option>';
+                                            echo '<option '.selected($company_id, $ckey, false).' value="'.$ckey.'">'.$cvalue.'</option>';
                                           }
                                         ?>
                                       </select>
@@ -64,10 +61,7 @@ require_once(FCPATH.'/application/views/success-error-message.php');
                                         <?php
                                           $route_id = $launch_data->route_id;
                                           foreach($launch_route_arr as $rkey => $rvalue){
-                                            $selected = 0;
-                                            if($rkey == $route_id)
-                                              $selected = 'selected = "selected" ';
-                                            echo '<option '.$selected.' value="'.$rkey.'">'.$rvalue['route_path'].'</option>';
+                                            echo '<option '.selected($route_id, $rkey, false).' value="'.$rkey.'">'.$rvalue['route_path'].'</option>';
                                           }
                                         ?>
                                       </select>

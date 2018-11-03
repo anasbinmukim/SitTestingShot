@@ -34,6 +34,9 @@ $(document).ready(function(){
                     console.log( 'callback' );
                 }
             },
+			oLanguage: {          
+				sProcessing: "<img src='"+base_url+"assets/global/img/loading-spinner-blue.gif' />",
+			},
 			buttons: [],
 			"dom": "<'row cw-listactions'<'col-xs-12'f><'col-xs-12'B>><'table-scrollable'rt><'row cw-listnav'<'col-xs-6'il><'col-xs-6'p>>",
 			"pagingType": "bootstrap_number",
